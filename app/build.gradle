@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 25
@@ -31,6 +32,7 @@ dependencies {
     compile "com.android.support:cardview-v7:$support_version"
     compile "com.android.support:recyclerview-v7:$support_version"
     compile "com.android.support:design:$support_version"
+    compile "com.android.support:support-v13:$support_version"
     
     //butterknife
     compile "com.jakewharton:butterknife:$butterknife_version"
@@ -41,4 +43,5 @@ dependencies {
     
     //other
     compile 'com.android.support.constraint:constraint-layout:1.0.1'
+    compile 'io.realm:android-adapters:1.4.0'
 }
