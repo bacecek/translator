@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	app:cardCornerRadius="0dp"
+	app:cardElevation="5dp">
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@color/colorPrimary">
+
+		<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/button_bar"
+			android:orientation="vertical"
+			android:layout_alignParentRight="true">
+
+			<ImageButton
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/btn_clear"
+				android:src="@drawable/ic_clear"
+				style="@style/ActionButton"/>
+
+			<ImageButton
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/btn_mic"
+				android:src="@drawable/ic_mic_on"
+				style="@style/ActionButton"/>
+
+			<ImageButton
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/btn_play"
+				android:src="@drawable/ic_play"
+				style="@style/ActionButton"/>
+
+		</LinearLayout>
+
+		<EditText
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/edit_original_text"
+			android:textSize="20sp"
+			android:hint="@string/hint_edit_original_text"
+			android:background="@null"
+			android:minLines="3"
+			android:gravity="start"
+			android:layout_toLeftOf="@id/button_bar"
+			android:textColor="@android:color/white"
+			android:textCursorDrawable="@null"
+			android:textColorHint="#6FB8ED"
+			android:padding="16dp"
+			android:textColorHighlight="#6FB8ED" />
+
+	</RelativeLayout>
+
+</android.support.v7.widget.CardView>

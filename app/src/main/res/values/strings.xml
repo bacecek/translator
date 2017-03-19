@@ -1,3 +1,14 @@
 <resources>
-	<string name="app_name">Yandex translate</string>
+	<string name="app_name">Переводчик</string>
+
+	<string name="empty_list_favourites">Список избранных\nпереводов пуст</string>
+	<string name="hint_edit_original_text">Введите текст</string>
+	<string name="open_drawer">Open Drawer</string>
+	<string name="close_drawer">Close Drawer</string>
+
+	<!--Actions-->
+	<string name="action_home">Главная страница</string>
+	<string name="action_favourites">Избранное</string>
+	<string name="action_settings">Настройки</string>
+	<string name="action_about">О программе</string>
 </resources>
