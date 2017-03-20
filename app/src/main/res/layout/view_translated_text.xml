@@ -1,37 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:orientation="vertical"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
-	app:cardElevation="5dp"
-	app:cardCornerRadius="3dp"
-	android:layout_marginLeft="8dp"
-	android:layout_marginRight="8dp">
+	android:layout_height="wrap_content">
 
-	<LinearLayout
+	<android.support.v7.widget.CardView
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:app="http://schemas.android.com/apk/res-auto"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:background="@color/colorPrimaryDark">
+		android:layout_height="wrap_content"
+		app:cardElevation="2dp"
+		app:cardCornerRadius="3dp"
+		android:layout_marginLeft="8dp"
+		android:layout_marginRight="8dp">
 
-		<RelativeLayout
+		<LinearLayout
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content">
+			android:layout_height="match_parent"
+			android:orientation="vertical">
 
-			<ImageButton
+			<RelativeLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+
+				<ImageButton
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/btn_favourite"
+					android:src="@drawable/ic_favourite"
+					style="@style/Widget.AppCompat.ActionButton"
+					android:tint="@android:color/black"
+					android:layout_alignParentRight="true"/>
+
+				<com.bacecek.yandextranslate.views.ListenButton
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/btn_listen"
+					android:layout_toLeftOf="@id/btn_favourite"/>
+
+			</RelativeLayout>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/txt_translated"
+				android:textSize="20sp"
+				android:textColor="@android:color/black"
+				android:layout_marginLeft="16dp"
+				android:layout_marginRight="16dp"/>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="right">
+
+				<ImageButton
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/btn_copy"
+					android:src="@drawable/ic_copy"
+					style="@style/Widget.AppCompat.ActionButton"/>
+
+				<ImageButton
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/btn_more"
+					android:src="@drawable/ic_more"
+					style="@style/Widget.AppCompat.ActionButton"/>
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</android.support.v7.widget.CardView>
+
+	<android.support.v7.widget.CardView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:cardElevation="2dp"
+		app:cardCornerRadius="3dp"
+		android:layout_marginLeft="8dp"
+		android:layout_marginRight="8dp"
+		android:layout_marginTop="12dp"
+		android:layout_marginBottom="12dp">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="16dp">
+
+			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:id="@+id/btn_favourite"
-				android:src="@drawable/ic_favourite"
-				style="@style/ActionButton"
-				android:tint="@android:color/black"
-				android:layout_alignParentRight="true"/>
+				android:textSize="13sp"
+				android:textColor="@android:color/black"
+				android:textAllCaps="true"
+				android:lines="1"
+				android:ellipsize="end"
+				android:text="@string/alternative_translation"/>
 
+		</LinearLayout>
 
+	</android.support.v7.widget.CardView>
 
-		</RelativeLayout>
-
-	</LinearLayout>
-
-</android.support.v7.widget.CardView>
+</LinearLayout>
