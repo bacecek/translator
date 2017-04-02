@@ -17,7 +17,7 @@ public class HistoryDismissTouchHelper extends ItemTouchHelper.SimpleCallback {
 	private RealmRecyclerViewAdapter mAdapter;
 
 	public HistoryDismissTouchHelper(RealmRecyclerViewAdapter adapter) {
-		super(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
+		super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
 		mAdapter = adapter;
 	}
 
