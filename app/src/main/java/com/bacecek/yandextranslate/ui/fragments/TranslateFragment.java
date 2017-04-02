@@ -149,6 +149,17 @@ public class TranslateFragment extends Fragment{
 		});
 	}
 
+	private void saveTranslation() {
+		Translation translation = new Translation();
+		translation.setOriginalText(mEditOriginal.getText().toString());
+		translation.setTranslatedText(mTxtTranslated.getText().toString());
+		translation.setOriginalLang("ru");//TODO:изменить получение языка
+		translation.setTargetLang("en");
+		translation.setTimestamp(System.currentTimeMillis() / 1000);
+		translation.setFavourite(false);
+		RealmController.getInstance().insertTranslation(translation);
+	}
+
 	@Override
 	public void onStop() {
 		super.onStop();
