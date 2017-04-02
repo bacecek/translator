@@ -127,7 +127,7 @@ public class TranslateFragment extends Fragment{
 		mRecyclerHistory.setNestedScrollingEnabled(false);
 		mRecyclerHistory.setHasFixedSize(true);
 		DividerItemDecoration divider = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
-		divider.setDrawable(getResources().getDrawable(R.drawable.list_divider));
+		divider.setDrawable(getResources().getDrawable(R.drawable.list_divider_history));
 		mRecyclerHistory.addItemDecoration(divider);
 		ItemTouchHelper.Callback callback = new HistoryDismissTouchHelper(adapter);
 		ItemTouchHelper helper = new ItemTouchHelper(callback);

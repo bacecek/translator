@@ -73,11 +73,25 @@ public class RealmController {
 		mRealm.commitTransaction();
 	}
 
+	public RealmResults<Translation> getFavourites(String search) {
+		return mRealm.where(Translation.class)
+				.beginGroup()
+					.contains("originalText", search)
+					.or()
+					.contains("translatedText", search)
+				.endGroup()
+				.equalTo("isFavourite", true)
+				.findAllSortedAsync("timestamp", Sort.DESCENDING);
+	}
+
 	public RealmResults<Translation> getFavourites() {
-		return mRealm.where(Translation.class).equalTo("isFavourite", true).findAllSortedAsync("timestamp", Sort.DESCENDING);
+		return mRealm.where(Translation.class)
+				.equalTo("isFavourite", true)
+				.findAllSortedAsync("timestamp", Sort.DESCENDING);
 	}
 
 	public RealmResults<Translation> getHistory() {
-		return mRealm.where(Translation.class).findAllSortedAsync("timestamp", Sort.DESCENDING);
+		return mRealm.where(Translation.class)
+				.findAllSortedAsync("timestamp", Sort.DESCENDING);
 	}
 }
