@@ -62,6 +62,7 @@ public class TranslateFragment extends Fragment{
 	private static int DELAY_INPUT = 700;
 	private Handler mDelayInputHandler = new Handler(Looper.getMainLooper());
 	private Runnable mDelayInputRunnable;
+	private Call<Translation> mCall;
 
 	@OnClick(R.id.btn_clear)
 	void onClickClear() {
@@ -134,8 +135,8 @@ public class TranslateFragment extends Fragment{
 	}
 
 	private void loadTranslation() {
-		Call<Translation> call = mTranslatorAPI.translate(mEditOriginal.getText().toString(), "en");
-		call.enqueue(new Callback<Translation>() {
+		mCall = mTranslatorAPI.translate(mEditOriginal.getText().toString(), "en");
+		mCall.enqueue(new Callback<Translation>() {
 			@Override
 			public void onResponse(Call<Translation> call,
 					Response<Translation> response) {
@@ -151,21 +152,22 @@ public class TranslateFragment extends Fragment{
 	}
 
 	private void saveTranslation() {
-		Translation translation = new Translation();
-		translation.setOriginalText(mEditOriginal.getText().toString());
-		translation.setTranslatedText(mTxtTranslated.getText().toString());
-		translation.setOriginalLang("ru");//TODO:изменить получение языка
-		translation.setTargetLang("en");
-		translation.setTimestamp(System.currentTimeMillis() / 1000);
-		RealmController.getInstance().insertTranslation(translation);
+		if(mEditOriginal.length() > 0 && mCall != null) {
+			mCall.cancel();
+			Translation translation = new Translation();
+			translation.setOriginalText(mEditOriginal.getText().toString());
+			translation.setTranslatedText(mTxtTranslated.getText().toString());
+			translation.setOriginalLang("ru");//TODO:изменить получение языка
+			translation.setTargetLang("en");
+			translation.setTimestamp(System.currentTimeMillis() / 1000);
+			RealmController.getInstance().insertTranslation(translation);
+		}
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		if(mEditOriginal.getText().length() > 0) {
-			saveTranslation();
-		}
+		saveTranslation();
 	}
 
 	@Override
