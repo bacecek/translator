@@ -13,10 +13,10 @@ import io.realm.RealmRecyclerViewAdapter;
  * <buzmakov.da@gmail.com>
  */
 
-public class DismissTouchHelper extends ItemTouchHelper.SimpleCallback {
+public class HistoryDismissTouchHelper extends ItemTouchHelper.SimpleCallback {
 	private RealmRecyclerViewAdapter mAdapter;
 
-	public DismissTouchHelper(RealmRecyclerViewAdapter adapter) {
+	public HistoryDismissTouchHelper(RealmRecyclerViewAdapter adapter) {
 		super(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
 		mAdapter = adapter;
 	}
@@ -31,7 +31,7 @@ public class DismissTouchHelper extends ItemTouchHelper.SimpleCallback {
 		OrderedRealmCollection data = mAdapter.getData();
 		if(data != null) {
 			Translation translation = (Translation) data.get(viewHolder.getAdapterPosition());
-			RealmController.getInstance().changeFavourite(translation);
+			RealmController.getInstance().removeTranslation(translation);
 		}
 	}
 }

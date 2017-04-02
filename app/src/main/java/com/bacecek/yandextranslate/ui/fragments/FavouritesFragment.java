@@ -16,7 +16,7 @@ import com.bacecek.yandextranslate.R;
 import com.bacecek.yandextranslate.data.db.RealmController;
 import com.bacecek.yandextranslate.data.db.entities.Translation;
 import com.bacecek.yandextranslate.ui.adapters.FavouritesAdapter;
-import com.bacecek.yandextranslate.utils.DismissTouchHelper;
+import com.bacecek.yandextranslate.utils.FavouriteDismissHelper;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
@@ -78,7 +78,7 @@ public class FavouritesFragment extends Fragment {
 		mRecyclerFavourites.setHasFixedSize(true);
 		DividerItemDecoration divider = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
 		mRecyclerFavourites.addItemDecoration(divider);
-		ItemTouchHelper.Callback callback = new DismissTouchHelper(mFavouritesAdapter);
+		ItemTouchHelper.Callback callback = new FavouriteDismissHelper(mFavouritesAdapter);
 		ItemTouchHelper helper = new ItemTouchHelper(callback);
 		helper.attachToRecyclerView(mRecyclerFavourites);
 	}

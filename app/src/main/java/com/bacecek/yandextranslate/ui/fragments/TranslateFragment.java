@@ -28,7 +28,7 @@ import com.bacecek.yandextranslate.data.network.APIGenerator;
 import com.bacecek.yandextranslate.data.network.DictionaryAPI;
 import com.bacecek.yandextranslate.data.network.TranslatorAPI;
 import com.bacecek.yandextranslate.ui.adapters.HistoryAdapter;
-import com.bacecek.yandextranslate.utils.DismissTouchHelper;
+import com.bacecek.yandextranslate.utils.HistoryDismissTouchHelper;
 import com.bacecek.yandextranslate.utils.Utils;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -127,7 +127,7 @@ public class TranslateFragment extends Fragment{
 		DividerItemDecoration divider = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
 		divider.setDrawable(getResources().getDrawable(R.drawable.list_divider));
 		mRecyclerHistory.addItemDecoration(divider);
-		ItemTouchHelper.Callback callback = new DismissTouchHelper(adapter);
+		ItemTouchHelper.Callback callback = new HistoryDismissTouchHelper(adapter);
 		ItemTouchHelper helper = new ItemTouchHelper(callback);
 		helper.attachToRecyclerView(mRecyclerHistory);
 	}
