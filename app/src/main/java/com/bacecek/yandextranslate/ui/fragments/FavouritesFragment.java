@@ -1,19 +1,22 @@
-package com.bacecek.yandextranslate.fragments;
+package com.bacecek.yandextranslate.ui.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.bacecek.yandextranslate.R;
-import com.bacecek.yandextranslate.adapters.FavouritesAdapter;
-import com.bacecek.yandextranslate.entities.Translation;
-import io.realm.Realm;
+import com.bacecek.yandextranslate.data.db.RealmController;
+import com.bacecek.yandextranslate.data.db.entities.Translation;
+import com.bacecek.yandextranslate.ui.adapters.FavouritesAdapter;
+import com.bacecek.yandextranslate.utils.DismissTouchHelper;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
@@ -29,7 +32,6 @@ public class FavouritesFragment extends Fragment {
 	View mViewEmpty;
 
 	private FavouritesAdapter mFavouritesAdapter;
-	private Realm mRealm;
 	RealmResults<Translation> mData;
 
 	private RealmChangeListener<RealmResults<Translation>> mChangeListener = new RealmChangeListener<RealmResults<Translation>>() {
@@ -53,8 +55,7 @@ public class FavouritesFragment extends Fragment {
 		View parent = inflater.inflate(R.layout.fragment_favourites, container, false);
 		ButterKnife.bind(this, parent);
 
-		mRealm = Realm.getDefaultInstance();
-		mData = mRealm.where(Translation.class).equalTo("isFavourite", true).findAll();
+		mData = RealmController.getInstance().getFavourites();
 		mData.addChangeListener(mChangeListener);
 
 		initUI();
@@ -74,6 +75,12 @@ public class FavouritesFragment extends Fragment {
 		mRecyclerFavourites.setHasFixedSize(true);
 		mRecyclerFavourites.setLayoutManager(new LinearLayoutManager(getActivity()));
 		mRecyclerFavourites.setAdapter(mFavouritesAdapter);
+		mRecyclerFavourites.setHasFixedSize(true);
+		DividerItemDecoration divider = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
+		mRecyclerFavourites.addItemDecoration(divider);
+		ItemTouchHelper.Callback callback = new DismissTouchHelper(mFavouritesAdapter);
+		ItemTouchHelper helper = new ItemTouchHelper(callback);
+		helper.attachToRecyclerView(mRecyclerFavourites);
 	}
 
 	public static FavouritesFragment getInstance() {

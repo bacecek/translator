@@ -1,4 +1,4 @@
-package com.bacecek.yandextranslate.views;
+package com.bacecek.yandextranslate.ui.views;
 
 import android.annotation.TargetApi;
 import android.content.Context;

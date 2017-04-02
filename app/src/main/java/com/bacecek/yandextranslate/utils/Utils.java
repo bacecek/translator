@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.res.Resources;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -25,6 +27,10 @@ public class Utils {
 		if(view == null) {
 			view = new View(activity);
 		}
-		manager.hideSoftInputFromInputMethod(view.getWindowToken(), 0);
+		manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+	}
+
+	public static float dpToPx(float dp, Resources resources) {
+		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
 	}
 }

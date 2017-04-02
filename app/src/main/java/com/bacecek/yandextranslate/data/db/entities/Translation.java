@@ -1,6 +1,7 @@
-package com.bacecek.yandextranslate.entities;
+package com.bacecek.yandextranslate.data.db.entities;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Denis Buzmakov on 17/03/2017.
@@ -8,11 +9,14 @@ import io.realm.RealmObject;
  */
 
 public class Translation extends RealmObject{
+	//TODO:объяснение почему так а не иначе
+	@PrimaryKey
 	private String originalText;
 	private String translatedText;
 	private String originalLang;
 	private String targetLang;
 	private boolean isFavourite;
+	private long timestamp;
 
 	public String getOriginalText() {
 		return originalText;
@@ -52,5 +56,13 @@ public class Translation extends RealmObject{
 
 	public void setFavourite(boolean favourite) {
 		isFavourite = favourite;
+	}
+
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
 }

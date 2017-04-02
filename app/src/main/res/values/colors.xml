@@ -6,4 +6,5 @@
 
 	<color name="colorEmptyViewText">#7F7F7F</color>
 	<color name="colorTextGrey">#AFAFAF</color>
+	<color name="colorBackground">#F5F5F5</color>
 </resources>

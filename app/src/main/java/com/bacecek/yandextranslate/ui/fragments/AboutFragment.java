@@ -1,4 +1,4 @@
-package com.bacecek.yandextranslate.fragments;
+package com.bacecek.yandextranslate.ui.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -9,20 +9,20 @@ import android.view.ViewGroup;
 import com.bacecek.yandextranslate.R;
 
 /**
- * Created by Denis Buzmakov on 17/03/2017.
+ * Created by Denis Buzmakov on 19/03/2017.
  * <buzmakov.da@gmail.com>
  */
 
-public class TranslateFragment extends Fragment {
+public class AboutFragment extends Fragment {
 
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-		View parent = inflater.inflate(R.layout.fragment_translate, container, false);
+		View parent = inflater.inflate(R.layout.fragment_about, container, false);
 		return parent;
 	}
 
-	public static TranslateFragment getInstance() {
-		return new TranslateFragment();
+	public static AboutFragment getInstance() {
+		return new AboutFragment();
 	}
 }

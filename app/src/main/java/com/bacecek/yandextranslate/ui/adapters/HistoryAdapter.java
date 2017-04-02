@@ -1,4 +1,4 @@
-package com.bacecek.yandextranslate.adapters;
+package com.bacecek.yandextranslate.ui.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,24 +8,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.bacecek.yandextranslate.R;
-import com.bacecek.yandextranslate.adapters.FavouritesAdapter.ViewHolder;
-import com.bacecek.yandextranslate.entities.Translation;
+import com.bacecek.yandextranslate.data.db.RealmController;
+import com.bacecek.yandextranslate.data.db.entities.Translation;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
 
 /**
- * Created by Denis Buzmakov on 17/03/2017.
+ * Created by Denis Buzmakov on 20/03/2017.
  * <buzmakov.da@gmail.com>
  */
 
-public class FavouritesAdapter extends RealmRecyclerViewAdapter<Translation, ViewHolder> {
+public class HistoryAdapter extends RealmRecyclerViewAdapter<Translation, HistoryAdapter.ViewHolder> {
 	private OnItemClickListener mListener;
 
-	public FavouritesAdapter(@NonNull Context context,
+	public HistoryAdapter(@NonNull Context context,
 			@Nullable OrderedRealmCollection<Translation> data,
 			OnItemClickListener listener) {
 		super(context, data, true);
@@ -34,7 +35,7 @@ public class FavouritesAdapter extends RealmRecyclerViewAdapter<Translation, Vie
 
 	@Override
 	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-		View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_favourite, parent, false);
+		View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_history, parent, false);
 		return new ViewHolder(itemView);
 	}
 
@@ -46,23 +47,23 @@ public class FavouritesAdapter extends RealmRecyclerViewAdapter<Translation, Vie
 		}
 	}
 
-	static class ViewHolder extends RecyclerView.ViewHolder{
+	static class ViewHolder extends RecyclerView.ViewHolder {
 		@BindView(R.id.txt_original)
 		TextView mTxtOriginal;
 		@BindView(R.id.txt_translated)
 		TextView mTxtTranslated;
-		@BindView(R.id.txt_langs)
-		TextView mTxtLangs;
+		@BindView(R.id.btn_favourite)
+		ImageButton mBtnFavourite;
 
 		ViewHolder(View itemView) {
 			super(itemView);
 			ButterKnife.bind(this, itemView);
 		}
 
-		public void bind(final Translation translation, final OnItemClickListener listener) {
+		void bind(final Translation translation, final OnItemClickListener listener) {
 			mTxtOriginal.setText(translation.getOriginalText());
 			mTxtTranslated.setText(translation.getTranslatedText());
-			mTxtLangs.setText(translation.getOriginalLang() + "-" + translation.getTargetLang());
+			mBtnFavourite.setSelected(translation.isFavourite());
 			if(listener != null) {
 				itemView.setOnClickListener(new OnClickListener() {
 					@Override
@@ -71,6 +72,12 @@ public class FavouritesAdapter extends RealmRecyclerViewAdapter<Translation, Vie
 					}
 				});
 			}
+			mBtnFavourite.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					RealmController.getInstance().changeFavourite(translation);
+				}
+			});
 		}
 	}
 

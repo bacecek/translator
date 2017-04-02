@@ -5,7 +5,15 @@
 	<string name="hint_edit_original_text">Введите текст</string>
 	<string name="open_drawer">Открыть NavigationDrawer</string>
 	<string name="close_drawer">Закрыть NavigationDrawer</string>
-	<string name="alternative_translation">Другие варианты перевода</string>
+	<string name="dictionary">Словарь</string>
+	<string name="try_again">Попробовать еще раз</string>
+	<string name="exit">Выйти</string>
+	<string name="wait_loading_languages">Загрузка списка языков. Пожалуйста, подождите…</string>
+	<string name="text_has_been_copied">Перевод был скопирован в буфер обмена</string>
+
+	<!--Errors-->
+	<string name="error">Ошибочка вышла!</string>
+	<string name="error_loading_languages">Не удалось загрузить список языков!</string>
 
 	<!--Actions-->
 	<string name="action_home">Главная страница</string>

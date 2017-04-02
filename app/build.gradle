@@ -11,6 +11,15 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        
+        buildConfigField "String", "YANDEX_TRANSLATE_API_KEY",
+                "\"trnsl.1.1.20170317T181902Z.accb30995191800c.3677d82427dc3676bef82005d25e51a0e78b2d4c\""
+        buildConfigField "String", "YANDEX_DICTIONARY_API_KEY",
+                "\"dict.1.1.20170317T181654Z.de8731f90e92dba9.f033198a9fb5133b0a54cafa81dac2043de9958a\""
+        buildConfigField "String", "YANDEX_TRANSLATE_API_URL",
+                "\"https://translate.yandex.net/api/v1.5/tr.json/\""
+        buildConfigField "String", "YANDEX_DICTIONARY_API_URL",
+                "\"https://dictionary.yandex.net/api/v1/dicservice.json/\""
     }
     buildTypes {
         release {
@@ -32,16 +41,17 @@ dependencies {
     compile "com.android.support:cardview-v7:$support_version"
     compile "com.android.support:recyclerview-v7:$support_version"
     compile "com.android.support:design:$support_version"
-    compile "com.android.support:support-v13:$support_version"
     
     //butterknife
     compile "com.jakewharton:butterknife:$butterknife_version"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknife_version"
 
     //retrofit
-    compile 'com.squareup.retrofit2:retrofit:2.2.0'
+    compile "com.squareup.retrofit2:retrofit:$retrofit_version"
+    compile "com.squareup.retrofit2:converter-gson:$retrofit_version"
     
     //other
     compile 'com.android.support.constraint:constraint-layout:1.0.1'
     compile 'io.realm:android-adapters:1.4.0'
+    compile 'com.jakewharton.timber:timber:4.5.1'
 }
