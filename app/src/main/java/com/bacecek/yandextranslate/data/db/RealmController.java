@@ -6,6 +6,7 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * Created by Denis Buzmakov on 21/03/2017.
@@ -57,6 +58,10 @@ public class RealmController {
 	}
 
 	public void insertTranslation(Translation translation) {
+		RealmResults<Translation> results = mRealm.where(Translation.class).equalTo("originalText", translation.getOriginalText()).findAll();
+		if(results.size() > 0) {
+			translation.setFavourite(results.get(0).isFavourite());
+		}
 		mRealm.beginTransaction();
 		mRealm.copyToRealmOrUpdate(translation);
 		mRealm.commitTransaction();
@@ -69,10 +74,10 @@ public class RealmController {
 	}
 
 	public RealmResults<Translation> getFavourites() {
-		return mRealm.where(Translation.class).equalTo("isFavourite", true).findAllAsync();
+		return mRealm.where(Translation.class).equalTo("isFavourite", true).findAllSortedAsync("timestamp", Sort.DESCENDING);
 	}
 
 	public RealmResults<Translation> getHistory() {
-		return mRealm.where(Translation.class).findAllAsync();
+		return mRealm.where(Translation.class).findAllSortedAsync("timestamp", Sort.DESCENDING);
 	}
 }
