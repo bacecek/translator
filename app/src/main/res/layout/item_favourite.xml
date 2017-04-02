@@ -28,7 +28,8 @@
 			android:id="@+id/txt_original"
 			android:lines="1"
 			android:ellipsize="end"
-			android:textColor="@android:color/black"/>
+			android:textColor="@android:color/black"
+			android:textSize="16sp"/>
 
 		<TextView
 			android:layout_width="wrap_content"
@@ -36,7 +37,8 @@
 			android:id="@+id/txt_translated"
 			android:lines="1"
 			android:ellipsize="end"
-			android:textColor="@color/colorTextGrey"/>
+			android:textColor="@color/colorTextGrey"
+			android:textSize="16sp"/>
 
 	</LinearLayout>
 
