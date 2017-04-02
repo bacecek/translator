@@ -65,6 +65,7 @@ public class TranslateFragment extends Fragment{
 
 	@OnClick(R.id.btn_clear)
 	void onClickClear() {
+		saveTranslation();
 		mEditOriginal.setText("");
 	}
 
@@ -156,8 +157,15 @@ public class TranslateFragment extends Fragment{
 		translation.setOriginalLang("ru");//TODO:изменить получение языка
 		translation.setTargetLang("en");
 		translation.setTimestamp(System.currentTimeMillis() / 1000);
-		translation.setFavourite(false);
 		RealmController.getInstance().insertTranslation(translation);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		if(mEditOriginal.getText().length() > 0) {
+			saveTranslation();
+		}
 	}
 
 	@Override
