@@ -29,6 +29,7 @@ import com.bacecek.yandextranslate.data.network.DictionaryAPI;
 import com.bacecek.yandextranslate.data.network.TranslatorAPI;
 import com.bacecek.yandextranslate.ui.adapters.HistoryAdapter;
 import com.bacecek.yandextranslate.ui.adapters.HistoryAdapter.OnItemClickListener;
+import com.bacecek.yandextranslate.ui.events.ClickMenuEvent;
 import com.bacecek.yandextranslate.ui.events.TranslateEvent;
 import com.bacecek.yandextranslate.utils.HistoryDismissTouchHelper;
 import com.bacecek.yandextranslate.utils.Utils;
@@ -81,6 +82,11 @@ public class TranslateFragment extends Fragment{
 
 	}
 
+	@OnClick(R.id.btn_menu)
+	void onClickMenu() {
+		EventBus.getDefault().post(new ClickMenuEvent());
+	}
+
 	@OnTextChanged(value = R.id.edit_original_text, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
 	void onTextChanged(Editable s) {
 		isSavingEnabled = false;
@@ -107,7 +113,7 @@ public class TranslateFragment extends Fragment{
 		mDelayInputHandler.postDelayed(mDelayInputRunnable, DELAY_INPUT);
 	}
 
-	private OnItemClickListener mOnItemHistoryClickListener = new OnItemClickListener() {
+	private final OnItemClickListener mOnItemHistoryClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(Translation translation) {
 			mEditOriginal.setText(translation.getOriginalText());

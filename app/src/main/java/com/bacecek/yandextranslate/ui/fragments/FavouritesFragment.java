@@ -26,6 +26,7 @@ import com.bacecek.yandextranslate.data.db.entities.Translation;
 import com.bacecek.yandextranslate.ui.adapters.FavouritesAdapter;
 import com.bacecek.yandextranslate.ui.adapters.FavouritesAdapter.OnItemClickListener;
 import com.bacecek.yandextranslate.ui.events.ClickFavouriteEvent;
+import com.bacecek.yandextranslate.ui.events.ClickMenuEvent;
 import com.bacecek.yandextranslate.utils.FavouriteDismissHelper;
 import org.greenrobot.eventbus.EventBus;
 
@@ -51,6 +52,11 @@ public class FavouritesFragment extends Fragment {
 	@OnClick(R.id.btn_clear)
 	void onClickClear() {
 		mEditSearch.setText("");
+	}
+
+	@OnClick(R.id.btn_menu)
+	void onClickMenu() {
+		EventBus.getDefault().post(new ClickMenuEvent());
 	}
 
 	@OnTextChanged(value = R.id.edit_search, callback = Callback.AFTER_TEXT_CHANGED)

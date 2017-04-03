@@ -29,6 +29,7 @@ import com.bacecek.yandextranslate.data.db.entities.Language;
 import com.bacecek.yandextranslate.data.network.APIGenerator;
 import com.bacecek.yandextranslate.data.network.TranslatorAPI;
 import com.bacecek.yandextranslate.ui.events.ClickFavouriteEvent;
+import com.bacecek.yandextranslate.ui.events.ClickMenuEvent;
 import com.bacecek.yandextranslate.ui.events.TranslateEvent;
 import com.bacecek.yandextranslate.ui.fragments.AboutFragment;
 import com.bacecek.yandextranslate.ui.fragments.FavouritesFragment;
@@ -232,9 +233,14 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
-	public void onMessageEvent(ClickFavouriteEvent event) {
+	public void onClickFavouriteEvent(ClickFavouriteEvent event) {
 		removeFromBackStack();
 		EventBus.getDefault().post(new TranslateEvent(event.text));
+	}
+
+	@Subscribe(threadMode = ThreadMode.MAIN)
+	public void onClickMenuEvent(ClickMenuEvent event) {
+		mDrawerLayout.openDrawer(GravityCompat.START);
 	}
 
 	@Override
