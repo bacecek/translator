@@ -81,13 +81,13 @@ public class RealmController {
 					.contains("translatedText", search)
 				.endGroup()
 				.equalTo("isFavourite", true)
-				.findAllSortedAsync("timestamp", Sort.DESCENDING);
+				.findAllSorted("timestamp", Sort.DESCENDING);
 	}
 
 	public RealmResults<Translation> getFavourites() {
 		return mRealm.where(Translation.class)
 				.equalTo("isFavourite", true)
-				.findAllSortedAsync("timestamp", Sort.DESCENDING);
+				.findAllSorted("timestamp", Sort.DESCENDING);
 	}
 
 	public RealmResults<Translation> getHistory() {

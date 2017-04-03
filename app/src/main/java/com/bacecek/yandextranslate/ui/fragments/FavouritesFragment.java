@@ -114,10 +114,7 @@ public class FavouritesFragment extends Fragment {
 	}
 
 	private void filterFavourites(String search) {
-		mFavouritesAdapter = new FavouritesAdapter(getActivity(), RealmController.getInstance().getFavourites(search), null);
-		mFavouritesAdapter.registerAdapterDataObserver(mFavouritesDataObserver);
-		mRecyclerFavourites.setAdapter(mFavouritesAdapter);
-		//TODO:проверить удаление жестом - удаляется не тот элемент
+		mFavouritesAdapter.updateData(RealmController.getInstance().getFavourites(search));
 	}
 
 	public static FavouritesFragment getInstance() {
