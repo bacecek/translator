@@ -90,7 +90,7 @@ public class TranslateFragment extends Fragment{
 	@OnTextChanged(value = R.id.edit_original_text, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
 	void onTextChanged(Editable s) {
 		isSavingEnabled = false;
-		if(s.length() == 0) {
+		if(s.toString().trim().length() == 0) {
 			mBtnClear.setVisibility(View.INVISIBLE);
 			mBtnListen.setVisibility(View.INVISIBLE);
 			mViewTranslated.setVisibility(View.INVISIBLE);
@@ -105,7 +105,7 @@ public class TranslateFragment extends Fragment{
 		mDelayInputRunnable = new Runnable() {
 			@Override
 			public void run() {
-				if(mEditOriginal.getText().length() != 0) {
+				if(getOriginalText().length() != 0) {
 					loadTranslation();
 				}
 			}
@@ -156,7 +156,7 @@ public class TranslateFragment extends Fragment{
 	}
 
 	private void loadTranslation() {
-		mCall = mTranslatorAPI.translate(mEditOriginal.getText().toString(), "en");
+		mCall = mTranslatorAPI.translate(getOriginalText(), "en");
 		isSavingEnabled = false;
 		mCall.enqueue(new Callback<Translation>() {
 			@Override
@@ -175,16 +175,20 @@ public class TranslateFragment extends Fragment{
 	}
 
 	private void saveTranslation() {
-		if(mEditOriginal.length() > 0 && mCall != null && isSavingEnabled) {
+		if(getOriginalText().length() > 0 && mCall != null && isSavingEnabled) {
 			mCall.cancel();
 			Translation translation = new Translation();
-			translation.setOriginalText(mEditOriginal.getText().toString());
+			translation.setOriginalText(getOriginalText());
 			translation.setTranslatedText(mTxtTranslated.getText().toString());
 			translation.setOriginalLang("ru");//TODO:изменить получение языка
 			translation.setTargetLang("en");
 			translation.setTimestamp(System.currentTimeMillis() / 1000);
 			RealmController.getInstance().insertTranslation(translation);
 		}
+	}
+
+	private String getOriginalText() {
+		return mEditOriginal.getText().toString().trim();
 	}
 
 	@Override
