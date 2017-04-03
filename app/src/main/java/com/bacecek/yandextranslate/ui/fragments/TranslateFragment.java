@@ -28,6 +28,7 @@ import com.bacecek.yandextranslate.data.network.APIGenerator;
 import com.bacecek.yandextranslate.data.network.DictionaryAPI;
 import com.bacecek.yandextranslate.data.network.TranslatorAPI;
 import com.bacecek.yandextranslate.ui.adapters.HistoryAdapter;
+import com.bacecek.yandextranslate.ui.adapters.HistoryAdapter.OnItemClickListener;
 import com.bacecek.yandextranslate.utils.HistoryDismissTouchHelper;
 import com.bacecek.yandextranslate.utils.Utils;
 import retrofit2.Call;
@@ -100,6 +101,14 @@ public class TranslateFragment extends Fragment{
 		mDelayInputHandler.postDelayed(mDelayInputRunnable, DELAY_INPUT);
 	}
 
+	private OnItemClickListener mOnItemHistoryClickListener = new OnItemClickListener() {
+		@Override
+		public void onItemClick(Translation translation) {
+			mEditOriginal.setText(translation.getOriginalText());
+			mEditOriginal.setSelection(translation.getOriginalText().length());
+		}
+	};
+
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -122,7 +131,7 @@ public class TranslateFragment extends Fragment{
 		HistoryAdapter adapter = new HistoryAdapter(
 				getActivity(),
 				RealmController.getInstance().getHistory(),
-				null);
+				mOnItemHistoryClickListener);
 		mRecyclerHistory.setAdapter(adapter);
 		mRecyclerHistory.setNestedScrollingEnabled(false);
 		mRecyclerHistory.setHasFixedSize(true);
