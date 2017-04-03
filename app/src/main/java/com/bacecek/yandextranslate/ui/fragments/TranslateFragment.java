@@ -68,6 +68,7 @@ public class TranslateFragment extends Fragment{
 	private Handler mDelayInputHandler = new Handler(Looper.getMainLooper());
 	private Runnable mDelayInputRunnable;
 	private Call<Translation> mCall;
+	private boolean isSavingEnabled = false;
 
 	@OnClick(R.id.btn_clear)
 	void onClickClear() {
@@ -82,6 +83,7 @@ public class TranslateFragment extends Fragment{
 
 	@OnTextChanged(value = R.id.edit_original_text, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
 	void onTextChanged(Editable s) {
+		isSavingEnabled = false;
 		if(s.length() == 0) {
 			mBtnClear.setVisibility(View.INVISIBLE);
 			mBtnListen.setVisibility(View.INVISIBLE);
@@ -149,12 +151,14 @@ public class TranslateFragment extends Fragment{
 
 	private void loadTranslation() {
 		mCall = mTranslatorAPI.translate(mEditOriginal.getText().toString(), "en");
+		isSavingEnabled = false;
 		mCall.enqueue(new Callback<Translation>() {
 			@Override
 			public void onResponse(Call<Translation> call,
 					Response<Translation> response) {
 				mViewTranslated.setVisibility(View.VISIBLE);
 				mTxtTranslated.setText(response.body().getTranslatedText());
+				isSavingEnabled = true;
 			}
 
 			@Override
@@ -165,7 +169,7 @@ public class TranslateFragment extends Fragment{
 	}
 
 	private void saveTranslation() {
-		if(mEditOriginal.length() > 0 && mCall != null) {
+		if(mEditOriginal.length() > 0 && mCall != null && isSavingEnabled) {
 			mCall.cancel();
 			Translation translation = new Translation();
 			translation.setOriginalText(mEditOriginal.getText().toString());
