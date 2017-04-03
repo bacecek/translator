@@ -1,6 +1,5 @@
 package com.bacecek.yandextranslate.ui.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -45,7 +44,7 @@ import retrofit2.Response;
  * <buzmakov.da@gmail.com>
  */
 
-public class TranslateFragment extends Fragment{
+public class TranslateFragment extends BaseFragment{
 	@BindView(R.id.edit_original_text)
 	EditText mEditOriginal;
 	@BindView(R.id.btn_clear)
@@ -143,6 +142,7 @@ public class TranslateFragment extends Fragment{
 		ButterKnife.bind(this, parent);
 		mTranslatorAPI = APIGenerator.createTranslatorService();
 		mDictionaryAPI = APIGenerator.createDictionaryService();
+		setTitle(parent, getString(R.string.app_name));
 		initUI();
 		return parent;
 	}

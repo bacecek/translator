@@ -1,6 +1,5 @@
 package com.bacecek.yandextranslate.ui.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
@@ -35,7 +34,7 @@ import org.greenrobot.eventbus.EventBus;
  * <buzmakov.da@gmail.com>
  */
 
-public class FavouritesFragment extends Fragment {
+public class FavouritesFragment extends BaseFragment {
 	@BindView(R.id.list_favourites)
 	RecyclerView mRecyclerFavourites;
 	@BindView(R.id.empty_view)
@@ -103,6 +102,7 @@ public class FavouritesFragment extends Fragment {
 		View parent = inflater.inflate(R.layout.fragment_favourites, container, false);
 		ButterKnife.bind(this, parent);
 
+		setTitle(parent, getString(R.string.action_favourites));
 		initUI();
 
 		return parent;

@@ -1,6 +1,5 @@
 package com.bacecek.yandextranslate.ui.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -17,7 +16,7 @@ import org.greenrobot.eventbus.EventBus;
  * <buzmakov.da@gmail.com>
  */
 
-public class AboutFragment extends Fragment {
+public class AboutFragment extends BaseFragment {
 
 	@OnClick(R.id.btn_menu)
 	void onClickMenu() {
@@ -29,6 +28,7 @@ public class AboutFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 		View parent = inflater.inflate(R.layout.fragment_about, container, false);
 		ButterKnife.bind(this, parent);
+		setTitle(parent, getString(R.string.action_about));
 		return parent;
 	}
 
