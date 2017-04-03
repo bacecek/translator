@@ -54,6 +54,8 @@ public class TranslateFragment extends Fragment{
 	ImageButton mBtnMic;
 	@BindView(R.id.btn_listen)
 	ImageButton mBtnListen;
+	@BindView(R.id.btn_favourite)
+	ImageButton mBtnFavourite;
 	@BindView(R.id.list_history)
 	RecyclerView mRecyclerHistory;
 	@BindView(R.id.view_translated_text)
@@ -70,6 +72,13 @@ public class TranslateFragment extends Fragment{
 	private Runnable mDelayInputRunnable;
 	private Call<Translation> mCall;
 	private boolean isSavingEnabled = false;
+
+	@OnClick(R.id.btn_favourite)
+	void onClickFavourite(View view) {
+		boolean selected = view.isSelected();
+		saveTranslation(true, !selected);
+		view.setSelected(!selected);
+	}
 
 	@OnClick(R.id.btn_clear)
 	void onClickClear() {
@@ -156,7 +165,8 @@ public class TranslateFragment extends Fragment{
 	}
 
 	private void loadTranslation() {
-		mCall = mTranslatorAPI.translate(getOriginalText(), "en");
+		final String originalText = getOriginalText();
+		mCall = mTranslatorAPI.translate(originalText, "en");
 		isSavingEnabled = false;
 		mCall.enqueue(new Callback<Translation>() {
 			@Override
@@ -164,6 +174,7 @@ public class TranslateFragment extends Fragment{
 					Response<Translation> response) {
 				mViewTranslated.setVisibility(View.VISIBLE);
 				mTxtTranslated.setText(response.body().getTranslatedText());
+				mBtnFavourite.setSelected(RealmController.getInstance().isTranslationFavourite(originalText));
 				isSavingEnabled = true;
 			}
 
@@ -175,6 +186,10 @@ public class TranslateFragment extends Fragment{
 	}
 
 	private void saveTranslation() {
+		saveTranslation(false, false);
+	}
+
+	private void saveTranslation(boolean changeFavourite, boolean isFavourite) {
 		if(getOriginalText().length() > 0 && mCall != null && isSavingEnabled) {
 			mCall.cancel();
 			Translation translation = new Translation();
@@ -183,7 +198,10 @@ public class TranslateFragment extends Fragment{
 			translation.setOriginalLang("ru");//TODO:изменить получение языка
 			translation.setTargetLang("en");
 			translation.setTimestamp(System.currentTimeMillis() / 1000);
-			RealmController.getInstance().insertTranslation(translation);
+			if(changeFavourite) {
+				translation.setFavourite(isFavourite);
+			}
+			RealmController.getInstance().insertTranslation(translation, changeFavourite);
 		}
 	}
 

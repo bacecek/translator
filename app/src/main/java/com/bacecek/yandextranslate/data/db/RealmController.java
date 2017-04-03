@@ -57,10 +57,12 @@ public class RealmController {
 		instance = null;
 	}
 
-	public void insertTranslation(Translation translation) {
-		RealmResults<Translation> results = mRealm.where(Translation.class).equalTo("originalText", translation.getOriginalText()).findAll();
-		if(results.size() > 0) {
-			translation.setFavourite(results.get(0).isFavourite());
+	public void insertTranslation(Translation translation, boolean changeFavourite) {
+		if(!changeFavourite) {
+			Translation foundTranslation = mRealm.where(Translation.class).equalTo("originalText", translation.getOriginalText()).findFirst();
+			if(foundTranslation != null) {
+				translation.setFavourite(foundTranslation.isFavourite());
+			}
 		}
 		mRealm.beginTransaction();
 		mRealm.copyToRealmOrUpdate(translation);
@@ -93,5 +95,16 @@ public class RealmController {
 	public RealmResults<Translation> getHistory() {
 		return mRealm.where(Translation.class)
 				.findAllSortedAsync("timestamp", Sort.DESCENDING);
+	}
+
+	public boolean isTranslationFavourite(String text) {
+		Translation translation = mRealm.where(Translation.class)
+				.equalTo("originalText", text)
+				.findFirst();
+		if(translation == null) {
+			return false;
+		} else {
+			return translation.isFavourite();
+		}
 	}
 }
