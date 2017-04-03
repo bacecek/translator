@@ -71,7 +71,7 @@ public class FavouritesFragment extends Fragment {
 		filterFavourites(editable.toString());
 	}
 
-	private AdapterDataObserver mFavouritesDataObserver = new AdapterDataObserver() {
+	private final AdapterDataObserver mFavouritesDataObserver = new AdapterDataObserver() {
 		@Override
 		public void onChanged() {
 			super.onChanged();
@@ -88,7 +88,7 @@ public class FavouritesFragment extends Fragment {
 		}
 	};
 
-	private OnItemClickListener mOnFavouritesItemClickListener = new OnItemClickListener() {
+	private final OnItemClickListener mOnFavouritesItemClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(Translation translation) {
 			EventBus.getDefault().post(new ClickFavouriteEvent(translation.getOriginalText()));

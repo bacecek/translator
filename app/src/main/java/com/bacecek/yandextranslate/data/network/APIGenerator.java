@@ -27,21 +27,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIGenerator {
 
-	private static Gson sGson = new GsonBuilder()
+	private static final Gson sGson = new GsonBuilder()
 			.registerTypeAdapter(new TypeToken<List<Language>>(){}.getType(), new LangsDeserializer())
 			.registerTypeAdapter(new TypeToken<Translation>(){}.getType(), new TranslateDeserializer())
 			.registerTypeAdapter(new TypeToken<String>(){}.getType(), new DetectLangDeserializer())
 			.create();
 
-	private static Retrofit.Builder sTranslatorRetrofitBuilder = new Builder().
+	private static final Retrofit.Builder sTranslatorRetrofitBuilder = new Builder().
 			baseUrl(BuildConfig.YANDEX_TRANSLATE_API_URL).
 			addConverterFactory(GsonConverterFactory.create(sGson));
-	private static Retrofit.Builder sDictionaryRetrofitBuilder = new Builder().
+	private static final Retrofit.Builder sDictionaryRetrofitBuilder = new Builder().
 			baseUrl(BuildConfig.YANDEX_DICTIONARY_API_URL).
 			addConverterFactory(GsonConverterFactory.create(sGson));
 
-	private static OkHttpClient.Builder sTranslatorOkHttpBuilder = new OkHttpClient.Builder().addInterceptor(new CustomInterceptor(BuildConfig.YANDEX_TRANSLATE_API_KEY));
-	private static OkHttpClient.Builder sDictionaryOkHttpBuilder = new OkHttpClient.Builder().addInterceptor(new CustomInterceptor(BuildConfig.YANDEX_DICTIONARY_API_KEY));
+	private static final OkHttpClient.Builder sTranslatorOkHttpBuilder = new OkHttpClient.Builder().addInterceptor(new CustomInterceptor(BuildConfig.YANDEX_TRANSLATE_API_KEY));
+	private static final OkHttpClient.Builder sDictionaryOkHttpBuilder = new OkHttpClient.Builder().addInterceptor(new CustomInterceptor(BuildConfig.YANDEX_DICTIONARY_API_KEY));
 
 	public static TranslatorAPI createTranslatorService() {
 		OkHttpClient client = sTranslatorOkHttpBuilder.build();
@@ -58,7 +58,7 @@ public class APIGenerator {
 	private static class CustomInterceptor implements Interceptor {
 		private String mKey;
 
-		public CustomInterceptor(String key) {
+		CustomInterceptor(String key) {
 			mKey = key;
 		}
 

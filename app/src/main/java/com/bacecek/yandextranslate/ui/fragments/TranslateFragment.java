@@ -65,7 +65,7 @@ public class TranslateFragment extends Fragment{
 
 	private TranslatorAPI mTranslatorAPI;
 	private DictionaryAPI mDictionaryAPI;
-	private static int DELAY_INPUT = 700;
+	private static final int DELAY_INPUT = 700;
 	private Handler mDelayInputHandler = new Handler(Looper.getMainLooper());
 	private Runnable mDelayInputRunnable;
 	private Call<Translation> mCall;
