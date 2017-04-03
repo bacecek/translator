@@ -28,6 +28,8 @@ import com.bacecek.yandextranslate.data.db.RealmController;
 import com.bacecek.yandextranslate.data.db.entities.Language;
 import com.bacecek.yandextranslate.data.network.APIGenerator;
 import com.bacecek.yandextranslate.data.network.TranslatorAPI;
+import com.bacecek.yandextranslate.ui.events.ClickFavouriteEvent;
+import com.bacecek.yandextranslate.ui.events.TranslateEvent;
 import com.bacecek.yandextranslate.ui.fragments.AboutFragment;
 import com.bacecek.yandextranslate.ui.fragments.FavouritesFragment;
 import com.bacecek.yandextranslate.ui.fragments.SettingsFragment;
@@ -35,6 +37,9 @@ import com.bacecek.yandextranslate.utils.Utils;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import java.util.List;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -212,6 +217,24 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 				super.onBackPressed();
 			}
 		}
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		EventBus.getDefault().register(this);
+	}
+
+	@Override
+	protected void onStop() {
+		EventBus.getDefault().unregister(this);
+		super.onStop();
+	}
+
+	@Subscribe(threadMode = ThreadMode.MAIN)
+	public void onMessageEvent(ClickFavouriteEvent event) {
+		removeFromBackStack();
+		EventBus.getDefault().post(new TranslateEvent(event.text));
 	}
 
 	@Override

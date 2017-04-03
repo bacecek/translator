@@ -29,8 +29,12 @@ import com.bacecek.yandextranslate.data.network.DictionaryAPI;
 import com.bacecek.yandextranslate.data.network.TranslatorAPI;
 import com.bacecek.yandextranslate.ui.adapters.HistoryAdapter;
 import com.bacecek.yandextranslate.ui.adapters.HistoryAdapter.OnItemClickListener;
+import com.bacecek.yandextranslate.ui.events.TranslateEvent;
 import com.bacecek.yandextranslate.utils.HistoryDismissTouchHelper;
 import com.bacecek.yandextranslate.utils.Utils;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -174,6 +178,12 @@ public class TranslateFragment extends Fragment{
 	}
 
 	@Override
+	public void onStart() {
+		super.onStart();
+		EventBus.getDefault().register(this);
+	}
+
+	@Override
 	public void onPause() {
 		super.onPause();
 		saveTranslation();
@@ -181,7 +191,13 @@ public class TranslateFragment extends Fragment{
 
 	@Override
 	public void onStop() {
+		EventBus.getDefault().unregister(this);
 		super.onStop();
 		Utils.hideKeyboard(getActivity());
+	}
+
+	@Subscribe(threadMode = ThreadMode.MAIN)
+	public void onTranslateEvent(TranslateEvent event) {
+		mEditOriginal.setText(event.text);
 	}
 }

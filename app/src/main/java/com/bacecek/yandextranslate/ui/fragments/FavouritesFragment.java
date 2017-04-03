@@ -22,8 +22,12 @@ import butterknife.OnTextChanged;
 import butterknife.OnTextChanged.Callback;
 import com.bacecek.yandextranslate.R;
 import com.bacecek.yandextranslate.data.db.RealmController;
+import com.bacecek.yandextranslate.data.db.entities.Translation;
 import com.bacecek.yandextranslate.ui.adapters.FavouritesAdapter;
+import com.bacecek.yandextranslate.ui.adapters.FavouritesAdapter.OnItemClickListener;
+import com.bacecek.yandextranslate.ui.events.ClickFavouriteEvent;
 import com.bacecek.yandextranslate.utils.FavouriteDismissHelper;
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by Denis Buzmakov on 17/03/2017.
@@ -61,8 +65,6 @@ public class FavouritesFragment extends Fragment {
 		filterFavourites(editable.toString());
 	}
 
-	private FavouritesAdapter mFavouritesAdapter;
-
 	private AdapterDataObserver mFavouritesDataObserver = new AdapterDataObserver() {
 		@Override
 		public void onChanged() {
@@ -79,6 +81,15 @@ public class FavouritesFragment extends Fragment {
 			}
 		}
 	};
+
+	private OnItemClickListener mOnFavouritesItemClickListener = new OnItemClickListener() {
+		@Override
+		public void onItemClick(Translation translation) {
+			EventBus.getDefault().post(new ClickFavouriteEvent(translation.getOriginalText()));
+		}
+	};
+
+	private FavouritesAdapter mFavouritesAdapter;
 
 	@Nullable
 	@Override
@@ -99,7 +110,7 @@ public class FavouritesFragment extends Fragment {
 	}
 
 	private void initUI() {
-		mFavouritesAdapter = new FavouritesAdapter(getActivity(), RealmController.getInstance().getFavourites(), null);
+		mFavouritesAdapter = new FavouritesAdapter(getActivity(), RealmController.getInstance().getFavourites(), mOnFavouritesItemClickListener);
 		mFavouritesAdapter.registerAdapterDataObserver(mFavouritesDataObserver);
 		mFavouritesDataObserver.onChanged();
 		mRecyclerFavourites.setAdapter(mFavouritesAdapter);
