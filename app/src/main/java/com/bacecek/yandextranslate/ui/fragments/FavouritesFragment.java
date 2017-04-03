@@ -100,6 +100,8 @@ public class FavouritesFragment extends Fragment {
 
 	private void initUI() {
 		mFavouritesAdapter = new FavouritesAdapter(getActivity(), RealmController.getInstance().getFavourites(), null);
+		mFavouritesAdapter.registerAdapterDataObserver(mFavouritesDataObserver);
+		mFavouritesDataObserver.onChanged();
 		mRecyclerFavourites.setAdapter(mFavouritesAdapter);
 		mRecyclerFavourites.setHasFixedSize(true);
 		mRecyclerFavourites.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -110,7 +112,6 @@ public class FavouritesFragment extends Fragment {
 		ItemTouchHelper helper = new ItemTouchHelper(callback);
 		helper.attachToRecyclerView(mRecyclerFavourites);
 
-		mFavouritesAdapter.registerAdapterDataObserver(mFavouritesDataObserver);
 	}
 
 	private void filterFavourites(String search) {
