@@ -13,7 +13,10 @@ import com.bacecek.yandextranslate.R;
 public class BaseFragment extends Fragment {
 
 	public void setTitle(View parent, String text) {
-		((TextView)parent.findViewById(R.id.txt_toolbar_title)).setText(text);
+		TextView txtToolbatTitle = (TextView)parent.findViewById(R.id.txt_toolbar_title);
+		if(txtToolbatTitle != null) {
+			txtToolbatTitle.setText(text);
+		}
 	}
 
 }
