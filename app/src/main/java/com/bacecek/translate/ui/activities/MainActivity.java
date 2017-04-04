@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.bacecek.translate.BuildConfig;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.data.db.entities.Language;
@@ -44,6 +45,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import ru.yandex.speechkit.SpeechKit;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements OnNavigationItemSelectedListener {
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 		ButterKnife.bind(this);
 		initUI(savedInstanceState);
 		loadLanguages();
+		SpeechKit.getInstance().configure(getApplicationContext(), BuildConfig.YANDEX_SPEECHKIT_API_KEY);
 	}
 
 	private void initUI(Bundle savedInstanceState) {

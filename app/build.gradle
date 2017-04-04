@@ -22,6 +22,10 @@ android {
                 "\"https://dictionary.yandex.net/api/v1/dicservice.json/\""
         buildConfigField "String", "YANDEX_SPEECHKIT_API_KEY",
                 "\"3e58b400-4dc8-4747-b916-e4c378f36051\""
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86"
+        }
     }
     buildTypes {
         release {

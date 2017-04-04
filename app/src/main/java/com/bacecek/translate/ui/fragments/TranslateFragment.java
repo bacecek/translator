@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -30,14 +31,19 @@ import com.bacecek.translate.ui.adapters.HistoryAdapter;
 import com.bacecek.translate.ui.adapters.HistoryAdapter.OnItemClickListener;
 import com.bacecek.translate.ui.events.ClickMenuEvent;
 import com.bacecek.translate.ui.events.TranslateEvent;
+import com.bacecek.translate.ui.views.ListenButton;
+import com.bacecek.translate.utils.Consts;
 import com.bacecek.translate.utils.HistoryDismissTouchHelper;
-import com.bacecek.translate.utils.Utils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import ru.yandex.speechkit.Error;
+import ru.yandex.speechkit.Synthesis;
+import ru.yandex.speechkit.Vocalizer;
+import ru.yandex.speechkit.VocalizerListener;
 
 /**
  * Created by Denis Buzmakov on 17/03/2017.
@@ -51,8 +57,10 @@ public class TranslateFragment extends BaseFragment{
 	ImageButton mBtnClear;
 	@BindView(R.id.btn_mic)
 	ImageButton mBtnMic;
-	@BindView(R.id.btn_listen)
-	ImageButton mBtnListen;
+	@BindView(R.id.btn_listen_original)
+	ListenButton mBtnListenOriginal;
+	@BindView(R.id.btn_listen_translated)
+	ListenButton mBtnListenTranslated;
 	@BindView(R.id.btn_favourite)
 	ImageButton mBtnFavourite;
 	@BindView(R.id.list_history)
@@ -71,6 +79,7 @@ public class TranslateFragment extends BaseFragment{
 	private Runnable mDelayInputRunnable;
 	private Call<Translation> mCall;
 	private boolean isSavingEnabled = false;
+	private Vocalizer mSpeechVocalizer;
 
 	@OnClick(R.id.btn_favourite)
 	void onClickFavourite(View view) {
@@ -90,6 +99,38 @@ public class TranslateFragment extends BaseFragment{
 
 	}
 
+	@OnClick(R.id.btn_listen_original)
+	void onClickListenOriginalText(View v) {
+		try {
+			int state = ((ListenButton) v).getState();
+			switch (state) {
+				case ListenButton.STATE_PLAY:
+					startListen(getOriginalText(), "ru");
+					break;
+				case ListenButton.STATE_STOP:
+					stopListen();
+			}
+		} catch (ClassCastException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@OnClick(R.id.btn_listen_translated)
+	void onClickListenTranslatedText(View v) {
+		try {
+			int state = ((ListenButton) v).getState();
+			switch (state) {
+				case ListenButton.STATE_PLAY:
+					startListen(mTxtTranslated.getText().toString(), "en");
+					break;
+				case ListenButton.STATE_STOP:
+					stopListen();
+			}
+		} catch (ClassCastException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@OnClick(R.id.btn_menu)
 	void onClickMenu() {
 		EventBus.getDefault().post(new ClickMenuEvent());
@@ -97,15 +138,16 @@ public class TranslateFragment extends BaseFragment{
 
 	@OnTextChanged(value = R.id.edit_original_text, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
 	void onTextChanged(Editable s) {
+		mBtnListenOriginal.setEnabled(s.toString().trim().length() <= Consts.MAX_LISTEN_SYMBOLS);
 		isSavingEnabled = false;
 		if(s.toString().trim().length() == 0) {
 			mBtnClear.setVisibility(View.INVISIBLE);
-			mBtnListen.setVisibility(View.INVISIBLE);
+			mBtnListenOriginal.setVisibility(View.INVISIBLE);
 			mViewTranslated.setVisibility(View.INVISIBLE);
 			mRecyclerHistory.setVisibility(View.VISIBLE);
 		} else {
 			mBtnClear.setVisibility(View.VISIBLE);
-			mBtnListen.setVisibility(View.VISIBLE);
+			mBtnListenOriginal.setVisibility(View.VISIBLE);
 			mRecyclerHistory.setVisibility(View.GONE);
 		}
 
@@ -126,6 +168,31 @@ public class TranslateFragment extends BaseFragment{
 		public void onItemClick(Translation translation) {
 			mEditOriginal.setText(translation.getOriginalText());
 			mEditOriginal.setSelection(translation.getOriginalText().length());
+		}
+	};
+
+	private final VocalizerListener mSpeechVocalizerListener = new VocalizerListener() {
+		@Override
+		public void onSynthesisBegin(Vocalizer vocalizer) {
+			mBtnListenOriginal.setState(ListenButton.STATE_INIT);
+		}
+
+		@Override
+		public void onSynthesisDone(Vocalizer vocalizer, Synthesis synthesis) {}
+
+		@Override
+		public void onPlayingBegin(Vocalizer vocalizer) {
+			mBtnListenOriginal.setState(ListenButton.STATE_STOP);
+		}
+
+		@Override
+		public void onPlayingDone(Vocalizer vocalizer) {
+			mBtnListenOriginal.setState(ListenButton.STATE_PLAY);
+		}
+
+		@Override
+		public void onVocalizerError(Vocalizer vocalizer, Error error) {
+			Toast.makeText(getActivity(), error.getString(), Toast.LENGTH_LONG).show();
 		}
 	};
 
@@ -168,6 +235,7 @@ public class TranslateFragment extends BaseFragment{
 					Response<Translation> response) {
 				mViewTranslated.setVisibility(View.VISIBLE);
 				mTxtTranslated.setText(response.body().getTranslatedText());
+				mBtnListenTranslated.setEnabled(mTxtTranslated.getText().length() <= Consts.MAX_LISTEN_SYMBOLS);
 				mBtnFavourite.setSelected(RealmController.getInstance().isTranslationFavourite(originalText));
 				isSavingEnabled = true;
 			}
@@ -199,6 +267,25 @@ public class TranslateFragment extends BaseFragment{
 		}
 	}
 
+	private void startListen(String text, String lang) {
+		resetVocalizer();
+		mSpeechVocalizer = Vocalizer.createVocalizer(lang, text, true);
+		mSpeechVocalizer.setListener(mSpeechVocalizerListener);
+		mSpeechVocalizer.start();
+	}
+
+	private void resetVocalizer() {
+		if(mSpeechVocalizer != null) {
+			mSpeechVocalizer.cancel();
+			mSpeechVocalizer = null;
+		}
+	}
+
+	private void stopListen() {
+		resetVocalizer();
+		mBtnListenOriginal.setState(ListenButton.STATE_PLAY);
+	}
+
 	private String getOriginalText() {
 		return mEditOriginal.getText().toString().trim();
 	}
@@ -219,7 +306,6 @@ public class TranslateFragment extends BaseFragment{
 	public void onStop() {
 		EventBus.getDefault().unregister(this);
 		super.onStop();
-		Utils.hideKeyboard(getActivity());
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)

@@ -1,42 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
+	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	android:id="@+id/view_play"
-	android:background="?attr/selectableItemBackground"
-	android:orientation="horizontal"
-	android:padding="16dp">
+	style="@style/Widget.AppCompat.ActionButton"
+	android:paddingStart="0dp"
+	android:paddingEnd="0dp">
 
-	<FrameLayout
-		android:layout_width="16dp"
-		android:layout_height="16dp">
+	<ImageView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:id="@+id/img_listen"
+		android:src="@drawable/img_listen_selector"
+		android:layout_gravity="center"/>
 
-		<ImageView
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:id="@+id/icon"
-			android:src="@drawable/ic_play"
-			android:tint="@android:color/black"/>
-
-		<ProgressBar
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:id="@+id/view_progress"
-			android:visibility="gone"
-			android:indeterminate="true"/>
-
-	</FrameLayout>
-
-	<TextView
+	<ImageView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:id="@+id/txt_lang"
-		android:textSize="13sp"
-		android:textColor="@android:color/black"
-		android:maxLines="1"
-		android:ellipsize="end"
-		android:textAllCaps="true"
-		android:layout_marginLeft="5dp"/>
+		android:id="@+id/img_stop"
+		android:src="@drawable/ic_stop"
+		android:visibility="gone"
+		android:layout_gravity="center"/>
 
-</LinearLayout>
+	<ProgressBar
+		android:layout_width="24dp"
+		android:layout_height="24dp"
+		android:id="@+id/view_progress"
+		android:indeterminate="true"
+		android:layout_gravity="center"
+		android:visibility="gone"/>
+
+</FrameLayout>

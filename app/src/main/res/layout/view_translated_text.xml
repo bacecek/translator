@@ -34,12 +34,10 @@
 					android:src="@drawable/button_favourite_selector"
 					style="@style/Widget.AppCompat.ActionButton"/>
 
-				<ImageButton
+				<com.bacecek.translate.ui.views.ListenButton
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:id="@+id/btn_listen"
-					android:src="@drawable/ic_play"
-					style="@style/Widget.AppCompat.ActionButton"
+					android:id="@+id/btn_listen_translated"
 					android:tint="@android:color/black"/>
 
 				<ImageButton

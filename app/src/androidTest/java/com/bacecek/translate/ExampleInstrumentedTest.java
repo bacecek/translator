@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
 		// Context of the app under test.
 		Context appContext = InstrumentationRegistry.getTargetContext();
 
-		assertEquals("com.bacecek.yandextranslate", appContext.getPackageName());
+		assertEquals("com.bacecek.translate", appContext.getPackageName());
 	}
 }
