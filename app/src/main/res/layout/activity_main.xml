@@ -16,7 +16,7 @@
 		<fragment
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:name="com.bacecek.yandextranslate.ui.fragments.TranslateFragment"
+			android:name="com.bacecek.translate.ui.fragments.TranslateFragment"
 			android:id="@+id/fragment_translate"/>
 
 		<FrameLayout
