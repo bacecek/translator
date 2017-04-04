@@ -1,9 +1,13 @@
 package com.bacecek.translate.ui.fragments;
 
+import android.Manifest.permission;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -41,9 +45,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import ru.yandex.speechkit.Error;
+import ru.yandex.speechkit.Recognizer.Model;
 import ru.yandex.speechkit.Synthesis;
 import ru.yandex.speechkit.Vocalizer;
 import ru.yandex.speechkit.VocalizerListener;
+import ru.yandex.speechkit.gui.RecognizerActivity;
 
 /**
  * Created by Denis Buzmakov on 17/03/2017.
@@ -51,6 +57,9 @@ import ru.yandex.speechkit.VocalizerListener;
  */
 
 public class TranslateFragment extends BaseFragment{
+	private static final int DELAY_INPUT = 700;
+	private static final int RECOGNITION_REQUEST_CODE = 777;
+
 	@BindView(R.id.edit_original_text)
 	EditText mEditOriginal;
 	@BindView(R.id.btn_clear)
@@ -74,7 +83,6 @@ public class TranslateFragment extends BaseFragment{
 
 	private TranslatorAPI mTranslatorAPI;
 	private DictionaryAPI mDictionaryAPI;
-	private static final int DELAY_INPUT = 700;
 	private Handler mDelayInputHandler = new Handler(Looper.getMainLooper());
 	private Runnable mDelayInputRunnable;
 	private Call<Translation> mCall;
@@ -85,7 +93,7 @@ public class TranslateFragment extends BaseFragment{
 	void onClickFavourite(View view) {
 		boolean selected = view.isSelected();
 		saveTranslation(true, !selected);
-		view.setSelected(!selected);
+		view.setActivated(!selected);
 	}
 
 	@OnClick(R.id.btn_clear)
@@ -96,7 +104,10 @@ public class TranslateFragment extends BaseFragment{
 
 	@OnClick(R.id.btn_mic)
 	void onClickMic() {
-
+		Intent intent = new Intent(getActivity(), RecognizerActivity.class);
+		intent.putExtra(RecognizerActivity.EXTRA_MODEL, Model.QUERIES);
+		intent.putExtra(RecognizerActivity.EXTRA_LANGUAGE, "ru");
+		startActivityForResult(intent, RECOGNITION_REQUEST_CODE);
 	}
 
 	@OnClick(R.id.btn_listen_original)
@@ -236,7 +247,7 @@ public class TranslateFragment extends BaseFragment{
 				mViewTranslated.setVisibility(View.VISIBLE);
 				mTxtTranslated.setText(response.body().getTranslatedText());
 				mBtnListenTranslated.setEnabled(mTxtTranslated.getText().length() <= Consts.MAX_LISTEN_SYMBOLS);
-				mBtnFavourite.setSelected(RealmController.getInstance().isTranslationFavourite(originalText));
+				mBtnFavourite.setActivated(RealmController.getInstance().isTranslationFavourite(originalText));
 				isSavingEnabled = true;
 			}
 
@@ -291,6 +302,16 @@ public class TranslateFragment extends BaseFragment{
 	}
 
 	@Override
+	public void onResume() {
+		super.onResume();
+
+		boolean isPermissionRecordAudioGranted = ContextCompat.checkSelfPermission(getActivity(), permission.RECORD_AUDIO)
+				== PackageManager.PERMISSION_GRANTED;
+
+		mBtnMic.setActivated(isPermissionRecordAudioGranted);
+	}
+
+	@Override
 	public void onStart() {
 		super.onStart();
 		EventBus.getDefault().register(this);
@@ -306,6 +327,20 @@ public class TranslateFragment extends BaseFragment{
 	public void onStop() {
 		EventBus.getDefault().unregister(this);
 		super.onStop();
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == RECOGNITION_REQUEST_CODE) {
+			if(resultCode == RecognizerActivity.RESULT_OK && data != null) {
+				String result = data.getStringExtra(RecognizerActivity.EXTRA_RESULT);
+				mEditOriginal.append(result);
+			} else if(resultCode == RecognizerActivity.RESULT_ERROR) {
+				String error = ((Error) data.getSerializableExtra(RecognizerActivity.EXTRA_ERROR)).getString();
+				Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
+			}
+		}
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)

@@ -63,7 +63,7 @@ public class HistoryAdapter extends RealmRecyclerViewAdapter<Translation, Histor
 		void bind(final Translation translation, final OnItemClickListener listener) {
 			mTxtOriginal.setText(translation.getOriginalText());
 			mTxtTranslated.setText(translation.getTranslatedText());
-			mBtnFavourite.setSelected(translation.isFavourite());
+			mBtnFavourite.setActivated(translation.isFavourite());
 			if(listener != null) {
 				itemView.setOnClickListener(new OnClickListener() {
 					@Override
