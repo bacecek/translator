@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onClickFavouriteEvent(ClickFavouriteEvent event) {
-		removeFromBackStack();
+		onNavigationItemSelected(mNavigationView.getMenu().getItem(0));
 		EventBus.getDefault().post(new TranslateEvent(event.text));
 	}
 
