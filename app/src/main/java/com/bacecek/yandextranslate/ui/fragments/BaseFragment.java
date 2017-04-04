@@ -13,9 +13,9 @@ import com.bacecek.yandextranslate.R;
 public class BaseFragment extends Fragment {
 
 	public void setTitle(View parent, String text) {
-		TextView txtToolbatTitle = (TextView)parent.findViewById(R.id.txt_toolbar_title);
-		if(txtToolbatTitle != null) {
-			txtToolbatTitle.setText(text);
+		TextView txtToolbarTitle = (TextView)parent.findViewById(R.id.txt_toolbar_title);
+		if(txtToolbarTitle != null) {
+			txtToolbarTitle.setText(text);
 		}
 	}
 
