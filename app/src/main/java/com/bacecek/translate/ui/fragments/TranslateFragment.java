@@ -27,6 +27,7 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.db.RealmController;
+import com.bacecek.translate.data.db.entities.DictionaryItem;
 import com.bacecek.translate.data.db.entities.Translation;
 import com.bacecek.translate.data.network.APIGenerator;
 import com.bacecek.translate.data.network.DictionaryAPI;
@@ -38,6 +39,7 @@ import com.bacecek.translate.ui.events.TranslateEvent;
 import com.bacecek.translate.ui.views.ListenButton;
 import com.bacecek.translate.utils.Consts;
 import com.bacecek.translate.utils.HistoryDismissTouchHelper;
+import java.util.List;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -50,6 +52,7 @@ import ru.yandex.speechkit.Synthesis;
 import ru.yandex.speechkit.Vocalizer;
 import ru.yandex.speechkit.VocalizerListener;
 import ru.yandex.speechkit.gui.RecognizerActivity;
+import timber.log.Timber;
 
 /**
  * Created by Denis Buzmakov on 17/03/2017.
@@ -85,7 +88,8 @@ public class TranslateFragment extends BaseFragment{
 	private DictionaryAPI mDictionaryAPI;
 	private Handler mDelayInputHandler = new Handler(Looper.getMainLooper());
 	private Runnable mDelayInputRunnable;
-	private Call<Translation> mCall;
+	private Call<Translation> mTranslationCall;
+	private Call<List<DictionaryItem>> mDictionaryCall;
 	private boolean isSavingEnabled = false;
 	private Vocalizer mSpeechVocalizer;
 
@@ -238,9 +242,10 @@ public class TranslateFragment extends BaseFragment{
 
 	private void loadTranslation() {
 		final String originalText = getOriginalText();
-		mCall = mTranslatorAPI.translate(originalText, "en");
+		mTranslationCall = mTranslatorAPI.translate(originalText, "en");
+		mDictionaryCall = mDictionaryAPI.translate(originalText, "ru-en");
 		isSavingEnabled = false;
-		mCall.enqueue(new Callback<Translation>() {
+		mTranslationCall.enqueue(new Callback<Translation>() {
 			@Override
 			public void onResponse(Call<Translation> call,
 					Response<Translation> response) {
@@ -256,6 +261,18 @@ public class TranslateFragment extends BaseFragment{
 
 			}
 		});
+		mDictionaryCall.enqueue(new Callback<List<DictionaryItem>>() {
+			@Override
+			public void onResponse(Call<List<DictionaryItem>> call,
+					Response<List<DictionaryItem>> response) {
+				Timber.d(response.body().get(0).getText());
+			}
+
+			@Override
+			public void onFailure(Call<List<DictionaryItem>> call, Throwable t) {
+				Timber.d(t.getMessage());
+			}
+		});
 	}
 
 	private void saveTranslation() {
@@ -263,8 +280,9 @@ public class TranslateFragment extends BaseFragment{
 	}
 
 	private void saveTranslation(boolean changeFavourite, boolean isFavourite) {
-		if(getOriginalText().length() > 0 && mCall != null && isSavingEnabled) {
-			mCall.cancel();
+		if(getOriginalText().length() > 0 && mTranslationCall != null && mDictionaryCall != null&& isSavingEnabled) {
+			mTranslationCall.cancel();
+			mDictionaryCall.cancel();
 			Translation translation = new Translation();
 			translation.setOriginalText(getOriginalText());
 			translation.setTranslatedText(mTxtTranslated.getText().toString());
