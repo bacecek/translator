@@ -1,5 +1,7 @@
 package com.bacecek.translate.data.network;
 
+import com.bacecek.translate.data.db.entities.DictionaryItem;
+import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -11,8 +13,8 @@ import retrofit2.http.Query;
 
 public interface DictionaryAPI {
 	@GET("lookup")
-	Call<String> translate(
+	Call<List<DictionaryItem>> translate(
 			@Query("text") String text,
-			@Query("lang") String lang
+			@Query("lang") String langs
 	);
 }
