@@ -1,9 +1,11 @@
 package com.bacecek.translate.data.network;
 
 import com.bacecek.translate.BuildConfig;
+import com.bacecek.translate.data.db.entities.DictionaryItem;
 import com.bacecek.translate.data.db.entities.Language;
 import com.bacecek.translate.data.db.entities.Translation;
 import com.bacecek.translate.data.network.deserializers.DetectLangDeserializer;
+import com.bacecek.translate.data.network.deserializers.DictionaryDeserializer;
 import com.bacecek.translate.data.network.deserializers.LangsDeserializer;
 import com.bacecek.translate.data.network.deserializers.TranslateDeserializer;
 import com.google.gson.Gson;
@@ -31,6 +33,7 @@ public class APIGenerator {
 			.registerTypeAdapter(new TypeToken<List<Language>>(){}.getType(), new LangsDeserializer())
 			.registerTypeAdapter(new TypeToken<Translation>(){}.getType(), new TranslateDeserializer())
 			.registerTypeAdapter(new TypeToken<String>(){}.getType(), new DetectLangDeserializer())
+			.registerTypeAdapter(new TypeToken<List<DictionaryItem>>(){}.getType(), new DictionaryDeserializer())
 			.create();
 
 	private static final Retrofit.Builder sTranslatorRetrofitBuilder = new Builder().
