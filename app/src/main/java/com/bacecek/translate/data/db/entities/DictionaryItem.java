@@ -1,40 +1,66 @@
 package com.bacecek.translate.data.db.entities;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by Denis Buzmakov on 04/04/2017.
+ * Created by Denis Buzmakov on 05/04/2017.
  * <buzmakov.da@gmail.com>
  */
 
-public class DictionaryItem extends DictionaryWord{
-	private ArrayList<DictionaryWord> synonyms;
-	private ArrayList<DictionaryWord> means;
-	private ArrayList<DictionaryExample> examples;
+public class DictionaryItem {
+	private String text;
+	private String pos;
+	private String ts;
+	private String gen;
+	private String anm;
+	private List<DictionaryTranslation> translations;
 
-	public ArrayList<DictionaryWord> getSynonyms() {
-		return synonyms;
+	public String getText() {
+		return text;
 	}
 
-	public void setSynonyms(
-			ArrayList<DictionaryWord> synonyms) {
-		this.synonyms = synonyms;
+	public void setText(String text) {
+		this.text = text;
 	}
 
-	public ArrayList<DictionaryWord> getMeans() {
-		return means;
+	public String getPos() {
+		return pos;
 	}
 
-	public void setMeans(ArrayList<DictionaryWord> means) {
-		this.means = means;
+	public void setPos(String pos) {
+		this.pos = pos;
 	}
 
-	public ArrayList<DictionaryExample> getExamples() {
-		return examples;
+	public String getTs() {
+		return ts;
 	}
 
-	public void setExamples(
-			ArrayList<DictionaryExample> examples) {
-		this.examples = examples;
+	public void setTs(String ts) {
+		this.ts = ts;
+	}
+
+	public String getGen() {
+		return gen;
+	}
+
+	public void setGen(String gen) {
+		this.gen = gen;
+	}
+
+	public String getAnm() {
+		return anm;
+	}
+
+	public void setAnm(String anm) {
+		this.anm = anm;
+	}
+
+	public List<DictionaryTranslation> getTranslations() {
+		return translations;
+	}
+
+	public void setTranslations(
+			List<DictionaryTranslation> translations) {
+		this.translations = translations;
 	}
 }
