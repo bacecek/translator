@@ -6,11 +6,20 @@ package com.bacecek.translate.data.entities;
  */
 
 public class DictionaryExample extends DictionaryItem {
+	private String text;
 	private String[] translations;
 
 	public DictionaryExample(String text, String[] translations) {
-		super(text);
+		this.text = text;
 		this.translations = translations;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
 	}
 
 	public String[] getTranslations() {

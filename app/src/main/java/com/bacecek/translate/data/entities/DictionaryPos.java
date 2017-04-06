@@ -6,8 +6,13 @@ package com.bacecek.translate.data.entities;
  */
 
 public class DictionaryPos extends DictionaryItem{
+	private String text;
 
 	public DictionaryPos(String text) {
-		super(text);
+		this.text = text;
+	}
+
+	public String getText() {
+		return text;
 	}
 }

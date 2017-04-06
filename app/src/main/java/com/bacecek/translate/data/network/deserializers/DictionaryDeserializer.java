@@ -2,9 +2,11 @@ package com.bacecek.translate.data.network.deserializers;
 
 import com.bacecek.translate.data.entities.DictionaryExample;
 import com.bacecek.translate.data.entities.DictionaryItem;
-import com.bacecek.translate.data.entities.DictionaryMean;
+import com.bacecek.translate.data.entities.DictionaryMeanList;
+import com.bacecek.translate.data.entities.DictionaryMeanList.DictionaryMean;
 import com.bacecek.translate.data.entities.DictionaryPos;
-import com.bacecek.translate.data.entities.DictionarySynonym;
+import com.bacecek.translate.data.entities.DictionarySynonymList;
+import com.bacecek.translate.data.entities.DictionarySynonymList.DictionarySynonym;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -21,9 +23,6 @@ import java.util.List;
  */
 
 public class DictionaryDeserializer implements JsonDeserializer<List<DictionaryItem>> {
-	private final static String JSON_SYNONYM = "syn";
-	private final static String JSON_MEAN = "mean";
-	private final static String JSON_EXAMPLE = "ex";
 
 	@Override
 	public List<DictionaryItem> deserialize(JsonElement json, Type typeOfT,
@@ -46,35 +45,40 @@ public class DictionaryDeserializer implements JsonDeserializer<List<DictionaryI
 				JsonArray tr = obj.getAsJsonArray("tr");
 				for(JsonElement trElement : tr) {
 					JsonObject trObj = trElement.getAsJsonObject();
-					items.add(parseSynonym(trObj));
 
-					parseArray(trObj, JSON_SYNONYM, items);
-					parseArray(trObj, JSON_MEAN, items);
-					parseArray(trObj, JSON_EXAMPLE, items);
+					items.add(parseSynonyms(trObj));
+
+
+					if(trObj.has("mean")) {
+						items.add(parseMeans(trObj));
+					}
+
+					if(trObj.has("ex")) {
+						JsonArray exs = trObj.getAsJsonArray("ex");
+						for(JsonElement exElement : exs) {
+							JsonObject exObj = exElement.getAsJsonObject();
+							items.add(parseExample(exObj));
+						}
+					}
 				}
 			}
 		}
 		return items;
 	}
 
-	private void parseArray(JsonObject obj, String field, ArrayList<DictionaryItem> items) {
-		if (obj.has(field)) {
-			JsonArray array = obj.getAsJsonArray(field);
+	private DictionarySynonymList parseSynonyms(JsonObject obj) {
+		ArrayList<DictionarySynonym> synonyms = new ArrayList<DictionarySynonym>();
+		synonyms.add(parseSynonym(obj));
+
+		if(obj.has("syn")) {
+			JsonArray array = obj.getAsJsonArray("syn");
 			for(JsonElement element : array) {
-				JsonObject arrayObj = element.getAsJsonObject();
-				switch (field) {
-					case JSON_EXAMPLE:
-						items.add(parseExample(arrayObj));
-						break;
-					case JSON_MEAN:
-						items.add(parseMean(arrayObj));
-						break;
-					case JSON_SYNONYM:
-						items.add(parseSynonym(arrayObj));
-						break;
-				}
+				JsonObject synObj = element.getAsJsonObject();
+				synonyms.add(parseSynonym(synObj));
 			}
 		}
+
+		return new DictionarySynonymList(synonyms);
 	}
 
 	private DictionarySynonym parseSynonym(JsonObject obj) {
@@ -89,6 +93,17 @@ public class DictionaryDeserializer implements JsonDeserializer<List<DictionaryI
 			gen = obj.get("gen").getAsString();
 		}
 		return new DictionarySynonym(text, pos, gen);
+	}
+
+	private DictionaryMeanList parseMeans(JsonObject obj) {
+		ArrayList<DictionaryMean> means = new ArrayList<DictionaryMean>();
+		JsonArray array = obj.getAsJsonArray("mean");
+		for(JsonElement element : array) {
+			JsonObject meanObj = element.getAsJsonObject();
+			means.add(parseMean(meanObj));
+		}
+
+		return new DictionaryMeanList(means);
 	}
 
 	private DictionaryMean parseMean(JsonObject obj) {

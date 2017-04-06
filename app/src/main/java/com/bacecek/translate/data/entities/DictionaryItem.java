@@ -5,18 +5,4 @@ package com.bacecek.translate.data.entities;
  * <buzmakov.da@gmail.com>
  */
 
-public class DictionaryItem {
-	private String text;
-
-	public DictionaryItem(String text) {
-		this.text = text;
-	}
-
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
-	}
-}
+public class DictionaryItem {}
