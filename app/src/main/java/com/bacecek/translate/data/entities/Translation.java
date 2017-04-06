@@ -17,7 +17,8 @@ public class Translation extends RealmObject{
 	private String targetLang;
 	private boolean isFavourite;
 	private boolean showInHistory;
-	private long timestamp;
+	private long historyTimestamp;
+	private long favouriteTimestamp;
 
 	public String getOriginalText() {
 		return originalText;
@@ -67,11 +68,19 @@ public class Translation extends RealmObject{
 		this.showInHistory = showInHistory;
 	}
 
-	public long getTimestamp() {
-		return timestamp;
+	public long getHistoryTimestamp() {
+		return historyTimestamp;
 	}
 
-	public void setTimestamp(long timestamp) {
-		this.timestamp = timestamp;
+	public void setHistoryTimestamp(long historyTimestamp) {
+		this.historyTimestamp = historyTimestamp;
+	}
+
+	public long getFavouriteTimestamp() {
+		return favouriteTimestamp;
+	}
+
+	public void setFavouriteTimestamp(long favouriteTimestamp) {
+		this.favouriteTimestamp = favouriteTimestamp;
 	}
 }

@@ -55,6 +55,7 @@ public class RealmController {
 		} else {
 			mRealm.beginTransaction();
 			translation.setFavourite(!translation.isFavourite());
+			translation.setFavouriteTimestamp(System.currentTimeMillis());
 			mRealm.commitTransaction();
 		}
 	}
@@ -79,7 +80,7 @@ public class RealmController {
 		translation.setTranslatedText(translatedText);
 		translation.setOriginalLang(originalLang);
 		translation.setTargetLang(targetLang);
-		translation.setTimestamp(System.currentTimeMillis() / 1000);
+		translation.setHistoryTimestamp(System.currentTimeMillis());
 		translation.setShowInHistory(true);
 		mRealm.copyToRealmOrUpdate(translation);
 		mRealm.commitTransaction();
@@ -113,19 +114,19 @@ public class RealmController {
 					.contains("translatedText", search)
 				.endGroup()
 				.equalTo("isFavourite", true)
-				.findAllSorted("timestamp", Sort.DESCENDING);
+				.findAllSorted("favouriteTimestamp", Sort.DESCENDING);
 	}
 
 	public RealmResults<Translation> getFavourites() {
 		return mRealm.where(Translation.class)
 				.equalTo("isFavourite", true)
-				.findAllSorted("timestamp", Sort.DESCENDING);
+				.findAllSorted("favouriteTimestamp", Sort.DESCENDING);
 	}
 
 	public RealmResults<Translation> getHistory() {
 		return mRealm.where(Translation.class)
 				.equalTo("showInHistory", true)
-				.findAllSortedAsync("timestamp", Sort.DESCENDING);
+				.findAllSortedAsync("historyTimestamp", Sort.DESCENDING);
 	}
 
 	public boolean isTranslationFavourite(String text) {
