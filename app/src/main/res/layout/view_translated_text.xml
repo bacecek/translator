@@ -14,7 +14,8 @@
 		app:cardElevation="2dp"
 		app:cardCornerRadius="3dp"
 		android:layout_marginLeft="8dp"
-		android:layout_marginRight="8dp">
+		android:layout_marginRight="8dp"
+		android:layout_marginBottom="12dp">
 
 		<RelativeLayout
 			android:layout_width="wrap_content"
@@ -72,12 +73,12 @@
 		app:cardCornerRadius="3dp"
 		android:layout_marginLeft="8dp"
 		android:layout_marginRight="8dp"
-		android:layout_marginTop="12dp"
 		android:layout_marginBottom="12dp">
 
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:orientation="vertical"
 			android:padding="16dp">
 
 			<TextView

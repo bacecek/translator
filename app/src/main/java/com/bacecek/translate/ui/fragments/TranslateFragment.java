@@ -32,6 +32,8 @@ import com.bacecek.translate.data.entities.Translation;
 import com.bacecek.translate.data.network.APIGenerator;
 import com.bacecek.translate.data.network.DictionaryAPI;
 import com.bacecek.translate.data.network.TranslatorAPI;
+import com.bacecek.translate.ui.adapters.DictionaryAdapter;
+import com.bacecek.translate.ui.adapters.DictionaryAdapter.OnWordClickListener;
 import com.bacecek.translate.ui.adapters.HistoryAdapter;
 import com.bacecek.translate.ui.adapters.HistoryAdapter.OnItemClickListener;
 import com.bacecek.translate.ui.events.ClickMenuEvent;
@@ -39,6 +41,7 @@ import com.bacecek.translate.ui.events.TranslateEvent;
 import com.bacecek.translate.ui.views.ListenButton;
 import com.bacecek.translate.utils.Consts;
 import com.bacecek.translate.utils.HistoryDismissTouchHelper;
+import com.bacecek.translate.utils.SpeechVocalizeListener;
 import java.util.List;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -48,9 +51,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import ru.yandex.speechkit.Error;
 import ru.yandex.speechkit.Recognizer.Model;
-import ru.yandex.speechkit.Synthesis;
 import ru.yandex.speechkit.Vocalizer;
-import ru.yandex.speechkit.VocalizerListener;
 import ru.yandex.speechkit.gui.RecognizerActivity;
 import timber.log.Timber;
 
@@ -77,8 +78,12 @@ public class TranslateFragment extends BaseFragment{
 	ImageButton mBtnFavourite;
 	@BindView(R.id.list_history)
 	RecyclerView mRecyclerHistory;
+	@BindView(R.id.list_dictionary)
+	RecyclerView mRecyclerDictionary;
 	@BindView(R.id.view_translated_text)
 	View mViewTranslated;
+	@BindView(R.id.view_dictionary)
+	View mViewDictionary;
 	@BindView(R.id.txt_translated)
 	TextView mTxtTranslated;
 	@BindView(R.id.scroll_view)
@@ -95,9 +100,9 @@ public class TranslateFragment extends BaseFragment{
 
 	@OnClick(R.id.btn_favourite)
 	void onClickFavourite(View view) {
-		boolean selected = view.isSelected();
-		saveTranslation(true, !selected);
-		view.setActivated(!selected);
+		boolean activated = view.isActivated();
+		saveTranslation(true, !activated);
+		view.setActivated(!activated);
 	}
 
 	@OnClick(R.id.btn_clear)
@@ -117,13 +122,16 @@ public class TranslateFragment extends BaseFragment{
 	@OnClick(R.id.btn_listen_original)
 	void onClickListenOriginalText(View v) {
 		try {
-			int state = ((ListenButton) v).getState();
+			ListenButton button = (ListenButton) v;
+			int state = button.getState();
 			switch (state) {
 				case ListenButton.STATE_PLAY:
+					mSpeechVocalizerListener.setButton(button);
 					startListen(getOriginalText(), "ru");
 					break;
 				case ListenButton.STATE_STOP:
 					stopListen();
+					button.setState(ListenButton.STATE_PLAY);
 			}
 		} catch (ClassCastException e) {
 			e.printStackTrace();
@@ -133,13 +141,16 @@ public class TranslateFragment extends BaseFragment{
 	@OnClick(R.id.btn_listen_translated)
 	void onClickListenTranslatedText(View v) {
 		try {
-			int state = ((ListenButton) v).getState();
+			ListenButton button = (ListenButton) v;
+			int state = button.getState();
 			switch (state) {
 				case ListenButton.STATE_PLAY:
+					mSpeechVocalizerListener.setButton(button);
 					startListen(mTxtTranslated.getText().toString(), "en");
 					break;
 				case ListenButton.STATE_STOP:
 					stopListen();
+					button.setState(ListenButton.STATE_PLAY);
 			}
 		} catch (ClassCastException e) {
 			e.printStackTrace();
@@ -186,28 +197,13 @@ public class TranslateFragment extends BaseFragment{
 		}
 	};
 
-	private final VocalizerListener mSpeechVocalizerListener = new VocalizerListener() {
-		@Override
-		public void onSynthesisBegin(Vocalizer vocalizer) {
-			mBtnListenOriginal.setState(ListenButton.STATE_INIT);
-		}
+	private final SpeechVocalizeListener mSpeechVocalizerListener = new SpeechVocalizeListener();
 
+	private final OnWordClickListener mOnWordClickListener = new OnWordClickListener() {
 		@Override
-		public void onSynthesisDone(Vocalizer vocalizer, Synthesis synthesis) {}
-
-		@Override
-		public void onPlayingBegin(Vocalizer vocalizer) {
-			mBtnListenOriginal.setState(ListenButton.STATE_STOP);
-		}
-
-		@Override
-		public void onPlayingDone(Vocalizer vocalizer) {
-			mBtnListenOriginal.setState(ListenButton.STATE_PLAY);
-		}
-
-		@Override
-		public void onVocalizerError(Vocalizer vocalizer, Error error) {
-			Toast.makeText(getActivity(), error.getString(), Toast.LENGTH_LONG).show();
+		public void onWordClick(String word) {
+			mEditOriginal.setText("");
+			mEditOriginal.setText(word);
 		}
 	};
 
@@ -238,9 +234,12 @@ public class TranslateFragment extends BaseFragment{
 		ItemTouchHelper.Callback callback = new HistoryDismissTouchHelper(adapter);
 		ItemTouchHelper helper = new ItemTouchHelper(callback);
 		helper.attachToRecyclerView(mRecyclerHistory);
+		mRecyclerDictionary.setLayoutManager(new LinearLayoutManager(getActivity()));
+		mRecyclerDictionary.setNestedScrollingEnabled(false);
 	}
 
 	private void loadTranslation() {
+		mViewDictionary.setVisibility(View.GONE);
 		final String originalText = getOriginalText();
 		mTranslationCall = mTranslatorAPI.translate(originalText, "en");
 		mDictionaryCall = mDictionaryAPI.translate(originalText, "ru-en");
@@ -265,7 +264,13 @@ public class TranslateFragment extends BaseFragment{
 			@Override
 			public void onResponse(Call<List<DictionaryItem>> call,
 					Response<List<DictionaryItem>> response) {
-				Timber.d(response.body().get(0).getText());
+				if(response.body().size() > 0) {
+					mViewDictionary.setVisibility(View.VISIBLE);
+				} else {
+					mViewDictionary.setVisibility(View.GONE);
+				}
+				DictionaryAdapter adapter = new DictionaryAdapter(response.body(), mOnWordClickListener);
+				mRecyclerDictionary.setAdapter(adapter);
 			}
 
 			@Override
@@ -312,7 +317,6 @@ public class TranslateFragment extends BaseFragment{
 
 	private void stopListen() {
 		resetVocalizer();
-		mBtnListenOriginal.setState(ListenButton.STATE_PLAY);
 	}
 
 	private String getOriginalText() {
