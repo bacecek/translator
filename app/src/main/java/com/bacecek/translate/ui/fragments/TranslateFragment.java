@@ -100,9 +100,13 @@ public class TranslateFragment extends BaseFragment{
 
 	@OnClick(R.id.btn_favourite)
 	void onClickFavourite(View view) {
-		boolean activated = view.isActivated();
-		saveTranslation(true, !activated);
-		view.setActivated(!activated);
+		Translation translation = RealmController.getInstance().getTranslation(getOriginalText());
+		if(translation == null) {
+			saveTranslation();
+		}
+		RealmController.getInstance().changeFavourite(getOriginalText());
+
+		view.setActivated(!view.isActivated());
 	}
 
 	@OnClick(R.id.btn_clear)
@@ -192,7 +196,7 @@ public class TranslateFragment extends BaseFragment{
 	private final OnItemClickListener mOnItemHistoryClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(Translation translation) {
-			mEditOriginal.setText(translation.getOriginalText());
+			changeOriginalText(translation.getOriginalText());
 			mEditOriginal.setSelection(translation.getOriginalText().length());
 		}
 	};
@@ -202,8 +206,7 @@ public class TranslateFragment extends BaseFragment{
 	private final OnWordClickListener mOnWordClickListener = new OnWordClickListener() {
 		@Override
 		public void onWordClick(String word) {
-			mEditOriginal.setText("");
-			mEditOriginal.setText(word);
+			changeOriginalText(word);
 		}
 	};
 
@@ -281,23 +284,10 @@ public class TranslateFragment extends BaseFragment{
 	}
 
 	private void saveTranslation() {
-		saveTranslation(false, false);
-	}
-
-	private void saveTranslation(boolean changeFavourite, boolean isFavourite) {
 		if(getOriginalText().length() > 0 && mTranslationCall != null && mDictionaryCall != null&& isSavingEnabled) {
 			mTranslationCall.cancel();
 			mDictionaryCall.cancel();
-			Translation translation = new Translation();
-			translation.setOriginalText(getOriginalText());
-			translation.setTranslatedText(mTxtTranslated.getText().toString());
-			translation.setOriginalLang("ru");//TODO:изменить получение языка
-			translation.setTargetLang("en");
-			translation.setTimestamp(System.currentTimeMillis() / 1000);
-			if(changeFavourite) {
-				translation.setFavourite(isFavourite);
-			}
-			RealmController.getInstance().insertTranslation(translation, changeFavourite);
+			RealmController.getInstance().insertTranslation(getOriginalText(), mTxtTranslated.getText().toString(), "ru", "en");
 		}
 	}
 
@@ -321,6 +311,11 @@ public class TranslateFragment extends BaseFragment{
 
 	private String getOriginalText() {
 		return mEditOriginal.getText().toString().trim();
+	}
+
+	private void changeOriginalText(String text) {
+		mEditOriginal.setText("");
+		mEditOriginal.setText(text);
 	}
 
 	@Override
@@ -367,6 +362,7 @@ public class TranslateFragment extends BaseFragment{
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onTranslateEvent(TranslateEvent event) {
-		mEditOriginal.setText(event.text);
+		saveTranslation();
+		changeOriginalText(event.text);
 	}
 }

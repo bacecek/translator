@@ -31,7 +31,7 @@ public class HistoryDismissTouchHelper extends ItemTouchHelper.SimpleCallback {
 		OrderedRealmCollection data = mAdapter.getData();
 		if(data != null) {
 			Translation translation = (Translation) data.get(viewHolder.getAdapterPosition());
-			RealmController.getInstance().removeTranslation(translation);
+			RealmController.getInstance().removeTranslationFromHistory(translation);
 		}
 	}
 }

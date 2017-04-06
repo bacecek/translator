@@ -45,10 +45,18 @@ public class RealmController {
 		mRealm.commitTransaction();
 	}
 
+	public void changeFavourite(String originalText) {
+		changeFavourite(getTranslation(originalText));
+	}
+
 	public void changeFavourite(Translation translation) {
-		mRealm.beginTransaction();
-		translation.setFavourite(!translation.isFavourite());
-		mRealm.commitTransaction();
+		if(isRemovingNeeded(translation)) {
+			removeTranslation(translation);
+		} else {
+			mRealm.beginTransaction();
+			translation.setFavourite(!translation.isFavourite());
+			mRealm.commitTransaction();
+		}
 	}
 
 	public void destroy() {
@@ -57,16 +65,38 @@ public class RealmController {
 		instance = null;
 	}
 
-	public void insertTranslation(Translation translation, boolean changeFavourite) {
-		if(!changeFavourite) {
-			Translation foundTranslation = mRealm.where(Translation.class).equalTo("originalText", translation.getOriginalText()).findFirst();
-			if(foundTranslation != null) {
-				translation.setFavourite(foundTranslation.isFavourite());
-			}
-		}
+	public Translation getTranslation(String text) {
+		return mRealm.where(Translation.class).equalTo("originalText", text).findFirst();
+	}
+
+	public void insertTranslation(String originalText, String translatedText, String originalLang, String targetLang) {
+		Translation translation = getTranslation(originalText);
 		mRealm.beginTransaction();
+		if(translation == null) {
+			translation = new Translation();
+			translation.setOriginalText(originalText);
+		}
+		translation.setTranslatedText(translatedText);
+		translation.setOriginalLang(originalLang);
+		translation.setTargetLang(targetLang);
+		translation.setTimestamp(System.currentTimeMillis() / 1000);
+		translation.setShowInHistory(true);
 		mRealm.copyToRealmOrUpdate(translation);
 		mRealm.commitTransaction();
+	}
+
+	public void removeTranslationFromHistory(Translation translation) {
+		if(isRemovingNeeded(translation)) {
+			removeTranslation(translation);
+		} else {
+			mRealm.beginTransaction();
+			translation.setShowInHistory(!translation.isShowInHistory());
+			mRealm.commitTransaction();
+		}
+	}
+
+	private boolean isRemovingNeeded(Translation translation) {
+		return !translation.isShowInHistory() && translation.isFavourite();
 	}
 
 	public void removeTranslation(Translation translation) {
@@ -94,6 +124,7 @@ public class RealmController {
 
 	public RealmResults<Translation> getHistory() {
 		return mRealm.where(Translation.class)
+				.equalTo("showInHistory", true)
 				.findAllSortedAsync("timestamp", Sort.DESCENDING);
 	}
 
