@@ -49,10 +49,10 @@ public class DictionaryDeserializer implements JsonDeserializer<List<DictionaryI
 				item.setAnm(obj.get("anm").getAsString());
 			}
 			if(obj.has("tr")) {
-				ArrayList<DictionaryTranslation> translations = new ArrayList<DictionaryTranslation>();
 				JsonArray tr = obj.getAsJsonArray("tr");
-				for (JsonElement trElement : tr) {
-					JsonObject trObj = trElement.getAsJsonObject();
+				DictionaryTranslation[] translations = new DictionaryTranslation[tr.size()];
+				for (int j = 0; j < tr.size(); j++) {
+					JsonObject trObj = tr.get(j).getAsJsonObject();
 					DictionaryTranslation translation = new DictionaryTranslation();
 					if (trObj.has("text")) {
 						translation.setText(trObj.get("text").getAsString());
@@ -66,31 +66,31 @@ public class DictionaryDeserializer implements JsonDeserializer<List<DictionaryI
 
 					if (trObj.has("syn")) {
 						JsonArray array = trObj.getAsJsonArray("syn");
-						ArrayList<DictionaryWord> synonyms = new ArrayList<DictionaryWord>();
-						for (JsonElement synElement : array) {
-							JsonObject synObj = synElement.getAsJsonObject();
+						DictionaryWord[] synonyms = new DictionaryWord[array.size()];
+						for (int k = 0; k < array.size(); k++) {
+							JsonObject synObj = array.get(k).getAsJsonObject();
 							DictionaryWord syn = parseDictionaryWord(synObj);
-							synonyms.add(syn);
+							synonyms[k] = syn;
 						}
 						translation.setSynonyms(synonyms);
 					}
 
 					if (trObj.has("mean")) {
 						JsonArray array = trObj.getAsJsonArray("mean");
-						ArrayList<DictionaryWord> means = new ArrayList<DictionaryWord>();
-						for (JsonElement meanElement : array) {
-							JsonObject meanObj = meanElement.getAsJsonObject();
+						DictionaryWord[] means = new DictionaryWord[array.size()];
+						for (int k = 0; k < array.size(); k++) {
+							JsonObject meanObj = array.get(k).getAsJsonObject();
 							DictionaryWord mean = parseDictionaryWord(meanObj);
-							means.add(mean);
+							means[k] = mean;
 						}
 						translation.setMeans(means);
 					}
 
 					if (trObj.has("ex")) {
 						JsonArray array = trObj.getAsJsonArray("ex");
-						ArrayList<DictionaryExample> exs = new ArrayList<DictionaryExample>();
-						for (JsonElement exElement : array) {
-							JsonObject exObj = exElement.getAsJsonObject();
+						DictionaryExample[] exs = new DictionaryExample[array.size()];
+						for (int k = 0; k < array.size(); k++) {
+							JsonObject exObj = array.get(k).getAsJsonObject();
 							DictionaryExample ex = new DictionaryExample();
 
 							if (exObj.has("text")) {
@@ -104,20 +104,20 @@ public class DictionaryDeserializer implements JsonDeserializer<List<DictionaryI
 							}
 							if (exObj.has("tr")) {
 								JsonArray trArray = exObj.getAsJsonArray("tr");
-								ArrayList<String> trs = new ArrayList<String>();
-								for (JsonElement trExElement : trArray) {
-									JsonObject trExObj = trExElement.getAsJsonObject();
+								String[] trs = new String[trArray.size()];
+								for (int l = 0; l < trArray.size(); l++) {
+									JsonObject trExObj = trArray.get(l).getAsJsonObject();
 									if (trExObj.has("text")) {
-										trs.add(trExObj.get("text").getAsString());
+										trs[l] = trExObj.get("text").getAsString();
 									}
 								}
 								ex.setExamples(trs);
 							}
-							exs.add(ex);
+							exs[k] = ex;
 						}
 						translation.setExamples(exs);
 					}
-					translations.add(translation);
+					translations[j] = translation;
 				}
 				item.setTranslations(translations);
 			}
