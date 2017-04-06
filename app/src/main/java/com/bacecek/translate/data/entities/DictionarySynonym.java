@@ -5,17 +5,14 @@ package com.bacecek.translate.data.entities;
  * <buzmakov.da@gmail.com>
  */
 
-public class DictionaryWord {
-	protected String text;
-	protected String pos;
-	protected String gen;
+public class DictionarySynonym extends DictionaryItem {
+	private String pos;
+	private String gen;
 
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
+	public DictionarySynonym(String text, String pos, String gen) {
+		super(text);
+		this.pos = pos;
+		this.gen = gen;
 	}
 
 	public String getPos() {

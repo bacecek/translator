@@ -7,11 +7,10 @@ package com.bacecek.translate.data.entities;
 
 public class DictionaryItem {
 	private String text;
-	private String pos;
-	private String ts;
-	private String gen;
-	private String anm;
-	private DictionaryTranslation[] translations;
+
+	public DictionaryItem(String text) {
+		this.text = text;
+	}
 
 	public String getText() {
 		return text;
@@ -19,45 +18,5 @@ public class DictionaryItem {
 
 	public void setText(String text) {
 		this.text = text;
-	}
-
-	public String getPos() {
-		return pos;
-	}
-
-	public void setPos(String pos) {
-		this.pos = pos;
-	}
-
-	public String getTs() {
-		return ts;
-	}
-
-	public void setTs(String ts) {
-		this.ts = ts;
-	}
-
-	public String getGen() {
-		return gen;
-	}
-
-	public void setGen(String gen) {
-		this.gen = gen;
-	}
-
-	public String getAnm() {
-		return anm;
-	}
-
-	public void setAnm(String anm) {
-		this.anm = anm;
-	}
-
-	public DictionaryTranslation[] getTranslations() {
-		return translations;
-	}
-
-	public void setTranslations(DictionaryTranslation[] translations) {
-		this.translations = translations;
 	}
 }

@@ -5,14 +5,19 @@ package com.bacecek.translate.data.entities;
  * <buzmakov.da@gmail.com>
  */
 
-public class DictionaryExample extends DictionaryWord{
-	private String[] examples;
+public class DictionaryExample extends DictionaryItem {
+	private String[] translations;
 
-	public String[] getExamples() {
-		return examples;
+	public DictionaryExample(String text, String[] translations) {
+		super(text);
+		this.translations = translations;
 	}
 
-	public void setExamples(String[] examples) {
-		this.examples = examples;
+	public String[] getTranslations() {
+		return translations;
+	}
+
+	public void setTranslations(String[] translations) {
+		this.translations = translations;
 	}
 }
