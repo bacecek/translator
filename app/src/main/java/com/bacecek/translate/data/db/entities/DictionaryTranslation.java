@@ -1,7 +1,5 @@
 package com.bacecek.translate.data.db.entities;
 
-import java.util.ArrayList;
-
 /**
  * Created by Denis Buzmakov on 04/04/2017.
  * <buzmakov.da@gmail.com>
@@ -11,9 +9,9 @@ public class DictionaryTranslation {
 	private String text;
 	private String pos;
 	private String gen;
-	private ArrayList<DictionaryWord> synonyms;
-	private ArrayList<DictionaryWord> means;
-	private ArrayList<DictionaryExample> examples;
+	private DictionaryWord[] synonyms;
+	private DictionaryWord[] means;
+	private DictionaryExample[] examples;
 
 	public String getText() {
 		return text;
@@ -39,29 +37,29 @@ public class DictionaryTranslation {
 		this.gen = gen;
 	}
 
-	public ArrayList<DictionaryWord> getSynonyms() {
+	public DictionaryWord[] getSynonyms() {
 		return synonyms;
 	}
 
 	public void setSynonyms(
-			ArrayList<DictionaryWord> synonyms) {
+			DictionaryWord[] synonyms) {
 		this.synonyms = synonyms;
 	}
 
-	public ArrayList<DictionaryWord> getMeans() {
+	public DictionaryWord[] getMeans() {
 		return means;
 	}
 
-	public void setMeans(ArrayList<DictionaryWord> means) {
+	public void setMeans(DictionaryWord[] means) {
 		this.means = means;
 	}
 
-	public ArrayList<DictionaryExample> getExamples() {
+	public DictionaryExample[] getExamples() {
 		return examples;
 	}
 
 	public void setExamples(
-			ArrayList<DictionaryExample> examples) {
+			DictionaryExample[] examples) {
 		this.examples = examples;
 	}
 }

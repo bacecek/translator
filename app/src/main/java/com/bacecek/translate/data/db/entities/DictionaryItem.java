@@ -1,7 +1,5 @@
 package com.bacecek.translate.data.db.entities;
 
-import java.util.List;
-
 /**
  * Created by Denis Buzmakov on 05/04/2017.
  * <buzmakov.da@gmail.com>
@@ -13,7 +11,7 @@ public class DictionaryItem {
 	private String ts;
 	private String gen;
 	private String anm;
-	private List<DictionaryTranslation> translations;
+	private DictionaryTranslation[] translations;
 
 	public String getText() {
 		return text;
@@ -55,12 +53,11 @@ public class DictionaryItem {
 		this.anm = anm;
 	}
 
-	public List<DictionaryTranslation> getTranslations() {
+	public DictionaryTranslation[] getTranslations() {
 		return translations;
 	}
 
-	public void setTranslations(
-			List<DictionaryTranslation> translations) {
+	public void setTranslations(DictionaryTranslation[] translations) {
 		this.translations = translations;
 	}
 }
