@@ -5,7 +5,7 @@
 	<string name="empty_search">Поиск не дал результатов</string>
 	<string name="open_drawer">Открыть NavigationDrawer</string>
 	<string name="close_drawer">Закрыть NavigationDrawer</string>
-	<string name="dictionary">Словарь</string>
+	<string name="dictionary">Альтернативные варианты перевода</string>
 	<string name="try_again">Попробовать еще раз</string>
 	<string name="exit">Выйти</string>
 	<string name="wait_loading_languages">Загрузка списка языков. Пожалуйста, подождите…</string>
