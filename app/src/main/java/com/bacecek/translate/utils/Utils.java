@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import com.bacecek.translate.R;
 
 /**
  * Created by Denis Buzmakov on 20/03/2017.
@@ -32,5 +34,13 @@ public class Utils {
 
 	public static float dpToPx(float dp, Resources resources) {
 		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
+	}
+
+	public static void shareText(Context context,  String text) {
+		Intent intent = new Intent();
+		intent.setAction(Intent.ACTION_SEND);
+		intent.putExtra(Intent.EXTRA_TEXT, text);
+		intent.setType("text/plain");
+		context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_translation_with)));
 	}
 }

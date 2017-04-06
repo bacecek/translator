@@ -11,10 +11,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -42,6 +45,7 @@ import com.bacecek.translate.ui.views.ListenButton;
 import com.bacecek.translate.utils.Consts;
 import com.bacecek.translate.utils.HistoryDismissTouchHelper;
 import com.bacecek.translate.utils.SpeechVocalizeListener;
+import com.bacecek.translate.utils.Utils;
 import java.util.List;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -61,21 +65,20 @@ import timber.log.Timber;
  */
 
 public class TranslateFragment extends BaseFragment{
-	private static final int DELAY_INPUT = 700;
-	private static final int RECOGNITION_REQUEST_CODE = 777;
-
 	@BindView(R.id.edit_original_text)
 	EditText mEditOriginal;
 	@BindView(R.id.btn_clear)
 	ImageButton mBtnClear;
 	@BindView(R.id.btn_mic)
 	ImageButton mBtnMic;
+	@BindView(R.id.btn_favourite)
+	ImageButton mBtnFavourite;
+	@BindView(R.id.btn_more)
+	ImageButton mBtnMore;
 	@BindView(R.id.btn_listen_original)
 	ListenButton mBtnListenOriginal;
 	@BindView(R.id.btn_listen_translated)
 	ListenButton mBtnListenTranslated;
-	@BindView(R.id.btn_favourite)
-	ImageButton mBtnFavourite;
 	@BindView(R.id.list_history)
 	RecyclerView mRecyclerHistory;
 	@BindView(R.id.list_dictionary)
@@ -120,7 +123,7 @@ public class TranslateFragment extends BaseFragment{
 		Intent intent = new Intent(getActivity(), RecognizerActivity.class);
 		intent.putExtra(RecognizerActivity.EXTRA_MODEL, Model.QUERIES);
 		intent.putExtra(RecognizerActivity.EXTRA_LANGUAGE, "ru");
-		startActivityForResult(intent, RECOGNITION_REQUEST_CODE);
+		startActivityForResult(intent, Consts.RECOGNITION_REQUEST_CODE);
 	}
 
 	@OnClick(R.id.btn_listen_original)
@@ -166,6 +169,14 @@ public class TranslateFragment extends BaseFragment{
 		EventBus.getDefault().post(new ClickMenuEvent());
 	}
 
+	@OnClick(R.id.btn_more)
+	void onClickMore() {
+		PopupMenu popupMenu = new PopupMenu(getActivity(), mBtnMore);
+		popupMenu.getMenuInflater().inflate(R.menu.menu_more, popupMenu.getMenu());
+		popupMenu.setOnMenuItemClickListener(mOnMenuMoreItemClickListener);
+		popupMenu.show();
+	}
+
 	@OnTextChanged(value = R.id.edit_original_text, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
 	void onTextChanged(Editable s) {
 		mBtnListenOriginal.setEnabled(s.toString().trim().length() <= Consts.MAX_LISTEN_SYMBOLS);
@@ -190,7 +201,7 @@ public class TranslateFragment extends BaseFragment{
 				}
 			}
 		};
-		mDelayInputHandler.postDelayed(mDelayInputRunnable, DELAY_INPUT);
+		mDelayInputHandler.postDelayed(mDelayInputRunnable, Consts.DELAY_INPUT);
 	}
 
 	private final OnItemClickListener mOnItemHistoryClickListener = new OnItemClickListener() {
@@ -207,6 +218,26 @@ public class TranslateFragment extends BaseFragment{
 		@Override
 		public void onWordClick(String word) {
 			changeOriginalText(word);
+		}
+	};
+
+	private final PopupMenu.OnMenuItemClickListener mOnMenuMoreItemClickListener = new OnMenuItemClickListener() {
+		@Override
+		public boolean onMenuItemClick(MenuItem item) {
+			switch (item.getItemId()) {
+				case R.id.action_copy:
+					Utils.copyToClipboard(getActivity(), mTxtTranslated.getText().toString());
+					Toast.makeText(getActivity(), R.string.text_has_been_copied, Toast.LENGTH_SHORT).show();
+					break;
+				case R.id.action_share:
+					Utils.shareText(getActivity(), mTxtTranslated.getText().toString());
+					break;
+				case R.id.action_fullscreen:
+					break;
+				case R.id.action_reverse_translate:
+					break;
+			}
+			return false;
 		}
 	};
 
@@ -349,7 +380,7 @@ public class TranslateFragment extends BaseFragment{
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if(requestCode == RECOGNITION_REQUEST_CODE) {
+		if(requestCode == Consts.RECOGNITION_REQUEST_CODE) {
 			if(resultCode == RecognizerActivity.RESULT_OK && data != null) {
 				String result = data.getStringExtra(RecognizerActivity.EXTRA_RESULT);
 				mEditOriginal.append(result);

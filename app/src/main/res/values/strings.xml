@@ -10,6 +10,7 @@
 	<string name="exit">Выйти</string>
 	<string name="wait_loading_languages">Загрузка списка языков. Пожалуйста, подождите…</string>
 	<string name="text_has_been_copied">Перевод был скопирован в буфер обмена</string>
+	<string name="share_translation_with">Поделиться переводом с</string>
 
 	<!--Hints-->
 	<string name="hint_edit_original_text">Введите текст</string>
@@ -24,4 +25,8 @@
 	<string name="action_favourites">Избранное</string>
 	<string name="action_settings">Настройки</string>
 	<string name="action_about">О программе</string>
+	<string name="action_copy">Копировать</string>
+	<string name="action_share">Поделиться</string>
+	<string name="action_fullscreen">На весь экран</string>
+	<string name="action_reverse_translate">Обратный перевод</string>
 </resources>
