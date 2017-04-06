@@ -21,6 +21,9 @@ import java.util.List;
  */
 
 public class DictionaryDeserializer implements JsonDeserializer<List<DictionaryItem>> {
+	private final static String JSON_SYNONYM = "syn";
+	private final static String JSON_MEAN = "mean";
+	private final static String JSON_EXAMPLE = "ex";
 
 	@Override
 	public List<DictionaryItem> deserialize(JsonElement json, Type typeOfT,
@@ -45,34 +48,33 @@ public class DictionaryDeserializer implements JsonDeserializer<List<DictionaryI
 					JsonObject trObj = trElement.getAsJsonObject();
 					items.add(parseSynonym(trObj));
 
-					if (trObj.has("syn")) {
-						JsonArray array = trObj.getAsJsonArray("syn");
-						for(JsonElement synElement : array) {
-							JsonObject synObj = synElement.getAsJsonObject();
-							items.add(parseSynonym(synObj));
-						}
-					}
-
-					if(trObj.has("mean")) {
-						JsonArray array = trObj.getAsJsonArray("mean");
-						for(JsonElement meanElement : array) {
-							JsonObject meanObj = meanElement.getAsJsonObject();
-							items.add(parseMean(meanObj));
-						}
-					}
-
-					if(trObj.has("ex")) {
-						JsonArray array = trObj.getAsJsonArray("ex");
-						for(JsonElement exElement : array) {
-							JsonObject exObj = exElement.getAsJsonObject();
-							items.add(parseExample(exObj));
-						}
-					}
+					parseArray(trObj, JSON_SYNONYM, items);
+					parseArray(trObj, JSON_MEAN, items);
+					parseArray(trObj, JSON_EXAMPLE, items);
 				}
 			}
 		}
-
 		return items;
+	}
+
+	private void parseArray(JsonObject obj, String field, ArrayList<DictionaryItem> items) {
+		if (obj.has(field)) {
+			JsonArray array = obj.getAsJsonArray(field);
+			for(JsonElement element : array) {
+				JsonObject arrayObj = element.getAsJsonObject();
+				switch (field) {
+					case JSON_EXAMPLE:
+						items.add(parseExample(arrayObj));
+						break;
+					case JSON_MEAN:
+						items.add(parseMean(arrayObj));
+						break;
+					case JSON_SYNONYM:
+						items.add(parseSynonym(arrayObj));
+						break;
+				}
+			}
+		}
 	}
 
 	private DictionarySynonym parseSynonym(JsonObject obj) {
