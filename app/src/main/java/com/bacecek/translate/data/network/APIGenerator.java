@@ -1,9 +1,9 @@
 package com.bacecek.translate.data.network;
 
 import com.bacecek.translate.BuildConfig;
-import com.bacecek.translate.data.db.entities.DictionaryItem;
-import com.bacecek.translate.data.db.entities.Language;
-import com.bacecek.translate.data.db.entities.Translation;
+import com.bacecek.translate.data.entities.DictionaryItem;
+import com.bacecek.translate.data.entities.Language;
+import com.bacecek.translate.data.entities.Translation;
 import com.bacecek.translate.data.network.deserializers.DetectLangDeserializer;
 import com.bacecek.translate.data.network.deserializers.DictionaryDeserializer;
 import com.bacecek.translate.data.network.deserializers.LangsDeserializer;

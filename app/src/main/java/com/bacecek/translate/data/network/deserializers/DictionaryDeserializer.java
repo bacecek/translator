@@ -1,9 +1,9 @@
 package com.bacecek.translate.data.network.deserializers;
 
-import com.bacecek.translate.data.db.entities.DictionaryExample;
-import com.bacecek.translate.data.db.entities.DictionaryItem;
-import com.bacecek.translate.data.db.entities.DictionaryTranslation;
-import com.bacecek.translate.data.db.entities.DictionaryWord;
+import com.bacecek.translate.data.entities.DictionaryExample;
+import com.bacecek.translate.data.entities.DictionaryItem;
+import com.bacecek.translate.data.entities.DictionaryTranslation;
+import com.bacecek.translate.data.entities.DictionaryWord;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

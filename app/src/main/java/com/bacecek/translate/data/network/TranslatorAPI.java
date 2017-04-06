@@ -1,7 +1,7 @@
 package com.bacecek.translate.data.network;
 
-import com.bacecek.translate.data.db.entities.Language;
-import com.bacecek.translate.data.db.entities.Translation;
+import com.bacecek.translate.data.entities.Language;
+import com.bacecek.translate.data.entities.Translation;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.GET;

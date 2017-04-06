@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import com.bacecek.translate.data.db.RealmController;
-import com.bacecek.translate.data.db.entities.Translation;
+import com.bacecek.translate.data.entities.Translation;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
 

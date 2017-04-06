@@ -1,4 +1,4 @@
-package com.bacecek.translate.data.db.entities;
+package com.bacecek.translate.data.entities;
 
 /**
  * Created by Denis Buzmakov on 05/04/2017.

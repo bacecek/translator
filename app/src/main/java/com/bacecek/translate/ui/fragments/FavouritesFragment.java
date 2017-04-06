@@ -21,7 +21,7 @@ import butterknife.OnTextChanged;
 import butterknife.OnTextChanged.Callback;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.db.RealmController;
-import com.bacecek.translate.data.db.entities.Translation;
+import com.bacecek.translate.data.entities.Translation;
 import com.bacecek.translate.ui.adapters.FavouritesAdapter;
 import com.bacecek.translate.ui.adapters.FavouritesAdapter.OnItemClickListener;
 import com.bacecek.translate.ui.events.ClickFavouriteEvent;

@@ -1,6 +1,6 @@
 package com.bacecek.translate.data.network.deserializers;
 
-import com.bacecek.translate.data.db.entities.Language;
+import com.bacecek.translate.data.entities.Language;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;

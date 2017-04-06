@@ -1,7 +1,7 @@
 package com.bacecek.translate.data.db;
 
-import com.bacecek.translate.data.db.entities.Language;
-import com.bacecek.translate.data.db.entities.Translation;
+import com.bacecek.translate.data.entities.Language;
+import com.bacecek.translate.data.entities.Translation;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;

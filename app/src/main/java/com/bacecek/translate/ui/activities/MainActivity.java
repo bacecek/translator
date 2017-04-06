@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
 import com.bacecek.translate.BuildConfig;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.db.RealmController;
-import com.bacecek.translate.data.db.entities.Language;
+import com.bacecek.translate.data.entities.Language;
 import com.bacecek.translate.data.network.APIGenerator;
 import com.bacecek.translate.data.network.TranslatorAPI;
 import com.bacecek.translate.ui.events.ClickFavouriteEvent;

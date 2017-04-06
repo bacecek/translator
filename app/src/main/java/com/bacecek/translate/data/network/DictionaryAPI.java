@@ -1,6 +1,6 @@
 package com.bacecek.translate.data.network;
 
-import com.bacecek.translate.data.db.entities.DictionaryItem;
+import com.bacecek.translate.data.entities.DictionaryItem;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.GET;

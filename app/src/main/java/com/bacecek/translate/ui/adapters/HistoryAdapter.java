@@ -14,7 +14,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.db.RealmController;
-import com.bacecek.translate.data.db.entities.Translation;
+import com.bacecek.translate.data.entities.Translation;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
 
