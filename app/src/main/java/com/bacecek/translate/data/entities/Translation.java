@@ -11,6 +11,7 @@ import io.realm.annotations.PrimaryKey;
 public class Translation extends RealmObject{
 	//TODO:объяснение почему так а не иначе
 	@PrimaryKey
+	private int id;
 	private String originalText;
 	private String translatedText;
 	private String originalLang;
@@ -19,6 +20,14 @@ public class Translation extends RealmObject{
 	private boolean showInHistory;
 	private long historyTimestamp;
 	private long favouriteTimestamp;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public String getOriginalText() {
 		return originalText;

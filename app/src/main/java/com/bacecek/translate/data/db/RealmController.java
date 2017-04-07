@@ -45,11 +45,12 @@ public class RealmController {
 		mRealm.commitTransaction();
 	}
 
-	public void changeFavourite(String originalText) {
-		changeFavourite(getTranslation(originalText));
+	public void changeFavourite(String originalText, String originalLang, String targetLang) {
+		changeFavourite(getTranslation(originalText, originalLang, targetLang));
 	}
 
 	public void changeFavourite(Translation translation) {
+		if(translation == null) return;
 		if(isRemovingNeeded(translation)) {
 			removeTranslation(translation);
 		} else {
@@ -66,15 +67,20 @@ public class RealmController {
 		instance = null;
 	}
 
-	public Translation getTranslation(String text) {
-		return mRealm.where(Translation.class).equalTo("originalText", text).findFirst();
+	public Translation getTranslation(String text, String originalLang, String targetLang) {
+		return mRealm.where(Translation.class)
+					.equalTo("originalText", text)
+					.equalTo("originalLang", originalLang)
+					.equalTo("targetLang", targetLang)
+				.findFirst();
 	}
 
 	public void insertTranslation(String originalText, String translatedText, String originalLang, String targetLang) {
-		Translation translation = getTranslation(originalText);
+		Translation translation = getTranslation(originalText, originalLang, targetLang);
 		mRealm.beginTransaction();
 		if(translation == null) {
 			translation = new Translation();
+			translation.setId(getNextId());
 			translation.setOriginalText(originalText);
 		}
 		translation.setTranslatedText(translatedText);
@@ -129,14 +135,21 @@ public class RealmController {
 				.findAllSortedAsync("historyTimestamp", Sort.DESCENDING);
 	}
 
-	public boolean isTranslationFavourite(String text) {
-		Translation translation = mRealm.where(Translation.class)
-				.equalTo("originalText", text)
-				.findFirst();
+	public boolean isTranslationFavourite(String text, String originalLang, String targetLang) {
+		Translation translation = getTranslation(text, originalLang, targetLang);
 		if(translation == null) {
 			return false;
 		} else {
 			return translation.isFavourite();
+		}
+	}
+
+	private int getNextId() {
+		Number nextId = mRealm.where(Translation.class).max("id");
+		if(nextId == null) {
+			return 0;
+		} else {
+			return mRealm.where(Translation.class).max("id").intValue() + 1;
 		}
 	}
 }

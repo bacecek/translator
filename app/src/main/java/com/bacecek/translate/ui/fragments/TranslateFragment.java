@@ -104,11 +104,11 @@ public class TranslateFragment extends BaseFragment{
 
 	@OnClick(R.id.btn_favourite)
 	void onClickFavourite(View view) {
-		Translation translation = RealmController.getInstance().getTranslation(getOriginalText());
+		Translation translation = RealmController.getInstance().getTranslation(getOriginalText(), "ru", "en");
 		if(translation == null) {
 			saveTranslation();
 		}
-		RealmController.getInstance().changeFavourite(getOriginalText());
+		RealmController.getInstance().changeFavourite(getOriginalText(), "ru", "en");
 
 		view.setActivated(!view.isActivated());
 	}
@@ -291,7 +291,7 @@ public class TranslateFragment extends BaseFragment{
 				mViewTranslated.setVisibility(View.VISIBLE);
 				mTxtTranslated.setText(response.body().getTranslatedText());
 				mBtnListenTranslated.setEnabled(getTranslatedText().length() <= Consts.MAX_LISTEN_SYMBOLS);
-				mBtnFavourite.setActivated(RealmController.getInstance().isTranslationFavourite(originalText));
+				mBtnFavourite.setActivated(RealmController.getInstance().isTranslationFavourite(originalText, "ru", "en"));
 				isSavingEnabled = true;
 			}
 
