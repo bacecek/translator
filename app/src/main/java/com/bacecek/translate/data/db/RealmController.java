@@ -45,6 +45,18 @@ public class RealmController {
 		mRealm.commitTransaction();
 	}
 
+	public Language getLanguageByCode(String code) {
+		return mRealm.where(Language.class)
+				.equalTo("code", code)
+				.findFirst();
+	}
+
+	public Language getLanguageByName(String name) {
+		return mRealm.where(Language.class)
+				.equalTo("name", name)
+				.findFirst();
+	}
+
 	public void changeFavourite(String originalText, String originalLang, String targetLang) {
 		changeFavourite(getTranslation(originalText, originalLang, targetLang));
 	}
