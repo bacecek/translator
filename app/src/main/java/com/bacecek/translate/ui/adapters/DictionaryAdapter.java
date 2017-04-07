@@ -7,6 +7,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -136,14 +137,27 @@ public class DictionaryAdapter extends RecyclerView.Adapter<ViewHolder> {
 			ArrayList<DictionarySynonym> synonyms = list.getSynonyms();
 
 			for (int i = 0; i < synonyms.size(); i++) {
+				DictionarySynonym synonym = synonyms.get(i);
 				if(i != 0) {
 					result.append(", ");
 				}
-				int startSpan = result.length();
-				result.append(synonyms.get(i).getText());
-				int endSpan = result.length();
+				int startClickableSpan = result.length();
+				result.append(synonym.getText());
+				int endClickableSpan = result.length();
 
-				result.setSpan(new WordClickableSpan(mListener), startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				result.setSpan(new WordClickableSpan(mListener), startClickableSpan, endClickableSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+				if(synonym.getGen() != null) {
+					result.append(" ");
+					int startGenSpan = result.length();
+					result.append(synonym.getGen());
+					int endGenSpan = result.length();
+					result.setSpan(new ForegroundColorSpan(
+							itemView.getContext().getResources().getColor(R.color.colorTextGrey)),
+							startGenSpan,
+							endGenSpan,
+							Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}
 			}
 
 			mTxtSynonyms.setText(result);
