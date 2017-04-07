@@ -31,6 +31,7 @@ import butterknife.OnTextChanged;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.data.entities.DictionaryItem;
+import com.bacecek.translate.data.entities.Language;
 import com.bacecek.translate.data.entities.Translation;
 import com.bacecek.translate.data.network.APIGenerator;
 import com.bacecek.translate.data.network.DictionaryAPI;
@@ -42,6 +43,8 @@ import com.bacecek.translate.ui.adapters.HistoryAdapter;
 import com.bacecek.translate.ui.adapters.HistoryAdapter.OnItemClickListener;
 import com.bacecek.translate.ui.events.ClickMenuEvent;
 import com.bacecek.translate.ui.events.TranslateEvent;
+import com.bacecek.translate.ui.views.LanguagesButton;
+import com.bacecek.translate.ui.views.LanguagesButton.OnChangeLanguageListener;
 import com.bacecek.translate.ui.views.ListenButton;
 import com.bacecek.translate.utils.Consts;
 import com.bacecek.translate.utils.HistoryDismissTouchHelper;
@@ -92,6 +95,8 @@ public class TranslateFragment extends BaseFragment{
 	TextView mTxtTranslated;
 	@BindView(R.id.scroll_view)
 	NestedScrollView mScrollView;
+	@BindView(R.id.btn_languages)
+	LanguagesButton mLanguagesButton;
 
 	private TranslatorAPI mTranslatorAPI;
 	private DictionaryAPI mDictionaryAPI;
@@ -104,11 +109,17 @@ public class TranslateFragment extends BaseFragment{
 
 	@OnClick(R.id.btn_favourite)
 	void onClickFavourite(View view) {
-		Translation translation = RealmController.getInstance().getTranslation(getOriginalText(), "ru", "en");
+		Translation translation = RealmController.getInstance().getTranslation(
+				getOriginalText(),
+				mLanguagesButton.getOriginalLangCode(),
+				mLanguagesButton.getTargetLangCode());
 		if(translation == null) {
 			saveTranslation();
 		}
-		RealmController.getInstance().changeFavourite(getOriginalText(), "ru", "en");
+		RealmController.getInstance().changeFavourite(
+				getOriginalText(),
+				mLanguagesButton.getOriginalLangCode(),
+				mLanguagesButton.getTargetLangCode());
 
 		view.setActivated(!view.isActivated());
 	}
@@ -123,7 +134,7 @@ public class TranslateFragment extends BaseFragment{
 	void onClickMic() {
 		Intent intent = new Intent(getActivity(), RecognizerActivity.class);
 		intent.putExtra(RecognizerActivity.EXTRA_MODEL, Model.QUERIES);
-		intent.putExtra(RecognizerActivity.EXTRA_LANGUAGE, "ru");
+		intent.putExtra(RecognizerActivity.EXTRA_LANGUAGE, mLanguagesButton.getOriginalLangCode());
 		startActivityForResult(intent, Consts.RECOGNITION_REQUEST_CODE);
 	}
 
@@ -135,7 +146,7 @@ public class TranslateFragment extends BaseFragment{
 			switch (state) {
 				case ListenButton.STATE_PLAY:
 					mSpeechVocalizerListener.setButton(button);
-					startListen(getOriginalText(), "ru");
+					startListen(getOriginalText(), mLanguagesButton.getOriginalLangCode());
 					break;
 				case ListenButton.STATE_STOP:
 					stopListen();
@@ -154,7 +165,7 @@ public class TranslateFragment extends BaseFragment{
 			switch (state) {
 				case ListenButton.STATE_PLAY:
 					mSpeechVocalizerListener.setButton(button);
-					startListen(getTranslatedText(), "en");
+					startListen(getTranslatedText(), mLanguagesButton.getTargetLangCode());
 					break;
 				case ListenButton.STATE_STOP:
 					stopListen();
@@ -247,6 +258,20 @@ public class TranslateFragment extends BaseFragment{
 		}
 	};
 
+	private final OnChangeLanguageListener mLanguageListener = new OnChangeLanguageListener() {
+		@Override
+		public void onChangeOriginalLang(Language lang) {
+			onChangeLangs();
+			//TODO: чекать возможность воспроизведения и записи
+		}
+
+		@Override
+		public void onChangeTargetLang(Language lang) {
+			onChangeLangs();
+			//TODO: чекать возможность воспроизведения и записи
+		}
+	};
+
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -276,23 +301,31 @@ public class TranslateFragment extends BaseFragment{
 		helper.attachToRecyclerView(mRecyclerHistory);
 		mRecyclerDictionary.setLayoutManager(new LinearLayoutManager(getActivity()));
 		mRecyclerDictionary.setNestedScrollingEnabled(false);
+		mLanguagesButton.setListener(mLanguageListener);
 	}
 
 	private void loadTranslation() {
 		mViewDictionary.setVisibility(View.GONE);
 		final String originalText = getOriginalText();
-		mTranslationCall = mTranslatorAPI.translate(originalText, "en");
-		mDictionaryCall = mDictionaryAPI.translate(originalText, "ru-en");
+		String direction = mLanguagesButton.getOriginalLangCode() + "-" + mLanguagesButton.getTargetLangCode();
+		mTranslationCall = mTranslatorAPI.translate(originalText, direction);
+		mDictionaryCall = mDictionaryAPI.translate(originalText, direction);
 		isSavingEnabled = false;
 		mTranslationCall.enqueue(new Callback<Translation>() {
 			@Override
 			public void onResponse(Call<Translation> call,
 					Response<Translation> response) {
-				mViewTranslated.setVisibility(View.VISIBLE);
-				mTxtTranslated.setText(response.body().getTranslatedText());
-				mBtnListenTranslated.setEnabled(getTranslatedText().length() <= Consts.MAX_LISTEN_SYMBOLS);
-				mBtnFavourite.setActivated(RealmController.getInstance().isTranslationFavourite(originalText, "ru", "en"));
-				isSavingEnabled = true;
+				if(response.isSuccessful() && response.body() != null) {
+					mViewTranslated.setVisibility(View.VISIBLE);
+					mTxtTranslated.setText(response.body().getTranslatedText());
+					mBtnListenTranslated
+							.setEnabled(getTranslatedText().length() <= Consts.MAX_LISTEN_SYMBOLS);
+					mBtnFavourite.setActivated(RealmController.getInstance().isTranslationFavourite(
+							originalText,
+							mLanguagesButton.getOriginalLangCode(),
+							mLanguagesButton.getTargetLangCode()));
+					isSavingEnabled = true;
+				}
 			}
 
 			@Override
@@ -304,13 +337,16 @@ public class TranslateFragment extends BaseFragment{
 			@Override
 			public void onResponse(Call<List<DictionaryItem>> call,
 					Response<List<DictionaryItem>> response) {
-				if(response.body().size() > 0) {
-					mViewDictionary.setVisibility(View.VISIBLE);
-				} else {
-					mViewDictionary.setVisibility(View.GONE);
+				if(response.isSuccessful() && response.body() != null) {
+					if (response.body().size() > 0) {
+						mViewDictionary.setVisibility(View.VISIBLE);
+					} else {
+						mViewDictionary.setVisibility(View.GONE);
+					}
+					DictionaryAdapter adapter = new DictionaryAdapter(response.body(),
+							mOnWordClickListener);
+					mRecyclerDictionary.setAdapter(adapter);
 				}
-				DictionaryAdapter adapter = new DictionaryAdapter(response.body(), mOnWordClickListener);
-				mRecyclerDictionary.setAdapter(adapter);
 			}
 
 			@Override
@@ -324,7 +360,9 @@ public class TranslateFragment extends BaseFragment{
 		if(getOriginalText().length() > 0 && mTranslationCall != null && mDictionaryCall != null&& isSavingEnabled) {
 			mTranslationCall.cancel();
 			mDictionaryCall.cancel();
-			RealmController.getInstance().insertTranslation(getOriginalText(), getTranslatedText(), "ru", "en");
+			RealmController.getInstance().insertTranslation(getOriginalText(), getTranslatedText(),
+					mLanguagesButton.getOriginalLangCode(),
+					mLanguagesButton.getTargetLangCode());
 		}
 	}
 
@@ -357,6 +395,19 @@ public class TranslateFragment extends BaseFragment{
 	private void changeOriginalText(String text) {
 		mEditOriginal.setText("");
 		mEditOriginal.setText(text);
+	}
+
+	private void onChangeLangs() {
+		if(mTranslationCall != null) {
+			mTranslationCall.cancel();
+		}
+		if(mDictionaryCall != null) {
+			mDictionaryCall.cancel();
+		}
+		if(getOriginalText().length() != 0) {
+			mViewTranslated.setVisibility(View.GONE);
+			loadTranslation();
+		}
 	}
 
 	@Override
