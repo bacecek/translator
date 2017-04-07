@@ -36,6 +36,10 @@ public class Utils {
 		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
 	}
 
+	public static float dpToSp(float sp, Resources resources) {
+		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, resources.getDisplayMetrics());
+	}
+
 	public static void shareText(Context context,  String text) {
 		Intent intent = new Intent();
 		intent.setAction(Intent.ACTION_SEND);

@@ -6,7 +6,9 @@ package com.bacecek.translate.utils;
  */
 
 public class Consts {
-	public final static int MAX_LISTEN_SYMBOLS = 10000;
+	public static final int MAX_LISTEN_SYMBOLS = 10000;
 	public static final int DELAY_INPUT = 700;
 	public static final int RECOGNITION_REQUEST_CODE = 777;
+	public static final String EXTRA_FULLSCREEN = "extra_fullscreen";
+	public static final int MIN_TEXTSIZE_FULLSCREEN = 25;
 }

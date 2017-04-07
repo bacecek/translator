@@ -35,6 +35,7 @@ import com.bacecek.translate.data.entities.Translation;
 import com.bacecek.translate.data.network.APIGenerator;
 import com.bacecek.translate.data.network.DictionaryAPI;
 import com.bacecek.translate.data.network.TranslatorAPI;
+import com.bacecek.translate.ui.activities.FullscreenTextActivity;
 import com.bacecek.translate.ui.adapters.DictionaryAdapter;
 import com.bacecek.translate.ui.adapters.DictionaryAdapter.OnWordClickListener;
 import com.bacecek.translate.ui.adapters.HistoryAdapter;
@@ -153,7 +154,7 @@ public class TranslateFragment extends BaseFragment{
 			switch (state) {
 				case ListenButton.STATE_PLAY:
 					mSpeechVocalizerListener.setButton(button);
-					startListen(mTxtTranslated.getText().toString(), "en");
+					startListen(getTranslatedText(), "en");
 					break;
 				case ListenButton.STATE_STOP:
 					stopListen();
@@ -226,15 +227,20 @@ public class TranslateFragment extends BaseFragment{
 		public boolean onMenuItemClick(MenuItem item) {
 			switch (item.getItemId()) {
 				case R.id.action_copy:
-					Utils.copyToClipboard(getActivity(), mTxtTranslated.getText().toString());
+					Utils.copyToClipboard(getActivity(), getTranslatedText());
 					Toast.makeText(getActivity(), R.string.text_has_been_copied, Toast.LENGTH_SHORT).show();
 					break;
 				case R.id.action_share:
-					Utils.shareText(getActivity(), mTxtTranslated.getText().toString());
+					Utils.shareText(getActivity(), getTranslatedText());
 					break;
 				case R.id.action_fullscreen:
+					Intent intent = new Intent(getActivity(), FullscreenTextActivity.class);
+					intent.putExtra(Consts.EXTRA_FULLSCREEN, getTranslatedText());
+					startActivity(intent);
 					break;
 				case R.id.action_reverse_translate:
+					changeOriginalText(getTranslatedText());
+					//TODO:поменять языки местами
 					break;
 			}
 			return false;
@@ -284,7 +290,7 @@ public class TranslateFragment extends BaseFragment{
 					Response<Translation> response) {
 				mViewTranslated.setVisibility(View.VISIBLE);
 				mTxtTranslated.setText(response.body().getTranslatedText());
-				mBtnListenTranslated.setEnabled(mTxtTranslated.getText().length() <= Consts.MAX_LISTEN_SYMBOLS);
+				mBtnListenTranslated.setEnabled(getTranslatedText().length() <= Consts.MAX_LISTEN_SYMBOLS);
 				mBtnFavourite.setActivated(RealmController.getInstance().isTranslationFavourite(originalText));
 				isSavingEnabled = true;
 			}
@@ -318,7 +324,7 @@ public class TranslateFragment extends BaseFragment{
 		if(getOriginalText().length() > 0 && mTranslationCall != null && mDictionaryCall != null&& isSavingEnabled) {
 			mTranslationCall.cancel();
 			mDictionaryCall.cancel();
-			RealmController.getInstance().insertTranslation(getOriginalText(), mTxtTranslated.getText().toString(), "ru", "en");
+			RealmController.getInstance().insertTranslation(getOriginalText(), getTranslatedText(), "ru", "en");
 		}
 	}
 
@@ -338,6 +344,10 @@ public class TranslateFragment extends BaseFragment{
 
 	private void stopListen() {
 		resetVocalizer();
+	}
+
+	private String getTranslatedText() {
+		return mTxtTranslated.getText().toString();
 	}
 
 	private String getOriginalText() {
