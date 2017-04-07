@@ -1,4 +1,4 @@
-package com.bacecek.translate.utils;
+package com.bacecek.translate.ui.views;
 
 /**
  * Created by Denis Buzmakov on 07/04/2017.

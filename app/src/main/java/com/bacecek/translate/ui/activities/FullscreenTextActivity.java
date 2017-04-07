@@ -9,7 +9,7 @@ import android.view.WindowManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.bacecek.translate.R;
-import com.bacecek.translate.utils.AutoResizeTextView;
+import com.bacecek.translate.ui.views.AutoResizeTextView;
 import com.bacecek.translate.utils.Consts;
 
 public class FullscreenTextActivity extends AppCompatActivity {
