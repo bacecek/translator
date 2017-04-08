@@ -276,7 +276,7 @@ public class TranslateFragment extends BaseFragment{
 					break;
 				case R.id.action_reverse_translate:
 					changeOriginalText(getTranslatedText());
-					//TODO:поменять языки местами
+					LanguageManager.getInstance().swapLanguages();
 					break;
 			}
 			return false;

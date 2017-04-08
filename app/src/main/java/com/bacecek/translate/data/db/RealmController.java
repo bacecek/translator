@@ -51,7 +51,7 @@ public class RealmController {
 				.findAllSortedAsync("name");
 	}
 
-	public void updateTimestampLanguage(String codeLang, long timestamp) {
+	public void updateTimestampLanguage(String codeLang) {
 		Language language = getLanguageByCode(codeLang);
 		if(language != null) {
 			mRealm.beginTransaction();

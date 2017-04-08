@@ -36,6 +36,7 @@ public class LanguageManager {
 			mCurrentOriginalLangCode = originalLangCode;
 			saveOriginalLanguage();
 			mListener.onChangeOriginalLang(getCurrentOriginalLanguage());
+			RealmController.getInstance().updateTimestampLanguage(mCurrentOriginalLangCode);
 		}
 	}
 
@@ -46,6 +47,7 @@ public class LanguageManager {
 			mCurrentTargetLangCode = targetLangCode;
 			saveTargetLanguage();
 			mListener.onChangeTargetLang(getCurrentTargetLanguage());
+			RealmController.getInstance().updateTimestampLanguage(mCurrentTargetLangCode);
 		}
 	}
 
@@ -85,6 +87,8 @@ public class LanguageManager {
 		saveTargetLanguage();
 		mListener.onChangeOriginalLang(getCurrentOriginalLanguage());
 		mListener.onChangeTargetLang(getCurrentTargetLanguage());
+		RealmController.getInstance().updateTimestampLanguage(mCurrentOriginalLangCode);
+		RealmController.getInstance().updateTimestampLanguage(mCurrentTargetLangCode);
 	}
 
 	private void saveOriginalLanguage() {

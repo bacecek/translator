@@ -9,7 +9,6 @@ import io.realm.annotations.PrimaryKey;
  */
 
 public class Translation extends RealmObject{
-	//TODO:объяснение почему так а не иначе
 	@PrimaryKey
 	private int id;
 	private String originalText;

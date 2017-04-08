@@ -50,7 +50,6 @@ import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements OnNavigationItemSelectedListener {
 	//TODO:добавить receiver на появление интернета
-	//TODO:убрать загрузку языков в сервис
 	@BindView(R.id.view_navigation)
 	NavigationView mNavigationView;
 	@BindView(R.id.layout_drawer)
