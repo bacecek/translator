@@ -1,8 +1,8 @@
 package com.bacecek.translate;
 
 import android.app.Application;
+import com.bacecek.translate.data.db.PrefsManager;
 import io.realm.Realm;
-import ru.yandex.speechkit.SpeechKit;
 import timber.log.Timber;
 import timber.log.Timber.DebugTree;
 
@@ -17,6 +17,7 @@ public class App extends Application {
 	public void onCreate() {
 		super.onCreate();
 
+		PrefsManager.init(this);
 		Realm.init(this);
 		Timber.plant(new DebugTree());
 	}

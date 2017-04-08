@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -29,6 +30,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import com.bacecek.translate.R;
+import com.bacecek.translate.data.db.LanguageManager;
+import com.bacecek.translate.data.db.LanguageManager.OnChangeLanguageListener;
 import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.data.entities.DictionaryItem;
 import com.bacecek.translate.data.entities.Language;
@@ -36,6 +39,7 @@ import com.bacecek.translate.data.entities.Translation;
 import com.bacecek.translate.data.network.APIGenerator;
 import com.bacecek.translate.data.network.DictionaryAPI;
 import com.bacecek.translate.data.network.TranslatorAPI;
+import com.bacecek.translate.ui.activities.ChooseLanguageActivity;
 import com.bacecek.translate.ui.activities.FullscreenTextActivity;
 import com.bacecek.translate.ui.adapters.DictionaryAdapter;
 import com.bacecek.translate.ui.adapters.DictionaryAdapter.OnWordClickListener;
@@ -43,8 +47,6 @@ import com.bacecek.translate.ui.adapters.HistoryAdapter;
 import com.bacecek.translate.ui.adapters.HistoryAdapter.OnItemClickListener;
 import com.bacecek.translate.ui.events.ClickMenuEvent;
 import com.bacecek.translate.ui.events.TranslateEvent;
-import com.bacecek.translate.ui.views.LanguagesButton;
-import com.bacecek.translate.ui.views.LanguagesButton.OnChangeLanguageListener;
 import com.bacecek.translate.ui.views.ListenButton;
 import com.bacecek.translate.utils.Consts;
 import com.bacecek.translate.utils.HistoryDismissTouchHelper;
@@ -93,10 +95,12 @@ public class TranslateFragment extends BaseFragment{
 	View mViewDictionary;
 	@BindView(R.id.txt_translated)
 	TextView mTxtTranslated;
+	@BindView(R.id.btn_original_lang)
+	Button mBtnOriginalLang;
+	@BindView(R.id.btn_target_lang)
+	Button mBtnTargetLang;
 	@BindView(R.id.scroll_view)
 	NestedScrollView mScrollView;
-	@BindView(R.id.btn_languages)
-	LanguagesButton mLanguagesButton;
 
 	private TranslatorAPI mTranslatorAPI;
 	private DictionaryAPI mDictionaryAPI;
@@ -107,19 +111,34 @@ public class TranslateFragment extends BaseFragment{
 	private boolean isSavingEnabled = false;
 	private Vocalizer mSpeechVocalizer;
 
+	@OnClick(R.id.btn_original_lang)
+	void onClickOriginalLang() {
+		Intent intent = new Intent(getActivity(), ChooseLanguageActivity.class);
+		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_DETECT, true);
+		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_CURRENT, LanguageManager.getInstance().getCurrentOriginalLangCode());
+		startActivity(intent);
+	}
+
+	@OnClick(R.id.btn_target_lang)
+	void onClickTargetLang() {
+		Intent intent = new Intent(getActivity(), ChooseLanguageActivity.class);
+		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_CURRENT, LanguageManager.getInstance().getCurrentTargetLangCode());
+		startActivity(intent);
+	}
+
 	@OnClick(R.id.btn_favourite)
 	void onClickFavourite(View view) {
 		Translation translation = RealmController.getInstance().getTranslation(
 				getOriginalText(),
-				mLanguagesButton.getOriginalLangCode(),
-				mLanguagesButton.getTargetLangCode());
+				LanguageManager.getInstance().getCurrentOriginalLangCode(),
+				LanguageManager.getInstance().getCurrentTargetLangCode());
 		if(translation == null) {
 			saveTranslation();
 		}
 		RealmController.getInstance().changeFavourite(
 				getOriginalText(),
-				mLanguagesButton.getOriginalLangCode(),
-				mLanguagesButton.getTargetLangCode());
+				LanguageManager.getInstance().getCurrentOriginalLangCode(),
+				LanguageManager.getInstance().getCurrentTargetLangCode());
 
 		view.setActivated(!view.isActivated());
 	}
@@ -134,7 +153,7 @@ public class TranslateFragment extends BaseFragment{
 	void onClickMic() {
 		Intent intent = new Intent(getActivity(), RecognizerActivity.class);
 		intent.putExtra(RecognizerActivity.EXTRA_MODEL, Model.QUERIES);
-		intent.putExtra(RecognizerActivity.EXTRA_LANGUAGE, mLanguagesButton.getOriginalLangCode());
+		intent.putExtra(RecognizerActivity.EXTRA_LANGUAGE, LanguageManager.getInstance().getCurrentOriginalLangCode());
 		startActivityForResult(intent, Consts.RECOGNITION_REQUEST_CODE);
 	}
 
@@ -146,7 +165,7 @@ public class TranslateFragment extends BaseFragment{
 			switch (state) {
 				case ListenButton.STATE_PLAY:
 					mSpeechVocalizerListener.setButton(button);
-					startListen(getOriginalText(), mLanguagesButton.getOriginalLangCode());
+					startListen(getOriginalText(), LanguageManager.getInstance().getCurrentOriginalLangCode());
 					break;
 				case ListenButton.STATE_STOP:
 					stopListen();
@@ -165,7 +184,7 @@ public class TranslateFragment extends BaseFragment{
 			switch (state) {
 				case ListenButton.STATE_PLAY:
 					mSpeechVocalizerListener.setButton(button);
-					startListen(getTranslatedText(), mLanguagesButton.getTargetLangCode());
+					startListen(getTranslatedText(), LanguageManager.getInstance().getCurrentTargetLangCode());
 					break;
 				case ListenButton.STATE_STOP:
 					stopListen();
@@ -187,6 +206,11 @@ public class TranslateFragment extends BaseFragment{
 		popupMenu.getMenuInflater().inflate(R.menu.menu_more, popupMenu.getMenu());
 		popupMenu.setOnMenuItemClickListener(mOnMenuMoreItemClickListener);
 		popupMenu.show();
+	}
+
+	@OnClick(R.id.btn_swap)
+	void onClickSwap() {
+		LanguageManager.getInstance().swapLanguages();
 	}
 
 	@OnTextChanged(value = R.id.edit_original_text, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
@@ -219,8 +243,9 @@ public class TranslateFragment extends BaseFragment{
 	private final OnItemClickListener mOnItemHistoryClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(Translation translation) {
+			LanguageManager.getInstance().setCurrentOriginalLangCode(translation.getOriginalLang());
+			LanguageManager.getInstance().setCurrentTargetLangCode(translation.getTargetLang());
 			changeOriginalText(translation.getOriginalText());
-			mEditOriginal.setSelection(translation.getOriginalText().length());
 		}
 	};
 
@@ -262,12 +287,14 @@ public class TranslateFragment extends BaseFragment{
 		@Override
 		public void onChangeOriginalLang(Language lang) {
 			onChangeLangs();
+			mBtnOriginalLang.setText(lang.getName());
 			//TODO: чекать возможность воспроизведения и записи
 		}
 
 		@Override
 		public void onChangeTargetLang(Language lang) {
 			onChangeLangs();
+			mBtnTargetLang.setText(lang.getName());
 			//TODO: чекать возможность воспроизведения и записи
 		}
 	};
@@ -301,13 +328,13 @@ public class TranslateFragment extends BaseFragment{
 		helper.attachToRecyclerView(mRecyclerHistory);
 		mRecyclerDictionary.setLayoutManager(new LinearLayoutManager(getActivity()));
 		mRecyclerDictionary.setNestedScrollingEnabled(false);
-		mLanguagesButton.setListener(mLanguageListener);
+		LanguageManager.getInstance().setListener(mLanguageListener);
 	}
 
 	private void loadTranslation() {
 		mViewDictionary.setVisibility(View.GONE);
 		final String originalText = getOriginalText();
-		String direction = mLanguagesButton.getOriginalLangCode() + "-" + mLanguagesButton.getTargetLangCode();
+		String direction = LanguageManager.getInstance().getCurrentOriginalLangCode() + "-" + LanguageManager.getInstance().getCurrentTargetLangCode();
 		mTranslationCall = mTranslatorAPI.translate(originalText, direction);
 		mDictionaryCall = mDictionaryAPI.translate(originalText, direction);
 		isSavingEnabled = false;
@@ -322,8 +349,8 @@ public class TranslateFragment extends BaseFragment{
 							.setEnabled(getTranslatedText().length() <= Consts.MAX_LISTEN_SYMBOLS);
 					mBtnFavourite.setActivated(RealmController.getInstance().isTranslationFavourite(
 							originalText,
-							mLanguagesButton.getOriginalLangCode(),
-							mLanguagesButton.getTargetLangCode()));
+							LanguageManager.getInstance().getCurrentOriginalLangCode(),
+							LanguageManager.getInstance().getCurrentTargetLangCode()));
 					isSavingEnabled = true;
 				}
 			}
@@ -361,8 +388,8 @@ public class TranslateFragment extends BaseFragment{
 			mTranslationCall.cancel();
 			mDictionaryCall.cancel();
 			RealmController.getInstance().insertTranslation(getOriginalText(), getTranslatedText(),
-					mLanguagesButton.getOriginalLangCode(),
-					mLanguagesButton.getTargetLangCode());
+					LanguageManager.getInstance().getCurrentOriginalLangCode(),
+					LanguageManager.getInstance().getCurrentTargetLangCode());
 		}
 	}
 
@@ -395,6 +422,7 @@ public class TranslateFragment extends BaseFragment{
 	private void changeOriginalText(String text) {
 		mEditOriginal.setText("");
 		mEditOriginal.setText(text);
+		mEditOriginal.setSelection(mEditOriginal.getText().length());
 	}
 
 	private void onChangeLangs() {
@@ -418,6 +446,9 @@ public class TranslateFragment extends BaseFragment{
 				== PackageManager.PERMISSION_GRANTED;
 
 		mBtnMic.setActivated(isPermissionRecordAudioGranted);
+
+		mBtnOriginalLang.setText(LanguageManager.getInstance().getCurrentOriginalLangName());
+		mBtnTargetLang.setText(LanguageManager.getInstance().getCurrentTargetLangName());
 	}
 
 	@Override
@@ -455,6 +486,8 @@ public class TranslateFragment extends BaseFragment{
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onTranslateEvent(TranslateEvent event) {
 		saveTranslation();
+		LanguageManager.getInstance().setCurrentOriginalLangCode(event.originalLang);
+		LanguageManager.getInstance().setCurrentTargetLangCode(event.targetLang);
 		changeOriginalText(event.text);
 	}
 }

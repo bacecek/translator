@@ -12,6 +12,7 @@ public class Language extends RealmObject {
 	@PrimaryKey
 	private String code;
 	private String name;
+	private long lastUsedTimeStamp;
 
 	public Language() {
 	}
@@ -35,5 +36,13 @@ public class Language extends RealmObject {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public long getLastUsedTimeStamp() {
+		return lastUsedTimeStamp;
+	}
+
+	public void setLastUsedTimeStamp(long lastUsedTimeStamp) {
+		this.lastUsedTimeStamp = lastUsedTimeStamp;
 	}
 }

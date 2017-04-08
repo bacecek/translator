@@ -16,4 +16,8 @@ public class Consts {
 	public static final String PREFS_TARGET_LANG_KEY = "prefs_langs";
 	public static final String PREFS_DEFAULT_ORIGINAL_LANG = "ru";
 	public static final String PREFS_DEFAULT_TARGET_LANG = "en";
+	public static final String EXTRA_CHOOSE_LANG_DETECT = "extra_choose_lang_detect";
+	public static final String EXTRA_CHOOSE_LANG_CURRENT = "extra_choose_lang_current";
+	public static final String EXTRA_CHOSEN_LANG = "extra_chosen_lang";
+	public static final String DETECT_LANG_KEY = "detect_lang";
 }

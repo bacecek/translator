@@ -36,7 +36,28 @@ public class RealmController {
 	}
 
 	public RealmResults<Language> getLanguages() {
-		return mRealm.where(Language.class).findAll();
+		return mRealm.where(Language.class)
+				.findAllSorted("name");
+	}
+
+	public RealmResults<Language> getLanguagesAsync() {
+		return mRealm.where(Language.class)
+				.findAllSortedAsync("name");
+	}
+
+	public RealmResults<Language> getRecentlyUsedLanguages() {
+		return mRealm.where(Language.class)
+				.greaterThan("lastUsedTimeStamp", 0)
+				.findAllSortedAsync("name");
+	}
+
+	public void updateTimestampLanguage(String codeLang, long timestamp) {
+		Language language = getLanguageByCode(codeLang);
+		if(language != null) {
+			mRealm.beginTransaction();
+			language.setLastUsedTimeStamp(System.currentTimeMillis());
+			mRealm.commitTransaction();
+		}
 	}
 
 	public void insertLanguages(RealmList<Language> list) {

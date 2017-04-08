@@ -8,8 +8,12 @@ package com.bacecek.translate.ui.events;
 public class TranslateEvent {
 
 	public final String text;
+	public final String originalLang;
+	public final String targetLang;
 
-	public TranslateEvent(String text) {
+	public TranslateEvent(String text, String originalLang, String targetLang) {
 		this.text = text;
+		this.originalLang = originalLang;
+		this.targetLang = targetLang;
 	}
 }

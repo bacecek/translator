@@ -10,26 +10,45 @@ import com.bacecek.translate.utils.Consts;
  */
 
 public class PrefsManager {
-	public static String getLastUsedOriginalLang(Context context) {
-		SharedPreferences prefs = context.getSharedPreferences(Consts.PREFS_LANGS_KEY, Context.MODE_PRIVATE);
-		return prefs.getString(Consts.PREFS_ORIGINAL_LANG_KEY, Consts.PREFS_DEFAULT_ORIGINAL_LANG);
+	private static PrefsManager mInstance;
+	private static volatile Context mContext;
+	private SharedPreferences mPrefsLangs;
+
+	public static synchronized PrefsManager getInstance() {
+		if (mContext == null) {
+			throw new IllegalStateException("Call `PrefsManager.init(Context)` before calling this method.");
+		}
+
+		if(mInstance == null) {
+			mInstance = new PrefsManager();
+		}
+		return mInstance;
 	}
 
-	public static String getLastUsedTargetLang(Context context) {
-		SharedPreferences prefs = context.getSharedPreferences(Consts.PREFS_LANGS_KEY, Context.MODE_PRIVATE);
-		return prefs.getString(Consts.PREFS_TARGET_LANG_KEY, Consts.PREFS_DEFAULT_TARGET_LANG);
+	public static void init(Context context) {
+		mContext = context.getApplicationContext();
 	}
 
-	public static void setLastUsedOriginalLang(Context context, String code) {
-		SharedPreferences prefs = context.getSharedPreferences(Consts.PREFS_LANGS_KEY, Context.MODE_PRIVATE);
-		prefs.edit()
+	private PrefsManager() {
+		mPrefsLangs = mContext.getSharedPreferences(Consts.PREFS_LANGS_KEY, Context.MODE_PRIVATE);
+	}
+
+	public String getLastUsedOriginalLang() {
+		return mPrefsLangs.getString(Consts.PREFS_ORIGINAL_LANG_KEY, Consts.PREFS_DEFAULT_ORIGINAL_LANG);
+	}
+
+	public String getLastUsedTargetLang() {
+		return mPrefsLangs.getString(Consts.PREFS_TARGET_LANG_KEY, Consts.PREFS_DEFAULT_TARGET_LANG);
+	}
+
+	public void setLastUsedOriginalLang(String code) {
+		mPrefsLangs.edit()
 				.putString(Consts.PREFS_ORIGINAL_LANG_KEY, code)
 				.apply();
 	}
 
-	public static void setLastUsedTargetLang(Context context, String code) {
-		SharedPreferences prefs = context.getSharedPreferences(Consts.PREFS_LANGS_KEY, Context.MODE_PRIVATE);
-		prefs.edit()
+	public void setLastUsedTargetLang(String code) {
+		mPrefsLangs.edit()
 				.putString(Consts.PREFS_TARGET_LANG_KEY, code)
 				.apply();
 	}

@@ -8,8 +8,12 @@ package com.bacecek.translate.ui.events;
 public class ClickFavouriteEvent {
 
 	public final String text;
+	public final String originalLang;
+	public final String targetLang;
 
-	public ClickFavouriteEvent(String text) {
+	public ClickFavouriteEvent(String text, String originalLang, String targetLang) {
 		this.text = text;
+		this.originalLang = originalLang;
+		this.targetLang = targetLang;
 	}
 }

@@ -90,7 +90,10 @@ public class FavouritesFragment extends BaseFragment {
 	private final OnItemClickListener mOnFavouritesItemClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(Translation translation) {
-			EventBus.getDefault().post(new ClickFavouriteEvent(translation.getOriginalText()));
+			EventBus.getDefault().post(new ClickFavouriteEvent(
+					translation.getOriginalText(),
+					translation.getOriginalLang(),
+					translation.getTargetLang()));
 		}
 	};
 
