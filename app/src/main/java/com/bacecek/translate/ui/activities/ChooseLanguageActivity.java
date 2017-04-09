@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.AdapterDataObserver;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.db.LanguageManager;
 import com.bacecek.translate.data.db.RealmController;
@@ -25,8 +23,6 @@ import timber.log.Timber;
 public class ChooseLanguageActivity extends AppCompatActivity {
 	@BindView(R.id.toolbar)
 	Toolbar mToolbar;
-	@BindView(R.id.txt_detect_lang)
-	AppCompatTextView mTxtDetectLang;
 	@BindView(R.id.view_recently)
 	View mViewRecentlyUsed;
 	@BindView(R.id.view_all)
@@ -38,14 +34,9 @@ public class ChooseLanguageActivity extends AppCompatActivity {
 	@BindView(R.id.scrollview)
 	NestedScrollView mScrollView;
 
-	private boolean mDetectLang;
-	private LanguagesAdapter mRecentlyLangsAdapter;
+	private int mChooseLangType;
 
-	@OnClick(R.id.txt_detect_lang)
-	void onClickDetect(View view) {
-		AppCompatTextView textView = (AppCompatTextView) view;
-		chooseLanguageAndFinish(textView.getText().toString());
-	}
+	private LanguagesAdapter mRecentlyLangsAdapter;
 
 	private final OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
 		@Override
@@ -86,9 +77,8 @@ public class ChooseLanguageActivity extends AppCompatActivity {
 		});
 
 		Intent intent = getIntent();
-		mDetectLang = intent.getBooleanExtra(Consts.EXTRA_CHOOSE_LANG_DETECT, false);
-		mTxtDetectLang.setVisibility(mDetectLang ? View.VISIBLE : View.GONE);
 		String currentLang = intent.getStringExtra(Consts.EXTRA_CHOOSE_LANG_CURRENT);
+		mChooseLangType = intent.getIntExtra(Consts.EXTRA_CHOOSE_LANG_TYPE, 0);
 
 		mRecyclerRecentlyUsed.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 		mRecyclerRecentlyUsed.setHasFixedSize(true);
@@ -114,9 +104,9 @@ public class ChooseLanguageActivity extends AppCompatActivity {
 	}
 
 	private void chooseLanguageAndFinish(String lang) {
-		if(mDetectLang) {
+		if(mChooseLangType == Consts.CHOOSE_LANG_TYPE_ORIGINAL) {
 			LanguageManager.getInstance().setCurrentOriginalLangCode(lang);
-		} else {
+		} else if (mChooseLangType == Consts.CHOOSE_LANG_TYPE_TARGET){
 			LanguageManager.getInstance().setCurrentTargetLangCode(lang);
 		}
 		finish();

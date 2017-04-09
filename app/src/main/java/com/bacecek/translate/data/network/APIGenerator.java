@@ -4,7 +4,6 @@ import com.bacecek.translate.BuildConfig;
 import com.bacecek.translate.data.entities.DictionaryItem;
 import com.bacecek.translate.data.entities.Language;
 import com.bacecek.translate.data.entities.Translation;
-import com.bacecek.translate.data.network.deserializers.DetectLangDeserializer;
 import com.bacecek.translate.data.network.deserializers.DictionaryDeserializer;
 import com.bacecek.translate.data.network.deserializers.LangsDeserializer;
 import com.bacecek.translate.data.network.deserializers.TranslateDeserializer;
@@ -32,7 +31,6 @@ public class APIGenerator {
 	private static final Gson sGson = new GsonBuilder()
 			.registerTypeAdapter(new TypeToken<List<Language>>(){}.getType(), new LangsDeserializer())
 			.registerTypeAdapter(new TypeToken<Translation>(){}.getType(), new TranslateDeserializer())
-			.registerTypeAdapter(new TypeToken<String>(){}.getType(), new DetectLangDeserializer())
 			.registerTypeAdapter(new TypeToken<List<DictionaryItem>>(){}.getType(), new DictionaryDeserializer())
 			.create();
 

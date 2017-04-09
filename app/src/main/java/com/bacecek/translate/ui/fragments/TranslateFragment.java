@@ -116,7 +116,7 @@ public class TranslateFragment extends BaseFragment{
 	@OnClick(R.id.btn_original_lang)
 	void onClickOriginalLang() {
 		Intent intent = new Intent(getActivity(), ChooseLanguageActivity.class);
-		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_DETECT, true);
+		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_TYPE, Consts.CHOOSE_LANG_TYPE_ORIGINAL);
 		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_CURRENT, LanguageManager.getInstance().getCurrentOriginalLangCode());
 		startActivity(intent);
 	}
@@ -124,6 +124,7 @@ public class TranslateFragment extends BaseFragment{
 	@OnClick(R.id.btn_target_lang)
 	void onClickTargetLang() {
 		Intent intent = new Intent(getActivity(), ChooseLanguageActivity.class);
+		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_TYPE, Consts.CHOOSE_LANG_TYPE_TARGET);
 		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_CURRENT, LanguageManager.getInstance().getCurrentTargetLangCode());
 		startActivity(intent);
 	}

@@ -28,15 +28,6 @@
 			android:layout_height="wrap_content"
 			android:orientation="vertical">
 
-			<android.support.v7.widget.AppCompatTextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:id="@+id/txt_detect_lang"
-				style="@style/LanguageTextView"
-				android:background="?attr/selectableItemBackground"
-				app:backgroundTint="@android:color/white"
-				android:text="@string/detect_lang"/>
-
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"

@@ -19,11 +19,6 @@ public interface TranslatorAPI {
 			@Query("ui") String uiLang
 	);
 
-	@GET("detect")
-	Call<String> detectLang(
-			@Query("text") String text
-	);
-
 	@GET("translate")
 	Call<Translation> translate(
 			@Query("text") String text,
