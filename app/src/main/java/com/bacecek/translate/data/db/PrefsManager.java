@@ -3,6 +3,7 @@ package com.bacecek.translate.data.db;
 import android.content.Context;
 import android.content.SharedPreferences;
 import com.bacecek.translate.utils.Consts;
+import java.util.Locale;
 
 /**
  * Created by Denis Buzmakov on 07/04/2017.
@@ -50,6 +51,16 @@ public class PrefsManager {
 	public void setLastUsedTargetLang(String code) {
 		mPrefsLangs.edit()
 				.putString(Consts.PREFS_TARGET_LANG_KEY, code)
+				.apply();
+	}
+
+	public String getSavedSystemLocale() {
+		return mPrefsLangs.getString(Consts.PREFS_LOCALE, Locale.getDefault().getLanguage());
+	}
+
+	public void saveSystemLocale() {
+		mPrefsLangs.edit()
+				.putString(Consts.PREFS_LOCALE, Locale.getDefault().getLanguage())
 				.apply();
 	}
 }

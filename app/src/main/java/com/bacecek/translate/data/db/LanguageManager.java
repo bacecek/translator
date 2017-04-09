@@ -74,11 +74,11 @@ public class LanguageManager {
 	}
 
 	public String getCurrentOriginalLangName() {
-		return RealmController.getInstance().getLanguageByCode(mCurrentOriginalLangCode).getName();
+		return getCurrentOriginalLanguage().getName();
 	}
 
 	public String getCurrentTargetLangName() {
-		return RealmController.getInstance().getLanguageByCode(mCurrentTargetLangCode).getName();
+		return getCurrentTargetLanguage().getName();
 	}
 
 	public void swapLanguages() {

@@ -96,9 +96,7 @@ public class ChooseLanguageActivity extends AppCompatActivity {
 				RealmController.getInstance().getLanguagesAsync(),
 				mOnItemClickListener,
 				currentLang);
-		Timber.d(String.valueOf(System.currentTimeMillis()));
 		mRecyclerAll.setAdapter(allAdapter);
-		Timber.d(String.valueOf(System.currentTimeMillis()));
 
 		mScrollView.scrollTo(0, 0);
 	}

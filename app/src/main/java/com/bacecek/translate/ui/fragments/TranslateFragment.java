@@ -32,6 +32,7 @@ import butterknife.OnTextChanged;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.db.LanguageManager;
 import com.bacecek.translate.data.db.LanguageManager.OnChangeLanguageListener;
+import com.bacecek.translate.data.db.PrefsManager;
 import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.data.entities.DictionaryItem;
 import com.bacecek.translate.data.entities.Language;
@@ -342,7 +343,7 @@ public class TranslateFragment extends BaseFragment{
 		final String originalText = getOriginalText();
 		String direction = LanguageManager.getInstance().getCurrentOriginalLangCode() + "-" + LanguageManager.getInstance().getCurrentTargetLangCode();
 		mTranslationCall = mTranslatorAPI.translate(originalText, direction);
-		mDictionaryCall = mDictionaryAPI.translate(originalText, direction);
+		mDictionaryCall = mDictionaryAPI.translate(originalText, direction, PrefsManager.getInstance().getSavedSystemLocale());
 		isSavingEnabled = false;
 		mTranslationCall.enqueue(new Callback<Translation>() {
 			@Override

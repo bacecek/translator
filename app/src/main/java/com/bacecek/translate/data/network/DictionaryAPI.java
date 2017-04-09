@@ -15,6 +15,7 @@ public interface DictionaryAPI {
 	@GET("lookup")
 	Call<List<DictionaryItem>> translate(
 			@Query("text") String text,
-			@Query("lang") String langs
+			@Query("lang") String langs,
+			@Query("ui") String ui
 	);
 }

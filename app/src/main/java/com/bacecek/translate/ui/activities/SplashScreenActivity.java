@@ -11,15 +11,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.bacecek.translate.R;
+import com.bacecek.translate.data.db.PrefsManager;
 import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.data.entities.Language;
 import com.bacecek.translate.data.network.APIGenerator;
 import com.bacecek.translate.data.network.TranslatorAPI;
 import io.realm.RealmList;
 import java.util.List;
+import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import timber.log.Timber;
 
 public class SplashScreenActivity extends AppCompatActivity {
 	@BindView(R.id.view_error)
@@ -45,11 +48,13 @@ public class SplashScreenActivity extends AppCompatActivity {
 		ButterKnife.bind(this);
 		initUI();
 
-		if(RealmController.getInstance().getLanguages().size() > 0) {
-			goToMainScreen();
-		} else {
-			mViewLoading.setVisibility(View.VISIBLE);
+		int langsCount = RealmController.getInstance().getLanguages().size();
+		Timber.d(PrefsManager.getInstance().getSavedSystemLocale());
+		Timber.d(Locale.getDefault().getLanguage());
+		if(langsCount == 0 || !PrefsManager.getInstance().getSavedSystemLocale().equals(Locale.getDefault().getLanguage())) {
 			loadLangs();
+		} else {
+			goToMainScreen();
 		}
 	}
 
@@ -65,8 +70,9 @@ public class SplashScreenActivity extends AppCompatActivity {
 	}
 
 	private void loadLangs() {
+		Timber.d("loading languages");
 		TranslatorAPI api = APIGenerator.createTranslatorService();
-		mLoadLanguageCall = api.getLangs("ru");
+		mLoadLanguageCall = api.getLangs(Locale.getDefault().getLanguage());
 		mLoadLanguageCall.enqueue(new Callback<List<Language>>() {
 			@Override
 			public void onResponse(Call<List<Language>> call, final Response<List<Language>> response) {
@@ -78,6 +84,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 						list.addAll(response.body());
 						RealmController.getInstance().insertLanguages(list);
 						goToMainScreen();
+						PrefsManager.getInstance().saveSystemLocale();
 					}
 				});
 			}
