@@ -259,6 +259,7 @@ public class TranslateFragment extends BaseFragment{
 		@Override
 		public void onWordClick(String word) {
 			changeOriginalText(word);
+			LanguageManager.getInstance().swapLanguages();
 		}
 	};
 
