@@ -3,6 +3,8 @@ package com.bacecek.translate.ui.fragments;
 import android.Manifest.permission;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -23,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
@@ -101,6 +104,8 @@ public class TranslateFragment extends BaseFragment{
 	Button mBtnTargetLang;
 	@BindView(R.id.scroll_view)
 	NestedScrollView mScrollView;
+	@BindView(R.id.view_progress_loading)
+	ProgressBar mProgressBar;
 
 	private TranslatorAPI mTranslatorAPI;
 	private DictionaryAPI mDictionaryAPI;
@@ -329,10 +334,12 @@ public class TranslateFragment extends BaseFragment{
 		mRecyclerDictionary.setLayoutManager(new LinearLayoutManager(getActivity()));
 		mRecyclerDictionary.setNestedScrollingEnabled(false);
 		LanguageManager.getInstance().setListener(mLanguageListener);
+		mProgressBar.getIndeterminateDrawable().setColorFilter(Color.WHITE, Mode.SRC_IN);
 	}
 
 	private void loadTranslation() {
 		mViewDictionary.setVisibility(View.GONE);
+		mProgressBar.setVisibility(View.VISIBLE);
 		final String originalText = getOriginalText();
 		String direction = LanguageManager.getInstance().getCurrentOriginalLangCode() + "-" + LanguageManager.getInstance().getCurrentTargetLangCode();
 		mTranslationCall = mTranslatorAPI.translate(originalText, direction);
@@ -342,6 +349,7 @@ public class TranslateFragment extends BaseFragment{
 			@Override
 			public void onResponse(Call<Translation> call,
 					Response<Translation> response) {
+				mProgressBar.setVisibility(View.INVISIBLE);
 				if(response.isSuccessful() && response.body() != null) {
 					mViewTranslated.setVisibility(View.VISIBLE);
 					mTxtTranslated.setText(response.body().getTranslatedText());
@@ -357,7 +365,7 @@ public class TranslateFragment extends BaseFragment{
 
 			@Override
 			public void onFailure(Call<Translation> call, Throwable t) {
-
+				mProgressBar.setVisibility(View.INVISIBLE);
 			}
 		});
 		mDictionaryCall.enqueue(new Callback<List<DictionaryItem>>() {

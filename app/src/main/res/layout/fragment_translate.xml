@@ -17,8 +17,7 @@
 			android:layout_height="wrap_content"
 			android:id="@+id/view_header"
 			app:cardCornerRadius="0dp"
-			app:cardElevation="5dp"
-			android:layout_marginBottom="5dp">
+			app:cardElevation="5dp">
 
 			<LinearLayout
 				android:layout_width="match_parent"
@@ -31,6 +30,16 @@
 				<include layout="@layout/view_languages"/>
 
 				<include layout="@layout/view_input_original_text"/>
+
+				<ProgressBar
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/view_progress_loading"
+					style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+					android:indeterminate="true"
+					android:visibility="invisible"
+					android:layout_marginTop="-4dp"
+					android:layout_marginBottom="-4dp"/>
 
 			</LinearLayout>
 
