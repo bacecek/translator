@@ -1,15 +1,12 @@
 package com.bacecek.translate.ui.fragments;
 
-import android.Manifest.permission;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -220,7 +217,7 @@ public class TranslateFragment extends BaseFragment{
 
 	@OnTextChanged(value = R.id.edit_original_text, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
 	void onTextChanged(Editable s) {
-		mBtnListenOriginal.setEnabled(s.toString().trim().length() <= Consts.MAX_LISTEN_SYMBOLS);
+		updateVocalizeButtonsState();
 		isSavingEnabled = false;
 		if(s.toString().trim().length() == 0) {
 			mBtnClear.setVisibility(View.INVISIBLE);
@@ -293,14 +290,15 @@ public class TranslateFragment extends BaseFragment{
 		public void onChangeOriginalLang(Language lang) {
 			onChangeLangs();
 			mBtnOriginalLang.setText(lang.getName());
-			//TODO: чекать возможность воспроизведения и записи
+			boolean isLangAvailable = LanguageManager.getInstance().isRecognitionAndVocalizeAvailable(lang.getCode());
+			updateVocalizeButtonsState();
 		}
 
 		@Override
 		public void onChangeTargetLang(Language lang) {
 			onChangeLangs();
 			mBtnTargetLang.setText(lang.getName());
-			//TODO: чекать возможность воспроизведения и записи
+			updateVocalizeButtonsState();
 		}
 	};
 
@@ -353,8 +351,7 @@ public class TranslateFragment extends BaseFragment{
 				if(response.isSuccessful() && response.body() != null) {
 					mViewTranslated.setVisibility(View.VISIBLE);
 					mTxtTranslated.setText(response.body().getTranslatedText());
-					mBtnListenTranslated
-							.setEnabled(getTranslatedText().length() <= Consts.MAX_LISTEN_SYMBOLS);
+					updateVocalizeButtonsState();
 					mBtnFavourite.setActivated(RealmController.getInstance().isTranslationFavourite(
 							originalText,
 							LanguageManager.getInstance().getCurrentOriginalLangCode(),
@@ -444,19 +441,27 @@ public class TranslateFragment extends BaseFragment{
 			mViewTranslated.setVisibility(View.GONE);
 			loadTranslation();
 		}
+		updateVocalizeButtonsState();
+	}
+
+	private void updateVocalizeButtonsState() {
+		mBtnListenOriginal.setEnabled(
+				LanguageManager.getInstance().isRecognitionAndVocalizeAvailable(LanguageManager.getInstance().getCurrentOriginalLangCode()) &&
+						getOriginalText().length() <= Consts.MAX_LISTEN_SYMBOLS);
+		mBtnListenTranslated.setEnabled(
+				LanguageManager.getInstance().isRecognitionAndVocalizeAvailable(LanguageManager.getInstance().getCurrentTargetLangCode()) &&
+						getTranslatedText().length() < Consts.MAX_LISTEN_SYMBOLS);
+		mBtnMic.setEnabled(LanguageManager.getInstance().isRecognitionAndVocalizeAvailable(LanguageManager.getInstance().getCurrentOriginalLangCode()));
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 
-		boolean isPermissionRecordAudioGranted = ContextCompat.checkSelfPermission(getActivity(), permission.RECORD_AUDIO)
-				== PackageManager.PERMISSION_GRANTED;
-
-		mBtnMic.setActivated(isPermissionRecordAudioGranted);
-
 		mBtnOriginalLang.setText(LanguageManager.getInstance().getCurrentOriginalLangName());
 		mBtnTargetLang.setText(LanguageManager.getInstance().getCurrentTargetLangName());
+
+		updateVocalizeButtonsState();
 	}
 
 	@Override

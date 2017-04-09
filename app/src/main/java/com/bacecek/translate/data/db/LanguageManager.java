@@ -1,6 +1,7 @@
 package com.bacecek.translate.data.db;
 
 import com.bacecek.translate.data.entities.Language;
+import java.util.Arrays;
 
 /**
  * Created by Denis Buzmakov on 08/04/2017.
@@ -11,6 +12,7 @@ public class LanguageManager {
 	private static LanguageManager mInstance;
 	private String mCurrentOriginalLangCode;
 	private String mCurrentTargetLangCode;
+	private final String[] mAvailableRecognition = {"ru", "en", "tr", "uk"};
 	private OnChangeLanguageListener mListener;
 
 	public static synchronized LanguageManager getInstance() {
@@ -97,6 +99,10 @@ public class LanguageManager {
 
 	private void saveTargetLanguage() {
 		PrefsManager.getInstance().setLastUsedTargetLang(mCurrentTargetLangCode);
+	}
+
+	public boolean isRecognitionAndVocalizeAvailable(String langCode) {
+		return Arrays.asList(mAvailableRecognition).contains(langCode);
 	}
 
 	public OnChangeLanguageListener getListener() {

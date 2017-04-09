@@ -50,6 +50,7 @@ public class SpeechVocalizeListener implements VocalizerListener {
 	@Override
 	public void onVocalizerError(Vocalizer vocalizer, Error error) {
 		if(mButton != null) {
+			mButton.setState(ListenButton.STATE_PLAY);
 			Toast.makeText(mButton.getContext(), error.getString(), Toast.LENGTH_LONG).show();
 		}
 	}
