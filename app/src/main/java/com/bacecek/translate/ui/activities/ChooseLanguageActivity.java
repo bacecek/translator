@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.AdapterDataObserver;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,6 +39,7 @@ public class ChooseLanguageActivity extends AppCompatActivity {
 	NestedScrollView mScrollView;
 
 	private boolean mDetectLang;
+	private LanguagesAdapter mRecentlyLangsAdapter;
 
 	@OnClick(R.id.txt_detect_lang)
 	void onClickDetect(View view) {
@@ -45,10 +47,22 @@ public class ChooseLanguageActivity extends AppCompatActivity {
 		chooseLanguageAndFinish(textView.getText().toString());
 	}
 
-	private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
+	private final OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(String lang) {
 			chooseLanguageAndFinish(lang);
+		}
+	};
+
+	private final AdapterDataObserver mLangsDataObserver = new AdapterDataObserver() {
+		@Override
+		public void onChanged() {
+			super.onChanged();
+			if(mRecentlyLangsAdapter.getItemCount() == 0) {
+				mViewRecentlyUsed.setVisibility(View.GONE);
+			} else {
+				mViewRecentlyUsed.setVisibility(View.VISIBLE);
+			}
 		}
 	};
 
@@ -79,10 +93,12 @@ public class ChooseLanguageActivity extends AppCompatActivity {
 		mRecyclerRecentlyUsed.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 		mRecyclerRecentlyUsed.setHasFixedSize(true);
 		mRecyclerRecentlyUsed.setNestedScrollingEnabled(false);
-		LanguagesAdapter recentlyAdapter = new LanguagesAdapter(getApplicationContext(),
+		mRecentlyLangsAdapter = new LanguagesAdapter(getApplicationContext(),
 				RealmController.getInstance().getRecentlyUsedLanguages(),
 				mOnItemClickListener);
-		mRecyclerRecentlyUsed.setAdapter(recentlyAdapter);
+		mRecentlyLangsAdapter.registerAdapterDataObserver(mLangsDataObserver);
+		mLangsDataObserver.onChanged();
+		mRecyclerRecentlyUsed.setAdapter(mRecentlyLangsAdapter);
 		mRecyclerAll.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 		mRecyclerAll.setHasFixedSize(true);
 		mRecyclerAll.setNestedScrollingEnabled(false);
@@ -104,5 +120,11 @@ public class ChooseLanguageActivity extends AppCompatActivity {
 			LanguageManager.getInstance().setCurrentTargetLangCode(lang);
 		}
 		finish();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mRecentlyLangsAdapter.unregisterAdapterDataObserver(mLangsDataObserver);
 	}
 }
