@@ -49,8 +49,6 @@ public class SplashScreenActivity extends AppCompatActivity {
 		initUI();
 
 		int langsCount = RealmController.getInstance().getLanguages().size();
-		Timber.d(PrefsManager.getInstance().getSavedSystemLocale());
-		Timber.d(Locale.getDefault().getLanguage());
 		if(langsCount == 0 || !PrefsManager.getInstance().getSavedSystemLocale().equals(Locale.getDefault().getLanguage())) {
 			loadLangs();
 		} else {
@@ -76,28 +74,18 @@ public class SplashScreenActivity extends AppCompatActivity {
 		mLoadLanguageCall.enqueue(new Callback<List<Language>>() {
 			@Override
 			public void onResponse(Call<List<Language>> call, final Response<List<Language>> response) {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						mViewLoading.setVisibility(View.GONE);
-						RealmList<Language> list = new RealmList<Language>();
-						list.addAll(response.body());
-						RealmController.getInstance().insertLanguages(list);
-						goToMainScreen();
-						PrefsManager.getInstance().saveSystemLocale();
-					}
-				});
+				mViewLoading.setVisibility(View.GONE);
+				RealmList<Language> list = new RealmList<Language>();
+				list.addAll(response.body());
+				RealmController.getInstance().insertLanguages(list);
+				goToMainScreen();
+				PrefsManager.getInstance().saveSystemLocale();
 			}
 
 			@Override
 			public void onFailure(Call<List<Language>> call, Throwable t) {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						mViewLoading.setVisibility(View.GONE);
-						mViewError.setVisibility(View.VISIBLE);
-					}
-				});
+				mViewLoading.setVisibility(View.GONE);
+				mViewError.setVisibility(View.VISIBLE);
 			}
 		});
 	}
