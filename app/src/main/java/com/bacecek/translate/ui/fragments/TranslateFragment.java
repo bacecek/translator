@@ -260,6 +260,7 @@ public class TranslateFragment extends BaseFragment{
 		public void onWordClick(String word) {
 			changeOriginalText(word);
 			LanguageManager.getInstance().swapLanguages();
+			saveTranslation();
 		}
 	};
 
@@ -293,7 +294,6 @@ public class TranslateFragment extends BaseFragment{
 		public void onChangeOriginalLang(Language lang) {
 			onChangeLangs();
 			mBtnOriginalLang.setText(lang.getName());
-			boolean isLangAvailable = LanguageManager.getInstance().isRecognitionAndVocalizeAvailable(lang.getCode());
 			updateVocalizeButtonsState();
 		}
 
