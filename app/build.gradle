@@ -85,6 +85,11 @@ dependencies {
     compile "io.reactivex.rxjava2:rxandroid:2.0.1"
     compile "io.reactivex.rxjava2:rxjava:2.0.8"
 
+    //moxy
+    compile "com.arello-mobile:moxy:$moxy_version"
+    annotationProcessor "com.arello-mobile:moxy-compiler:$moxy_version"
+    compile "com.arello-mobile:moxy-app-compat:$moxy_version"
+
     //other
     compile 'com.android.support.constraint:constraint-layout:1.0.1'
     compile 'io.realm:android-adapters:1.4.0'
