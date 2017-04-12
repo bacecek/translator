@@ -7,6 +7,7 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import io.realm.Sort;
+import javax.inject.Inject;
 
 /**
  * Created by Denis Buzmakov on 21/03/2017.
@@ -17,6 +18,8 @@ public class RealmController {
 	private static RealmController instance;
 	private Realm mRealm;
 
+	//TODO:переделать все нахуй под rx
+
 	public static RealmController getInstance() {
 		if(instance == null) {
 			instance = new RealmController();
@@ -26,13 +29,17 @@ public class RealmController {
 	}
 
 	private RealmController() {
-		mRealm = Realm.getDefaultInstance();
-
 		RealmConfiguration config = new RealmConfiguration.Builder()
 				.name(Realm.DEFAULT_REALM_NAME)
 				.deleteRealmIfMigrationNeeded()
 				.build();
-		Realm.setDefaultConfiguration(config);
+
+		mRealm = Realm.getInstance(config);
+	}
+
+	@Inject
+	public RealmController(Realm realm) {
+		mRealm = realm;
 	}
 
 	public RealmResults<Language> getLanguages() {
@@ -92,12 +99,6 @@ public class RealmController {
 			translation.setFavouriteTimestamp(System.currentTimeMillis());
 			mRealm.commitTransaction();
 		}
-	}
-
-	public void destroy() {
-		mRealm.close();
-		mRealm = null;
-		instance = null;
 	}
 
 	public Translation getTranslation(String text, String originalLang, String targetLang) {

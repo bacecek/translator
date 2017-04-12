@@ -1,0 +1,56 @@
+package com.bacecek.translate.mvp.presenters;
+
+import com.arellomobile.mvp.InjectViewState;
+import com.arellomobile.mvp.MvpPresenter;
+import com.bacecek.translate.App;
+import com.bacecek.translate.data.db.LanguageManager;
+import com.bacecek.translate.data.db.RealmController;
+import com.bacecek.translate.mvp.views.ChooseLanguageView;
+import com.bacecek.translate.utils.Consts;
+import javax.inject.Inject;
+
+/**
+ * Created by Denis Buzmakov on 11/04/2017.
+ * <buzmakov.da@gmail.com>
+ */
+
+@InjectViewState
+public class ChooseLanguagePresenter extends MvpPresenter<ChooseLanguageView> {
+	@Inject
+	RealmController mRealmController;
+	@Inject
+	LanguageManager mLanguageManager;
+	private int mChooseLangType;
+
+	public ChooseLanguagePresenter() {
+		App.getAppComponent().inject(this);
+	}
+
+	@Override
+	protected void onFirstViewAttach() {
+		super.onFirstViewAttach();
+		getViewState().setRecentlyUsedLanguages(mRealmController.getRecentlyUsedLanguages());
+		getViewState().setAllLanguages(mRealmController.getLanguagesAsync());
+	}
+
+	public void setChooseLangType(int chooseLangType) {
+		mChooseLangType = chooseLangType;
+	}
+
+	public void onItemClick(String lang) {
+		if(mChooseLangType == Consts.CHOOSE_LANG_TYPE_ORIGINAL) {
+			mLanguageManager.setCurrentOriginalLangCode(lang);
+		} else if (mChooseLangType == Consts.CHOOSE_LANG_TYPE_TARGET){
+			mLanguageManager.setCurrentTargetLangCode(lang);
+		}
+		getViewState().finish();
+	}
+
+	public void datasetRecentlyUsedChanged(int size) {
+		if(size == 0) {
+			getViewState().hideRecentlyUsed();
+		} else {
+			getViewState().showRecentlyUsed();
+		}
+	}
+}

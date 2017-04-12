@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import com.bacecek.translate.utils.Consts;
 import java.util.Locale;
+import javax.inject.Inject;
 
 /**
  * Created by Denis Buzmakov on 07/04/2017.
@@ -21,7 +22,7 @@ public class PrefsManager {
 		}
 
 		if(mInstance == null) {
-			mInstance = new PrefsManager();
+			mInstance = new PrefsManager(mContext);
 		}
 		return mInstance;
 	}
@@ -30,8 +31,9 @@ public class PrefsManager {
 		mContext = context.getApplicationContext();
 	}
 
-	private PrefsManager() {
-		mPrefsLangs = mContext.getSharedPreferences(Consts.PREFS_LANGS_KEY, Context.MODE_PRIVATE);
+	@Inject
+	public PrefsManager(Context context) {
+		mPrefsLangs = context.getSharedPreferences(Consts.PREFS_LANGS_KEY, Context.MODE_PRIVATE);
 	}
 
 	public String getLastUsedOriginalLang() {

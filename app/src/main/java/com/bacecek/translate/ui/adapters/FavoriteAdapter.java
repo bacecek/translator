@@ -12,7 +12,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.bacecek.translate.R;
-import com.bacecek.translate.ui.adapters.FavouritesAdapter.ViewHolder;
+import com.bacecek.translate.ui.adapters.FavoriteAdapter.ViewHolder;
 import com.bacecek.translate.data.entities.Translation;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
@@ -22,10 +22,10 @@ import io.realm.RealmRecyclerViewAdapter;
  * <buzmakov.da@gmail.com>
  */
 
-public class FavouritesAdapter extends RealmRecyclerViewAdapter<Translation, ViewHolder> {
+public class FavoriteAdapter extends RealmRecyclerViewAdapter<Translation, ViewHolder> {
 	private OnItemClickListener mListener;
 
-	public FavouritesAdapter(@NonNull Context context,
+	public FavoriteAdapter(@NonNull Context context,
 			@Nullable OrderedRealmCollection<Translation> data,
 			OnItemClickListener listener) {
 		super(context, data, true);

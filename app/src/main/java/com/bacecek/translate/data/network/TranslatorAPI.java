@@ -2,8 +2,8 @@ package com.bacecek.translate.data.network;
 
 import com.bacecek.translate.data.entities.Language;
 import com.bacecek.translate.data.entities.Translation;
+import io.reactivex.Observable;
 import java.util.List;
-import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
@@ -14,13 +14,18 @@ import retrofit2.http.Query;
 
 public interface TranslatorAPI {
 
-	@GET("getLangs")
+	/*@GET("getLangs")
 	Call<List<Language>> getLangs(
+			@Query("ui") String uiLang
+	);*/
+
+	@GET("getLangs")
+	Observable<List<Language>> getLangs(
 			@Query("ui") String uiLang
 	);
 
 	@GET("translate")
-	Call<Translation> translate(
+	Observable<Translation> translate(
 			@Query("text") String text,
 			@Query("lang") String lang
 	);

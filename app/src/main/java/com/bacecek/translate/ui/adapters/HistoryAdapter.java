@@ -72,6 +72,7 @@ public class HistoryAdapter extends RealmRecyclerViewAdapter<Translation, Histor
 					}
 				});
 			}
+			//TODO:внести клик во фрагмент
 			mBtnFavourite.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View view) {

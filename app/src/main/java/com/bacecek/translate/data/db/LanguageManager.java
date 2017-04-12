@@ -2,6 +2,7 @@ package com.bacecek.translate.data.db;
 
 import com.bacecek.translate.data.entities.Language;
 import java.util.Arrays;
+import javax.inject.Inject;
 
 /**
  * Created by Denis Buzmakov on 08/04/2017.
@@ -22,7 +23,8 @@ public class LanguageManager {
 		return mInstance;
 	}
 
-	private LanguageManager() {
+	@Inject
+	public LanguageManager() {
 		mCurrentOriginalLangCode = PrefsManager.getInstance().getLastUsedOriginalLang();
 		mCurrentTargetLangCode = PrefsManager.getInstance().getLastUsedTargetLang();
 	}
@@ -37,7 +39,9 @@ public class LanguageManager {
 		} else {
 			mCurrentOriginalLangCode = originalLangCode;
 			saveOriginalLanguage();
-			mListener.onChangeOriginalLang(getCurrentOriginalLanguage());
+			if(mListener != null) {
+				mListener.onChangeOriginalLang(getCurrentOriginalLanguage());
+			}
 			RealmController.getInstance().updateTimestampLanguage(mCurrentOriginalLangCode);
 		}
 	}
@@ -48,7 +52,9 @@ public class LanguageManager {
 		} else {
 			mCurrentTargetLangCode = targetLangCode;
 			saveTargetLanguage();
-			mListener.onChangeTargetLang(getCurrentTargetLanguage());
+			if(mListener != null) {
+				mListener.onChangeTargetLang(getCurrentTargetLanguage());
+			}
 			RealmController.getInstance().updateTimestampLanguage(mCurrentTargetLangCode);
 		}
 	}
@@ -87,8 +93,10 @@ public class LanguageManager {
 		mCurrentTargetLangCode = temp;
 		saveOriginalLanguage();
 		saveTargetLanguage();
-		mListener.onChangeOriginalLang(getCurrentOriginalLanguage());
-		mListener.onChangeTargetLang(getCurrentTargetLanguage());
+		if(mListener != null){
+			mListener.onChangeOriginalLang(getCurrentOriginalLanguage());
+			mListener.onChangeTargetLang(getCurrentTargetLanguage());
+		}
 		RealmController.getInstance().updateTimestampLanguage(mCurrentOriginalLangCode);
 		RealmController.getInstance().updateTimestampLanguage(mCurrentTargetLangCode);
 	}

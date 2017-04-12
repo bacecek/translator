@@ -4,19 +4,17 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.support.v7.widget.helper.ItemTouchHelper.SimpleCallback;
 import android.text.Editable;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -29,20 +27,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.db.LanguageManager;
 import com.bacecek.translate.data.db.LanguageManager.OnChangeLanguageListener;
-import com.bacecek.translate.data.db.PrefsManager;
 import com.bacecek.translate.data.db.RealmController;
-import com.bacecek.translate.data.entities.DictionaryItem;
 import com.bacecek.translate.data.entities.Language;
 import com.bacecek.translate.data.entities.Translation;
-import com.bacecek.translate.data.network.APIGenerator;
-import com.bacecek.translate.data.network.DictionaryAPI;
-import com.bacecek.translate.data.network.TranslatorAPI;
+import com.bacecek.translate.mvp.presenters.TranslatePresenter;
+import com.bacecek.translate.mvp.views.TranslateView;
 import com.bacecek.translate.ui.activities.ChooseLanguageActivity;
 import com.bacecek.translate.ui.activities.FullscreenTextActivity;
-import com.bacecek.translate.ui.adapters.DictionaryAdapter;
 import com.bacecek.translate.ui.adapters.DictionaryAdapter.OnWordClickListener;
 import com.bacecek.translate.ui.adapters.HistoryAdapter;
 import com.bacecek.translate.ui.adapters.HistoryAdapter.OnItemClickListener;
@@ -50,28 +45,28 @@ import com.bacecek.translate.ui.events.ClickMenuEvent;
 import com.bacecek.translate.ui.events.TranslateEvent;
 import com.bacecek.translate.ui.views.ListenButton;
 import com.bacecek.translate.utils.Consts;
-import com.bacecek.translate.utils.HistoryDismissTouchHelper;
 import com.bacecek.translate.utils.SpeechVocalizeListener;
 import com.bacecek.translate.utils.Utils;
-import java.util.List;
+import com.jakewharton.rxbinding2.widget.RxTextView;
+import io.realm.OrderedRealmCollection;
+import io.realm.RealmResults;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import ru.yandex.speechkit.Error;
 import ru.yandex.speechkit.Recognizer.Model;
 import ru.yandex.speechkit.Vocalizer;
 import ru.yandex.speechkit.gui.RecognizerActivity;
-import timber.log.Timber;
 
 /**
  * Created by Denis Buzmakov on 17/03/2017.
  * <buzmakov.da@gmail.com>
  */
 
-public class TranslateFragment extends BaseFragment{
+public class TranslateFragment extends BaseFragment implements TranslateView{
+	@InjectPresenter
+	TranslatePresenter mPresenter;
+
 	@BindView(R.id.edit_original_text)
 	EditText mEditOriginal;
 	@BindView(R.id.btn_clear)
@@ -105,29 +100,18 @@ public class TranslateFragment extends BaseFragment{
 	@BindView(R.id.view_progress_loading)
 	ProgressBar mProgressBar;
 
-	private TranslatorAPI mTranslatorAPI;
-	private DictionaryAPI mDictionaryAPI;
-	private Handler mDelayInputHandler = new Handler(Looper.getMainLooper());
-	private Runnable mDelayInputRunnable;
-	private Call<Translation> mTranslationCall;
-	private Call<List<DictionaryItem>> mDictionaryCall;
 	private boolean isSavingEnabled = false;
 	private Vocalizer mSpeechVocalizer;
+	private HistoryAdapter mHistoryAdapter;
 
 	@OnClick(R.id.btn_original_lang)
 	void onClickOriginalLang() {
-		Intent intent = new Intent(getActivity(), ChooseLanguageActivity.class);
-		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_TYPE, Consts.CHOOSE_LANG_TYPE_ORIGINAL);
-		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_CURRENT, LanguageManager.getInstance().getCurrentOriginalLangCode());
-		startActivity(intent);
+		mPresenter.onClickChooseOriginalLang();
 	}
 
 	@OnClick(R.id.btn_target_lang)
 	void onClickTargetLang() {
-		Intent intent = new Intent(getActivity(), ChooseLanguageActivity.class);
-		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_TYPE, Consts.CHOOSE_LANG_TYPE_TARGET);
-		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_CURRENT, LanguageManager.getInstance().getCurrentTargetLangCode());
-		startActivity(intent);
+		mPresenter.onClickChooseTargetLang();
 	}
 
 	@OnClick(R.id.btn_favourite)
@@ -137,7 +121,7 @@ public class TranslateFragment extends BaseFragment{
 				LanguageManager.getInstance().getCurrentOriginalLangCode(),
 				LanguageManager.getInstance().getCurrentTargetLangCode());
 		if(translation == null) {
-			saveTranslation();
+			mPresenter.saveTranslation(getOriginalText(), getTranslatedText());
 		}
 		RealmController.getInstance().changeFavourite(
 				getOriginalText(),
@@ -149,7 +133,7 @@ public class TranslateFragment extends BaseFragment{
 
 	@OnClick(R.id.btn_clear)
 	void onClickClear() {
-		saveTranslation();
+		mPresenter.saveTranslation(getOriginalText(), getTranslatedText());
 		mEditOriginal.setText("");
 	}
 
@@ -219,7 +203,7 @@ public class TranslateFragment extends BaseFragment{
 
 	@OnTextChanged(value = R.id.edit_original_text, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
 	void onTextChanged(Editable s) {
-		updateVocalizeButtonsState();
+		/*updateVocalizeButtonsState();
 		isSavingEnabled = false;
 		if(s.toString().trim().length() == 0) {
 			mBtnClear.setVisibility(View.INVISIBLE);
@@ -241,52 +225,43 @@ public class TranslateFragment extends BaseFragment{
 				}
 			}
 		};
-		mDelayInputHandler.postDelayed(mDelayInputRunnable, Consts.DELAY_INPUT);
+		mDelayInputHandler.postDelayed(mDelayInputRunnable, Consts.DELAY_INPUT);*/
 	}
 
-	private final OnItemClickListener mOnItemHistoryClickListener = new OnItemClickListener() {
-		@Override
-		public void onItemClick(Translation translation) {
-			LanguageManager.getInstance().setCurrentOriginalLangCode(translation.getOriginalLang());
-			LanguageManager.getInstance().setCurrentTargetLangCode(translation.getTargetLang());
-			changeOriginalText(translation.getOriginalText());
-		}
+	private final OnItemClickListener mOnItemHistoryClickListener = translation -> {
+		LanguageManager.getInstance().setCurrentOriginalLangCode(translation.getOriginalLang());
+		LanguageManager.getInstance().setCurrentTargetLangCode(translation.getTargetLang());
+		changeOriginalText(translation.getOriginalText());
 	};
 
 	private final SpeechVocalizeListener mSpeechVocalizerListener = new SpeechVocalizeListener();
 
-	private final OnWordClickListener mOnWordClickListener = new OnWordClickListener() {
-		@Override
-		public void onWordClick(String word) {
-			changeOriginalText(word);
-			LanguageManager.getInstance().swapLanguages();
-			saveTranslation();
-		}
+	private final OnWordClickListener mOnWordClickListener = word -> {
+		changeOriginalText(word);
+		LanguageManager.getInstance().swapLanguages();
+		mPresenter.saveTranslation(getOriginalText(), getTranslatedText());
 	};
 
-	private final PopupMenu.OnMenuItemClickListener mOnMenuMoreItemClickListener = new OnMenuItemClickListener() {
-		@Override
-		public boolean onMenuItemClick(MenuItem item) {
-			switch (item.getItemId()) {
-				case R.id.action_copy:
-					Utils.copyToClipboard(getActivity(), getTranslatedText());
-					Toast.makeText(getActivity(), R.string.text_has_been_copied, Toast.LENGTH_SHORT).show();
-					break;
-				case R.id.action_share:
-					Utils.shareText(getActivity(), getTranslatedText());
-					break;
-				case R.id.action_fullscreen:
-					Intent intent = new Intent(getActivity(), FullscreenTextActivity.class);
-					intent.putExtra(Consts.EXTRA_FULLSCREEN, getTranslatedText());
-					startActivity(intent);
-					break;
-				case R.id.action_reverse_translate:
-					changeOriginalText(getTranslatedText());
-					LanguageManager.getInstance().swapLanguages();
-					break;
-			}
-			return false;
+	private final PopupMenu.OnMenuItemClickListener mOnMenuMoreItemClickListener = item -> {
+		switch (item.getItemId()) {
+			case R.id.action_copy:
+				Utils.copyToClipboard(getActivity(), getTranslatedText());
+				Toast.makeText(getActivity(), R.string.text_has_been_copied, Toast.LENGTH_SHORT).show();
+				break;
+			case R.id.action_share:
+				Utils.shareText(getActivity(), getTranslatedText());
+				break;
+			case R.id.action_fullscreen:
+				Intent intent = new Intent(getActivity(), FullscreenTextActivity.class);
+				intent.putExtra(Consts.EXTRA_FULLSCREEN, getTranslatedText());
+				startActivity(intent);
+				break;
+			case R.id.action_reverse_translate:
+				changeOriginalText(getTranslatedText());
+				LanguageManager.getInstance().swapLanguages();
+				break;
 		}
+		return false;
 	};
 
 	private final OnChangeLanguageListener mLanguageListener = new OnChangeLanguageListener() {
@@ -305,13 +280,29 @@ public class TranslateFragment extends BaseFragment{
 		}
 	};
 
+	private final ItemTouchHelper.Callback mHistoryItemSwipeCallback = new SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+		@Override
+		public boolean onMove(RecyclerView recyclerView, ViewHolder viewHolder, ViewHolder target) {
+			return false;
+		}
+
+		@Override
+		public void onSwiped(ViewHolder viewHolder, int direction) {
+			int position = viewHolder.getAdapterPosition();
+			Translation translation = null;
+			OrderedRealmCollection data = mHistoryAdapter.getData();
+			if(data != null) {
+				translation = (Translation) data.get(position);
+			}
+			mPresenter.onHistoryItemSwipe(translation);
+		}
+	};
+
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 		View parent = inflater.inflate(R.layout.fragment_translate, container, false);
 		ButterKnife.bind(this, parent);
-		mTranslatorAPI = APIGenerator.createTranslatorService();
-		mDictionaryAPI = APIGenerator.createDictionaryService();
 		setTitle(parent, getString(R.string.app_name));
 		initUI();
 		return parent;
@@ -319,18 +310,12 @@ public class TranslateFragment extends BaseFragment{
 
 	private void initUI() {
 		mRecyclerHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
-		HistoryAdapter adapter = new HistoryAdapter(
-				getActivity(),
-				RealmController.getInstance().getHistory(),
-				mOnItemHistoryClickListener);
-		mRecyclerHistory.setAdapter(adapter);
 		mRecyclerHistory.setNestedScrollingEnabled(false);
 		mRecyclerHistory.setHasFixedSize(true);
 		DividerItemDecoration divider = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
 		divider.setDrawable(getResources().getDrawable(R.drawable.list_divider_history));
 		mRecyclerHistory.addItemDecoration(divider);
-		ItemTouchHelper.Callback callback = new HistoryDismissTouchHelper(adapter);
-		ItemTouchHelper helper = new ItemTouchHelper(callback);
+		ItemTouchHelper helper = new ItemTouchHelper(mHistoryItemSwipeCallback);
 		helper.attachToRecyclerView(mRecyclerHistory);
 		mRecyclerDictionary.setLayoutManager(new LinearLayoutManager(getActivity()));
 		mRecyclerDictionary.setNestedScrollingEnabled(false);
@@ -338,7 +323,13 @@ public class TranslateFragment extends BaseFragment{
 		mProgressBar.getIndeterminateDrawable().setColorFilter(Color.WHITE, Mode.SRC_IN);
 	}
 
-	private void loadTranslation() {
+	@Override
+	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		mPresenter.setInputObservable(RxTextView.textChangeEvents(mEditOriginal));
+	}
+
+	/*private void loadTranslation() {
 		mViewDictionary.setVisibility(View.GONE);
 		mProgressBar.setVisibility(View.VISIBLE);
 		final String originalText = getOriginalText();
@@ -389,17 +380,7 @@ public class TranslateFragment extends BaseFragment{
 				Timber.d(t.getMessage());
 			}
 		});
-	}
-
-	private void saveTranslation() {
-		if(getOriginalText().length() > 0 && mTranslationCall != null && mDictionaryCall != null&& isSavingEnabled) {
-			mTranslationCall.cancel();
-			mDictionaryCall.cancel();
-			RealmController.getInstance().insertTranslation(getOriginalText(), getTranslatedText(),
-					LanguageManager.getInstance().getCurrentOriginalLangCode(),
-					LanguageManager.getInstance().getCurrentTargetLangCode());
-		}
-	}
+	}*/
 
 	private void startListen(String text, String lang) {
 		resetVocalizer();
@@ -434,7 +415,7 @@ public class TranslateFragment extends BaseFragment{
 	}
 
 	private void onChangeLangs() {
-		if(mTranslationCall != null) {
+		/*if(mTranslationCall != null) {
 			mTranslationCall.cancel();
 		}
 		if(mDictionaryCall != null) {
@@ -444,7 +425,7 @@ public class TranslateFragment extends BaseFragment{
 			mViewTranslated.setVisibility(View.GONE);
 			loadTranslation();
 		}
-		updateVocalizeButtonsState();
+		updateVocalizeButtonsState();*/
 	}
 
 	private void updateVocalizeButtonsState() {
@@ -476,7 +457,7 @@ public class TranslateFragment extends BaseFragment{
 	@Override
 	public void onPause() {
 		super.onPause();
-		saveTranslation();
+		mPresenter.saveTranslation(getOriginalText(), getTranslatedText());
 	}
 
 	@Override
@@ -501,9 +482,105 @@ public class TranslateFragment extends BaseFragment{
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onTranslateEvent(TranslateEvent event) {
-		saveTranslation();
+		mPresenter.saveTranslation(getOriginalText(), getTranslatedText());
 		LanguageManager.getInstance().setCurrentOriginalLangCode(event.originalLang);
 		LanguageManager.getInstance().setCurrentTargetLangCode(event.targetLang);
 		changeOriginalText(event.text);
+	}
+
+	@Override
+	public void goToChooseOriginalLanguage(String currentLang) {
+		Intent intent = new Intent(getActivity(), ChooseLanguageActivity.class);
+		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_TYPE, Consts.CHOOSE_LANG_TYPE_ORIGINAL);
+		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_CURRENT, currentLang);
+		startActivity(intent);
+	}
+
+	@Override
+	public void goToChooseTargetLanguage(String currentLang) {
+		Intent intent = new Intent(getActivity(), ChooseLanguageActivity.class);
+		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_TYPE, Consts.CHOOSE_LANG_TYPE_TARGET);
+		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_CURRENT, currentLang);
+		startActivity(intent);
+	}
+
+	@Override
+	public void setHistoryData(RealmResults<Translation> history) {
+		mHistoryAdapter = new HistoryAdapter(
+				getActivity(),
+				history,
+				mOnItemHistoryClickListener);
+		mRecyclerHistory.setAdapter(mHistoryAdapter);
+	}
+
+	@Override
+	public void showProgress() {
+		mProgressBar.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public void hideProgress() {
+		mProgressBar.setVisibility(View.GONE);
+	}
+
+	@Override
+	public void showError() {
+
+	}
+
+	@Override
+	public void hideError() {
+
+	}
+
+	@Override
+	public void showHistory() {
+		mRecyclerHistory.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public void hideHistory() {
+		mRecyclerHistory.setVisibility(View.GONE);
+	}
+
+	@Override
+	public void showTranslation(Translation translation) {
+		mViewTranslated.setVisibility(View.VISIBLE);
+		mTxtTranslated.setText(translation.getTranslatedText());
+	}
+
+	@Override
+	public void hideTranslation() {
+		mViewTranslated.setVisibility(View.GONE);
+	}
+
+	@Override
+	public void showDictionary() {
+		mViewDictionary.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public void hideDictionary() {
+		mViewDictionary.setVisibility(View.GONE);
+	}
+
+	@Override
+	public void showButtonClear() {
+		mBtnClear.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public void hideButtonClear() {
+		mBtnClear.setVisibility(View.GONE);
+	}
+
+	@Override
+	public void showButtonVocalize() {
+		mBtnListenOriginal.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public void hideButtonVocalize() {
+		mBtnListenOriginal.setVisibility(View.GONE);
 	}
 }
