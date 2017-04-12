@@ -88,7 +88,13 @@ dependencies {
     //moxy
     compile "com.arello-mobile:moxy:$moxy_version"
     annotationProcessor "com.arello-mobile:moxy-compiler:$moxy_version"
+    compile "com.arello-mobile:moxy-android:$moxy_version"
     compile "com.arello-mobile:moxy-app-compat:$moxy_version"
+
+    //rxbinding
+    compile "com.jakewharton.rxbinding2:rxbinding:$rxbinding_version"
+    compile "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxbinding_version"
+    compile "com.jakewharton.rxbinding2:rxbinding-design:$rxbinding_version"
 
     //other
     compile 'com.android.support.constraint:constraint-layout:1.0.1'
