@@ -134,6 +134,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	@OnClick(R.id.btn_clear)
 	void onClickClear() {
 		mPresenter.saveTranslation(getOriginalText(), getTranslatedText());
+		mPresenter.onLoadFinish();
 		mEditOriginal.setText("");
 	}
 

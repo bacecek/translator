@@ -75,7 +75,6 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	}
 
 	public void saveTranslation(String originalText, String translatedText) {
-		onLoadFinish();
 		if(!originalText.isEmpty() && !mIsLoading) {
 			mRealmController.insertTranslation(
 					originalText,
@@ -123,17 +122,17 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		}
 	}
 
-	private void onLoadStart() {
+	public void onLoadStart() {
 		mIsLoading = true;
 		getViewState().showProgress();
 	}
 
-	private void onLoadFinish() {
+	public void onLoadFinish() {
 		mIsLoading = false;
 		getViewState().hideProgress();
 	}
 
-	private void onSuccess(Translation translation) {
+	public void onSuccess(Translation translation) {
 		if(mIsLoading) {
 			getViewState().hideError();
 			getViewState().showTranslation(translation);
@@ -141,9 +140,11 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	}
 
 	private void onError(Throwable error) {
-		getViewState().hideTranslation();
-		getViewState().hideDictionary();
-		getViewState().showError();
+		if(mIsLoading) {
+			getViewState().hideTranslation();
+			getViewState().hideDictionary();
+			getViewState().showError();
+		}
 	}
 
 	@Override
