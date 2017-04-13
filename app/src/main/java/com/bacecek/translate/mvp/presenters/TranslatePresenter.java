@@ -206,6 +206,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 	public void onClickSwap() {
 		mLanguageManager.swapLanguages();
+		loadTranslation(mCurrentText);
 	}
 
 	public CombineResult combine(Translation translation, List<DictionaryItem> items) {
