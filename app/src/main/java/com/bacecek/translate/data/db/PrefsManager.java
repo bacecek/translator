@@ -12,24 +12,7 @@ import javax.inject.Inject;
  */
 
 public class PrefsManager {
-	private static PrefsManager mInstance;
-	private static volatile Context mContext;
 	private SharedPreferences mPrefsLangs;
-
-	public static synchronized PrefsManager getInstance() {
-		if (mContext == null) {
-			throw new IllegalStateException("Call `PrefsManager.init(Context)` before calling this method.");
-		}
-
-		if(mInstance == null) {
-			mInstance = new PrefsManager(mContext);
-		}
-		return mInstance;
-	}
-
-	public static void init(Context context) {
-		mContext = context.getApplicationContext();
-	}
 
 	@Inject
 	public PrefsManager(Context context) {

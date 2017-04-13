@@ -1,7 +1,6 @@
 package com.bacecek.translate;
 
 import android.app.Application;
-import com.bacecek.translate.data.db.PrefsManager;
 import com.bacecek.translate.di.component.AppComponent;
 import com.bacecek.translate.di.component.DaggerAppComponent;
 import com.bacecek.translate.di.module.AppModule;
@@ -36,7 +35,6 @@ public class App extends Application {
 				.build();
 
 		Fabric.with(this, new Crashlytics());
-		PrefsManager.init(this);//TODO: убрать
 		Realm.init(this);
 		Timber.plant(new DebugTree());
 	}

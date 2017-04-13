@@ -10,23 +10,19 @@ import javax.inject.Inject;
  */
 
 public class LanguageManager {
-	private static LanguageManager mInstance;
 	private String mCurrentOriginalLangCode;
 	private String mCurrentTargetLangCode;
 	private final String[] mAvailableRecognition = {"ru", "en", "tr", "uk"};
 	private OnChangeLanguageListener mListener;
-
-	public static synchronized LanguageManager getInstance() {
-		if(mInstance == null) {
-			mInstance = new LanguageManager();
-		}
-		return mInstance;
-	}
+	private PrefsManager mPrefsManager;
+	private RealmController mRealmController;
 
 	@Inject
-	public LanguageManager() {
-		mCurrentOriginalLangCode = PrefsManager.getInstance().getLastUsedOriginalLang();
-		mCurrentTargetLangCode = PrefsManager.getInstance().getLastUsedTargetLang();
+	public LanguageManager(PrefsManager prefsManager, RealmController realmController) {
+		mPrefsManager = prefsManager;
+		mRealmController = realmController;
+		mCurrentOriginalLangCode = mPrefsManager.getLastUsedOriginalLang();
+		mCurrentTargetLangCode = mPrefsManager.getLastUsedTargetLang();
 	}
 
 	public String getCurrentOriginalLangCode() {
@@ -42,7 +38,7 @@ public class LanguageManager {
 			if(mListener != null) {
 				mListener.onChangeOriginalLang(getCurrentOriginalLanguage());
 			}
-			RealmController.getInstance().updateTimestampLanguage(mCurrentOriginalLangCode);
+			mRealmController.updateTimestampLanguage(mCurrentOriginalLangCode);
 		}
 	}
 
@@ -55,16 +51,16 @@ public class LanguageManager {
 			if(mListener != null) {
 				mListener.onChangeTargetLang(getCurrentTargetLanguage());
 			}
-			RealmController.getInstance().updateTimestampLanguage(mCurrentTargetLangCode);
+			mRealmController.updateTimestampLanguage(mCurrentTargetLangCode);
 		}
 	}
 
 	public void setCurrentOriginalLangName(String originalLangName) {
-		setCurrentOriginalLangCode(RealmController.getInstance().getLanguageByName(originalLangName).getCode());
+		setCurrentOriginalLangCode(mRealmController.getLanguageByName(originalLangName).getCode());
 	}
 
 	public void setCurrentTargetLangName(String targetLangName) {
-		setCurrentTargetLangCode(RealmController.getInstance().getLanguageByName(targetLangName).getCode());
+		setCurrentTargetLangCode(mRealmController.getLanguageByName(targetLangName).getCode());
 	}
 
 	public String getCurrentTargetLangCode() {
@@ -72,11 +68,11 @@ public class LanguageManager {
 	}
 
 	public Language getCurrentOriginalLanguage() {
-		return RealmController.getInstance().getLanguageByCode(mCurrentOriginalLangCode);
+		return mRealmController.getLanguageByCode(mCurrentOriginalLangCode);
 	}
 
 	public Language getCurrentTargetLanguage() {
-		return RealmController.getInstance().getLanguageByCode(mCurrentTargetLangCode);
+		return mRealmController.getLanguageByCode(mCurrentTargetLangCode);
 	}
 
 	public String getCurrentOriginalLangName() {
@@ -97,16 +93,16 @@ public class LanguageManager {
 			mListener.onChangeOriginalLang(getCurrentOriginalLanguage());
 			mListener.onChangeTargetLang(getCurrentTargetLanguage());
 		}
-		RealmController.getInstance().updateTimestampLanguage(mCurrentOriginalLangCode);
-		RealmController.getInstance().updateTimestampLanguage(mCurrentTargetLangCode);
+		mRealmController.updateTimestampLanguage(mCurrentOriginalLangCode);
+		mRealmController.updateTimestampLanguage(mCurrentTargetLangCode);
 	}
 
 	private void saveOriginalLanguage() {
-		PrefsManager.getInstance().setLastUsedOriginalLang(mCurrentOriginalLangCode);
+		mPrefsManager.setLastUsedOriginalLang(mCurrentOriginalLangCode);
 	}
 
 	private void saveTargetLanguage() {
-		PrefsManager.getInstance().setLastUsedTargetLang(mCurrentTargetLangCode);
+		mPrefsManager.setLastUsedTargetLang(mCurrentTargetLangCode);
 	}
 
 	public boolean isRecognitionAndVocalizeAvailable(String langCode) {
