@@ -94,10 +94,7 @@ public class FavoriteFragment extends BaseFragment implements FavoriteView{
 	};
 
 	private final OnItemClickListener mOnFavouritesItemClickListener = translation -> EventBus
-			.getDefault().post(new ClickFavouriteEvent(
-					translation.getOriginalText(),
-					translation.getOriginalLang(),
-					translation.getTargetLang()));
+			.getDefault().post(new ClickFavouriteEvent(translation));
 
 	private FavoriteAdapter mFavoriteAdapter;
 

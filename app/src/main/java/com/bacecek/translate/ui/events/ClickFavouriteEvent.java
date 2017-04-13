@@ -1,5 +1,7 @@
 package com.bacecek.translate.ui.events;
 
+import com.bacecek.translate.data.entities.Translation;
+
 /**
  * Created by Denis Buzmakov on 03/04/2017.
  * <buzmakov.da@gmail.com>
@@ -7,13 +9,9 @@ package com.bacecek.translate.ui.events;
 
 public class ClickFavouriteEvent {
 
-	public final String text;
-	public final String originalLang;
-	public final String targetLang;
+	public final Translation translation;
 
-	public ClickFavouriteEvent(String text, String originalLang, String targetLang) {
-		this.text = text;
-		this.originalLang = originalLang;
-		this.targetLang = targetLang;
+	public ClickFavouriteEvent(Translation translation) {
+		this.translation = translation;
 	}
 }

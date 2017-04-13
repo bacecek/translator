@@ -380,9 +380,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onTranslateEvent(TranslateEvent event) {
 		mPresenter.saveTranslation(getOriginalText(), getTranslatedText());
-		/*LanguageManager.getInstance().setCurrentOriginalLangCode(event.originalLang);
-		LanguageManager.getInstance().setCurrentTargetLangCode(event.targetLang);
-		changeOriginalText(event.text);*/
+		mPresenter.onClickHistoryItem(event.translation);
 	}
 
 	@Override

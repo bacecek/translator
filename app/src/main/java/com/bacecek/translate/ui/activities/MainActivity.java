@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onClickFavouriteEvent(ClickFavouriteEvent event) {
 		onNavigationItemSelected(mNavigationView.getMenu().getItem(0));
-		EventBus.getDefault().post(new TranslateEvent(event.text, event.originalLang, event.targetLang));
+		EventBus.getDefault().post(new TranslateEvent(event.translation));
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
