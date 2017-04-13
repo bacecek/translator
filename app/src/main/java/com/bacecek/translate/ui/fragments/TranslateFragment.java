@@ -30,11 +30,13 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.bacecek.translate.R;
+import com.bacecek.translate.data.entities.DictionaryItem;
 import com.bacecek.translate.data.entities.Translation;
 import com.bacecek.translate.mvp.presenters.TranslatePresenter;
 import com.bacecek.translate.mvp.views.TranslateView;
 import com.bacecek.translate.ui.activities.ChooseLanguageActivity;
 import com.bacecek.translate.ui.activities.FullscreenTextActivity;
+import com.bacecek.translate.ui.adapters.DictionaryAdapter;
 import com.bacecek.translate.ui.adapters.DictionaryAdapter.OnWordClickListener;
 import com.bacecek.translate.ui.adapters.HistoryAdapter;
 import com.bacecek.translate.ui.adapters.HistoryAdapter.OnItemClickListener;
@@ -46,6 +48,7 @@ import com.bacecek.translate.utils.SpeechVocalizeListener;
 import com.bacecek.translate.utils.Utils;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmResults;
+import java.util.List;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -450,8 +453,10 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	}
 
 	@Override
-	public void showDictionary() {
+	public void showDictionary(List<DictionaryItem> items) {
 		mViewDictionary.setVisibility(View.VISIBLE);
+		DictionaryAdapter adapter = new DictionaryAdapter(items, mOnWordClickListener);
+		mRecyclerDictionary.setAdapter(adapter);
 	}
 
 	@Override

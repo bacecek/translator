@@ -9,6 +9,7 @@ import com.bacecek.translate.data.db.LanguageManager;
 import com.bacecek.translate.data.db.LanguageManager.OnChangeLanguageListener;
 import com.bacecek.translate.data.db.PrefsManager;
 import com.bacecek.translate.data.db.RealmController;
+import com.bacecek.translate.data.entities.DictionaryItem;
 import com.bacecek.translate.data.entities.Language;
 import com.bacecek.translate.data.entities.Translation;
 import com.bacecek.translate.data.network.DictionaryAPI;
@@ -19,6 +20,7 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
+import java.util.List;
 import javax.inject.Inject;
 
 /**
@@ -29,8 +31,6 @@ import javax.inject.Inject;
 @InjectViewState
 public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
-	private Observable<Translation> mTranslateObservable;
-	private Observable<Translation> mDictionaryObservable;
 	private String mCurrentText = "";
 	private boolean mIsLoading;
 	private Handler mDelayInputHandler = new Handler(Looper.getMainLooper());
@@ -93,12 +93,15 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 			return;
 		}
 		onLoadStart();
-		mTranslateObservable = mTranslatorAPI.translate(text, mLanguageManager.getCurrentOriginalLangCode() + "-" + mLanguageManager.getCurrentTargetLangCode());
-		mCompositeDisposable.add(mTranslateObservable
+		String direction = mLanguageManager.getCurrentOriginalLangCode() + "-" + mLanguageManager.getCurrentTargetLangCode();
+		Observable<Translation> translationObservable = mTranslatorAPI.translate(text, direction);
+		Observable<List<DictionaryItem>> dictionaryObservable = mDictionaryAPI.translate(text, direction, mPrefsManager.getSavedSystemLocale());
+		mCompositeDisposable.add(Observable.combineLatest(translationObservable,
+				dictionaryObservable, this::combine)
 				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(translation -> {
-					onSuccess(translation);
+				.subscribe(combineResult -> {
+					onSuccess(combineResult);
 					onLoadFinish();
 				}, throwable -> {
 					onError(throwable);
@@ -154,11 +157,16 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		getViewState().hideProgress();
 	}
 
-	private void onSuccess(Translation translation) {
+	private void onSuccess(CombineResult result) {
 		if(mIsLoading) {
-			mCurrentTranslation = translation;
+			mCurrentTranslation = result.translation;
 			getViewState().hideError();
-			getViewState().showTranslation(translation);
+			getViewState().showTranslation(result.translation);
+			if(result.items.size() > 0) {
+				getViewState().showDictionary(result.items);
+			} else {
+				getViewState().hideDictionary();
+			}
 		}
 	}
 
@@ -198,5 +206,20 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 	public void onClickSwap() {
 		mLanguageManager.swapLanguages();
+	}
+
+	public CombineResult combine(Translation translation, List<DictionaryItem> items) {
+		return new CombineResult(translation, items);
+	}
+
+	private static class CombineResult {
+		private Translation translation;
+		private List<DictionaryItem> items;
+
+		public CombineResult(Translation translation,
+				List<DictionaryItem> items) {
+			this.translation = translation;
+			this.items = items;
+		}
 	}
 }

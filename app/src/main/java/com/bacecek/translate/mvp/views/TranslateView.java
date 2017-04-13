@@ -4,8 +4,10 @@ import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
+import com.bacecek.translate.data.entities.DictionaryItem;
 import com.bacecek.translate.data.entities.Translation;
 import io.realm.RealmResults;
+import java.util.List;
 
 /**
  * Created by Denis Buzmakov on 11/04/2017.
@@ -27,7 +29,7 @@ public interface TranslateView extends MvpView {
 	void hideHistory();
 	void showTranslation(Translation translation);
 	void hideTranslation();
-	void showDictionary();
+	void showDictionary(List<DictionaryItem> items);
 	void hideDictionary();
 	void showButtonClear();
 	void hideButtonClear();
