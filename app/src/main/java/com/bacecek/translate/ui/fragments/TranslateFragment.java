@@ -200,7 +200,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 
 	@OnTextChanged(value = R.id.edit_original_text, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
 	void onTextChanged(Editable s) {
-		mPresenter.onInputChanged(s.toString());
+		mPresenter.onInputChanged(getOriginalText());
 	}
 
 	private final OnItemClickListener mOnItemHistoryClickListener = new OnItemClickListener() {

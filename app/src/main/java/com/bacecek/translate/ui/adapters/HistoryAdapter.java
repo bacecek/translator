@@ -52,6 +52,8 @@ public class HistoryAdapter extends RealmRecyclerViewAdapter<Translation, Histor
 		TextView mTxtTranslated;
 		@BindView(R.id.btn_favourite)
 		ImageButton mBtnFavourite;
+		@BindView(R.id.txt_direction)
+		TextView mTxtDirection;
 
 		ViewHolder(View itemView) {
 			super(itemView);
@@ -62,6 +64,8 @@ public class HistoryAdapter extends RealmRecyclerViewAdapter<Translation, Histor
 			mTxtOriginal.setText(translation.getOriginalText());
 			mTxtTranslated.setText(translation.getTranslatedText());
 			mBtnFavourite.setActivated(translation.isFavourite());
+			String direction = (translation.getOriginalLang() + "-" + translation.getTargetLang()).toUpperCase();
+			mTxtDirection.setText(direction);
 			if(listener != null) {
 				itemView.setOnClickListener(view -> listener.onItemClick(translation));
 				mBtnFavourite.setOnClickListener(view -> listener.onClickFavourite(translation));
