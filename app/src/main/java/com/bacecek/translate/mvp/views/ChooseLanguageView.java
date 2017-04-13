@@ -14,5 +14,5 @@ public interface ChooseLanguageView extends MvpView {
 	void hideRecentlyUsed();
 	void setRecentlyUsedLanguages(RealmResults<Language> languages);
 	void setAllLanguages(RealmResults<Language> languages);
-	void finish();
+	void setResultAndFinish(String lang, int langType);
 }

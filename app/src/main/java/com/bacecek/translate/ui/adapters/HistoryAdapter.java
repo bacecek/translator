@@ -6,14 +6,12 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.bacecek.translate.R;
-import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.data.entities.Translation;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
@@ -65,24 +63,14 @@ public class HistoryAdapter extends RealmRecyclerViewAdapter<Translation, Histor
 			mTxtTranslated.setText(translation.getTranslatedText());
 			mBtnFavourite.setActivated(translation.isFavourite());
 			if(listener != null) {
-				itemView.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						listener.onItemClick(translation);
-					}
-				});
+				itemView.setOnClickListener(view -> listener.onItemClick(translation));
+				mBtnFavourite.setOnClickListener(view -> listener.onClickFavourite(translation));
 			}
-			//TODO:внести клик во фрагмент
-			mBtnFavourite.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					RealmController.getInstance().changeFavourite(translation);
-				}
-			});
 		}
 	}
 
 	public interface OnItemClickListener {
 		void onItemClick(Translation translation);
+		void onClickFavourite(Translation translation);
 	}
 }

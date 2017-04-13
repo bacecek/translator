@@ -6,7 +6,6 @@ import com.bacecek.translate.App;
 import com.bacecek.translate.data.db.LanguageManager;
 import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.mvp.views.ChooseLanguageView;
-import com.bacecek.translate.utils.Consts;
 import javax.inject.Inject;
 
 /**
@@ -38,12 +37,7 @@ public class ChooseLanguagePresenter extends MvpPresenter<ChooseLanguageView> {
 	}
 
 	public void onItemClick(String lang) {
-		if(mChooseLangType == Consts.CHOOSE_LANG_TYPE_ORIGINAL) {
-			mLanguageManager.setCurrentOriginalLangCode(lang);
-		} else if (mChooseLangType == Consts.CHOOSE_LANG_TYPE_TARGET){
-			mLanguageManager.setCurrentTargetLangCode(lang);
-		}
-		getViewState().finish();
+		getViewState().setResultAndFinish(lang, mChooseLangType);
 	}
 
 	public void datasetRecentlyUsedChanged(int size) {

@@ -33,4 +33,8 @@ public interface TranslateView extends MvpView {
 	void hideButtonClear();
 	void showButtonVocalize();
 	void hideButtonVocalize();
+	void setOriginalLangName(String name);
+	void setTargetLangName(String name);
+	@StateStrategyType(OneExecutionStateStrategy.class)
+	void setOriginalText(String text);
 }

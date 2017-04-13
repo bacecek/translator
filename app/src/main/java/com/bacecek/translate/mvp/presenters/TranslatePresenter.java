@@ -1,23 +1,24 @@
 package com.bacecek.translate.mvp.presenters;
 
+import android.os.Handler;
+import android.os.Looper;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.bacecek.translate.App;
 import com.bacecek.translate.data.db.LanguageManager;
+import com.bacecek.translate.data.db.LanguageManager.OnChangeLanguageListener;
 import com.bacecek.translate.data.db.PrefsManager;
 import com.bacecek.translate.data.db.RealmController;
+import com.bacecek.translate.data.entities.Language;
 import com.bacecek.translate.data.entities.Translation;
 import com.bacecek.translate.data.network.DictionaryAPI;
 import com.bacecek.translate.data.network.TranslatorAPI;
 import com.bacecek.translate.mvp.views.TranslateView;
 import com.bacecek.translate.utils.Consts;
-import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 /**
@@ -28,11 +29,13 @@ import javax.inject.Inject;
 @InjectViewState
 public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
-	private Disposable mChangeTextDisposable;
 	private Observable<Translation> mTranslateObservable;
 	private Observable<Translation> mDictionaryObservable;
 	private String mCurrentText = "";
 	private boolean mIsLoading;
+	private Handler mDelayInputHandler = new Handler(Looper.getMainLooper());
+	private Runnable mDelayInputRunnable;
+	private Translation mCurrentTranslation;
 
 	@Inject
 	LanguageManager mLanguageManager;
@@ -45,29 +48,30 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	@Inject
 	DictionaryAPI mDictionaryAPI;
 
+	private final OnChangeLanguageListener mLanguageListener = new OnChangeLanguageListener() {
+		@Override
+		public void onChangeOriginalLang(Language lang) {
+			getViewState().setOriginalLangName(lang.getName());
+		}
+
+		@Override
+		public void onChangeTargetLang(Language lang) {
+			getViewState().setTargetLangName(lang.getName());
+		}
+	};
+
+
 	public TranslatePresenter() {
 		App.getAppComponent().inject(this);
+		mLanguageManager.setListener(mLanguageListener);
 	}
 
 	@Override
 	protected void onFirstViewAttach() {
 		super.onFirstViewAttach();
 		getViewState().setHistoryData(mRealmController.getHistory());
-	}
-
-	public void setInputObservable(Observable<TextViewTextChangeEvent> observable) {
-		mChangeTextDisposable = observable
-				.map(event -> event.view().getText().toString())
-				.filter(text -> !mCurrentText.equals(text))
-				.observeOn(AndroidSchedulers.mainThread())
-				.doOnNext(this::onInputChanged)
-				.debounce(Consts.DELAY_INPUT, TimeUnit.MILLISECONDS)
-				.filter(text -> text.length() > 0)
-				.doOnNext(text -> mCurrentText = text)
-				.subscribeOn(Schedulers.io())
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(text -> loadTranslation(text, mLanguageManager.getCurrentOriginalLangCode() + "-" + mLanguageManager.getCurrentTargetLangCode()));
-		mCompositeDisposable.add(mChangeTextDisposable);
+		getViewState().setOriginalLangName(mLanguageManager.getCurrentOriginalLangName());
+		getViewState().setTargetLangName(mLanguageManager.getCurrentTargetLangName());
 	}
 
 	public void onHistoryItemSwipe(Translation translation) {
@@ -84,9 +88,12 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		}
 	}
 
-	public void loadTranslation(String text, String direction) {
+	public void loadTranslation(String text) {
+		if(text.length() == 0) {
+			return;
+		}
 		onLoadStart();
-		mTranslateObservable = mTranslatorAPI.translate(text, direction);
+		mTranslateObservable = mTranslatorAPI.translate(text, mLanguageManager.getCurrentOriginalLangCode() + "-" + mLanguageManager.getCurrentTargetLangCode());
 		mCompositeDisposable.add(mTranslateObservable
 				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
@@ -107,9 +114,21 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		getViewState().goToChooseTargetLanguage(mLanguageManager.getCurrentTargetLangCode());
 	}
 
-	private void onInputChanged(String text) {
+	public void onChooseOriginalLang(String langCode) {
+		mLanguageManager.setCurrentOriginalLangCode(langCode);
+	}
+
+	public void onChooseTargetLang(String langCode) {
+		mLanguageManager.setCurrentTargetLangCode(langCode);
+	}
+
+	public void onInputChanged(String text) {
+		if(mCurrentText.equals(text)) {
+			return;
+		}
 		mCurrentText = text;
 		if(mCurrentText.length() == 0) {
+			onLoadFinish();
 			getViewState().hideButtonClear();
 			getViewState().hideButtonVocalize();
 			getViewState().showHistory();
@@ -119,6 +138,9 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 			getViewState().showButtonClear();
 			getViewState().showButtonVocalize();
 			getViewState().hideHistory();
+			mDelayInputHandler.removeCallbacks(mDelayInputRunnable);
+			mDelayInputRunnable = () -> loadTranslation(mCurrentText);
+			mDelayInputHandler.postDelayed(mDelayInputRunnable, Consts.DELAY_INPUT);
 		}
 	}
 
@@ -132,8 +154,9 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		getViewState().hideProgress();
 	}
 
-	public void onSuccess(Translation translation) {
+	private void onSuccess(Translation translation) {
 		if(mIsLoading) {
+			mCurrentTranslation = translation;
 			getViewState().hideError();
 			getViewState().showTranslation(translation);
 		}
@@ -151,5 +174,29 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	public void onDestroy() {
 		super.onDestroy();
 		mCompositeDisposable.clear();
+	}
+
+	public void onClickHistoryItem(Translation translation) {
+		mLanguageManager.setCurrentOriginalLangCode(translation.getOriginalLang());
+		mLanguageManager.setCurrentTargetLangCode(translation.getTargetLang());
+		getViewState().setOriginalText(translation.getOriginalText());
+	}
+
+	public void onClickHistoryFavorite(Translation translation) {
+		mRealmController.changeFavourite(translation);
+	}
+
+	public void onClickDictionaryWord(String word) {
+		getViewState().setOriginalText(word);
+		mLanguageManager.swapLanguages();
+	}
+
+	public void onReverseTranslate(String translatedText) {
+		getViewState().setOriginalText(translatedText);
+		mLanguageManager.swapLanguages();
+	}
+
+	public void onClickSwap() {
+		mLanguageManager.swapLanguages();
 	}
 }

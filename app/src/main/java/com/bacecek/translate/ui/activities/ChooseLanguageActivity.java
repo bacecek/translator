@@ -1,5 +1,7 @@
 package com.bacecek.translate.ui.activities;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,7 +14,6 @@ import butterknife.ButterKnife;
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.bacecek.translate.R;
-import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.data.entities.Language;
 import com.bacecek.translate.mvp.presenters.ChooseLanguagePresenter;
 import com.bacecek.translate.mvp.views.ChooseLanguageView;
@@ -89,7 +90,7 @@ public class ChooseLanguageActivity extends MvpAppCompatActivity implements Choo
 	@Override
 	public void setRecentlyUsedLanguages(RealmResults<Language> languages) {
 		mRecentlyLangsAdapter = new LanguagesAdapter(getApplicationContext(),
-				RealmController.getInstance().getRecentlyUsedLanguages(),
+				languages,
 				mOnItemClickListener);
 		mRecentlyLangsAdapter.registerAdapterDataObserver(mLangsDataObserver);
 		mRecyclerRecentlyUsed.setAdapter(mRecentlyLangsAdapter);
@@ -100,9 +101,18 @@ public class ChooseLanguageActivity extends MvpAppCompatActivity implements Choo
 	public void setAllLanguages(RealmResults<Language> languages) {
 		String currentLang = getIntent().getStringExtra(Consts.EXTRA_CHOOSE_LANG_CURRENT);
 		LanguagesAdapter allAdapter = new LanguagesAdapter(getApplicationContext(),
-				RealmController.getInstance().getLanguagesAsync(),
+				languages,
 				mOnItemClickListener,
 				currentLang);
 		mRecyclerAll.setAdapter(allAdapter);
+	}
+
+	@Override
+	public void setResultAndFinish(String lang, int langType) {
+		Intent data = new Intent();
+		data.putExtra(Consts.EXTRA_CHOOSE_LANG_TYPE, langType);
+		data.putExtra(Consts.EXTRA_CHOOSE_LANG_RETURN, lang);
+		setResult(Activity.RESULT_OK, data);
+		finish();
 	}
 }

@@ -9,6 +9,7 @@ public class Consts {
 	public static final int MAX_LISTEN_SYMBOLS = 10000;
 	public static final int DELAY_INPUT = 700;
 	public static final int RECOGNITION_REQUEST_CODE = 777;
+	public static final int CHOOSE_LANG_REQUEST_CODE = 666;
 	public static final String EXTRA_FULLSCREEN = "extra_fullscreen";
 	public static final int MIN_TEXTSIZE_FULLSCREEN = 25;
 	public static final String PREFS_LANGS_KEY = "prefs_langs";
@@ -20,6 +21,7 @@ public class Consts {
 	public static final String PREFS_LOCALE = "prefs_locale";
 	public static final String EXTRA_CHOOSE_LANG_CURRENT = "extra_choose_lang_current";
 	public static final String EXTRA_CHOOSE_LANG_TYPE = "extra_choose_lang_type";
+	public static final String EXTRA_CHOOSE_LANG_RETURN = "extra_chosen_lang";
 	public static final int CHOOSE_LANG_TYPE_ORIGINAL = 0;
 	public static final int CHOOSE_LANG_TYPE_TARGET = 1;
 
