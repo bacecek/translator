@@ -209,7 +209,16 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		loadTranslation(mCurrentText);
 	}
 
-	public CombineResult combine(Translation translation, List<DictionaryItem> items) {
+	public void onClickMic() {
+		getViewState().startDictation(mLanguageManager.getCurrentOriginalLangCode());
+	}
+
+	public void onDictationSuccess(String text) {
+		mCurrentText = mCurrentText + text;
+		getViewState().setOriginalText(mCurrentText);
+	}
+
+	private CombineResult combine(Translation translation, List<DictionaryItem> items) {
 		return new CombineResult(translation, items);
 	}
 

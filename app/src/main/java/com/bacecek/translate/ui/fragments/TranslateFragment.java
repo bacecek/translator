@@ -139,10 +139,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 
 	@OnClick(R.id.btn_mic)
 	void onClickMic() {
-		Intent intent = new Intent(getActivity(), RecognizerActivity.class);
-		intent.putExtra(RecognizerActivity.EXTRA_MODEL, Model.QUERIES);
-		//intent.putExtra(RecognizerActivity.EXTRA_LANGUAGE, LanguageManager.getInstance().getCurrentOriginalLangCode());
-		startActivityForResult(intent, Consts.RECOGNITION_REQUEST_CODE);
+		mPresenter.onClickMic();
 	}
 
 	@OnClick(R.id.btn_listen_original)
@@ -314,30 +311,6 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		return mEditOriginal.getText().toString().trim();
 	}
 
-	private void onChangeLangs() {
-		/*if(mTranslationCall != null) {
-			mTranslationCall.cancel();
-		}
-		if(mDictionaryCall != null) {
-			mDictionaryCall.cancel();
-		}
-		if(getOriginalText().length() != 0) {
-			mViewTranslated.setVisibility(View.GONE);
-			loadTranslation();
-		}
-		updateVocalizeButtonsState();*/
-	}
-
-	private void updateVocalizeButtonsState() {
-		/*mBtnListenOriginal.setEnabled(
-				LanguageManager.getInstance().isRecognitionAndVocalizeAvailable(LanguageManager.getInstance().getCurrentOriginalLangCode()) &&
-						getOriginalText().length() <= Consts.MAX_LISTEN_SYMBOLS);
-		mBtnListenTranslated.setEnabled(
-				LanguageManager.getInstance().isRecognitionAndVocalizeAvailable(LanguageManager.getInstance().getCurrentTargetLangCode()) &&
-						getTranslatedText().length() < Consts.MAX_LISTEN_SYMBOLS);
-		mBtnMic.setEnabled(LanguageManager.getInstance().isRecognitionAndVocalizeAvailable(LanguageManager.getInstance().getCurrentOriginalLangCode()));*/
-	}
-
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -362,7 +335,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		if(requestCode == Consts.RECOGNITION_REQUEST_CODE) {
 			if(resultCode == RecognizerActivity.RESULT_OK && data != null) {
 				String result = data.getStringExtra(RecognizerActivity.EXTRA_RESULT);
-				mEditOriginal.append(result);
+				mPresenter.onDictationSuccess(result);
 			} else if(resultCode == RecognizerActivity.RESULT_ERROR) {
 				String error = ((Error) data.getSerializableExtra(RecognizerActivity.EXTRA_ERROR)).getString();
 				Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
@@ -499,5 +472,13 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		mEditOriginal.setText("");
 		mEditOriginal.setText(text);
 		mEditOriginal.setSelection(mEditOriginal.getText().length());
+	}
+
+	@Override
+	public void startDictation(String originalLang) {
+		Intent intent = new Intent(getActivity(), RecognizerActivity.class);
+		intent.putExtra(RecognizerActivity.EXTRA_MODEL, Model.QUERIES);
+		intent.putExtra(RecognizerActivity.EXTRA_LANGUAGE, originalLang);
+		startActivityForResult(intent, Consts.RECOGNITION_REQUEST_CODE);
 	}
 }
