@@ -84,7 +84,25 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 		@Override
 		public void onChanged() {
 			super.onChanged();
-			mPresenter.onDataChanged(mFavouriteAdapter.getItemCount(), mEditSearch.getText().toString());
+			mPresenter.onDataChanged(mFavouriteAdapter.getItemCount());
+		}
+
+		@Override
+		public void onItemRangeChanged(int positionStart, int itemCount) {
+			super.onItemRangeChanged(positionStart, itemCount);
+			mPresenter.onDataChanged(mFavouriteAdapter.getItemCount());
+		}
+
+		@Override
+		public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+			super.onItemRangeMoved(fromPosition, toPosition, itemCount);
+			mPresenter.onDataChanged(mFavouriteAdapter.getItemCount());
+		}
+
+		@Override
+		public void onItemRangeRemoved(int positionStart, int itemCount) {
+			super.onItemRangeRemoved(positionStart, itemCount);
+			mPresenter.onDataChanged(mFavouriteAdapter.getItemCount());
 		}
 	};
 

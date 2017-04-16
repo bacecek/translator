@@ -49,6 +49,24 @@ public class ChooseLanguageActivity extends MvpAppCompatActivity implements Choo
 			super.onChanged();
 			mPresenter.datasetRecentlyUsedChanged(mRecentlyLangsAdapter.getItemCount());
 		}
+
+		@Override
+		public void onItemRangeChanged(int positionStart, int itemCount) {
+			super.onItemRangeChanged(positionStart, itemCount);
+			mPresenter.datasetRecentlyUsedChanged(mRecentlyLangsAdapter.getItemCount());
+		}
+
+		@Override
+		public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+			super.onItemRangeMoved(fromPosition, toPosition, itemCount);
+			mPresenter.datasetRecentlyUsedChanged(mRecentlyLangsAdapter.getItemCount());
+		}
+
+		@Override
+		public void onItemRangeRemoved(int positionStart, int itemCount) {
+			super.onItemRangeRemoved(positionStart, itemCount);
+			mPresenter.datasetRecentlyUsedChanged(mRecentlyLangsAdapter.getItemCount());
+		}
 	};
 
 	@Override
