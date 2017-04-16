@@ -45,4 +45,7 @@ public interface TranslateView extends MvpView {
 	void setTranslatedVocalizeButtonState(int state);
 	@StateStrategyType(OneExecutionStateStrategy.class)
 	void showToast(String text);
+	void setOriginalVocalizeButtonEnabled(boolean enabled);
+	void setTranslatedVocalizeButtonEnabled(boolean enabled);
+	void setMicButtonEnabled(boolean enabled);
 }

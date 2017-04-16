@@ -67,11 +67,13 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		@Override
 		public void onChangeOriginalLang(Language lang) {
 			getViewState().setOriginalLangName(lang.getName());
+			updateVocalizeAndMicButtonsState();
 		}
 
 		@Override
 		public void onChangeTargetLang(Language lang) {
 			getViewState().setTargetLangName(lang.getName());
+			updateVocalizeAndMicButtonsState();
 		}
 	};
 
@@ -116,6 +118,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		getViewState().setHistoryData(mRealmController.getHistory());
 		getViewState().setOriginalLangName(mLanguageManager.getCurrentOriginalLangName());
 		getViewState().setTargetLangName(mLanguageManager.getCurrentTargetLangName());
+		updateVocalizeAndMicButtonsState();
 	}
 
 	public void onHistoryItemSwipe(Translation translation) {
@@ -360,6 +363,12 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		} else if(mCurrentVocalizeButton == VOCALIZE_BUTTON_TRANSLATED) {
 			getViewState().setTranslatedVocalizeButtonState(state);
 		}
+	}
+
+	private void updateVocalizeAndMicButtonsState() {
+		getViewState().setOriginalVocalizeButtonEnabled(mLanguageManager.isRecognitionAndVocalizeAvailable(mLanguageManager.getCurrentOriginalLangCode()));
+		getViewState().setTranslatedVocalizeButtonEnabled(mLanguageManager.isRecognitionAndVocalizeAvailable(mLanguageManager.getCurrentTargetLangCode()));
+		getViewState().setMicButtonEnabled(mLanguageManager.isRecognitionAndVocalizeAvailable(mLanguageManager.getCurrentOriginalLangCode()));
 	}
 
 	public void onDictationSuccess(String text) {

@@ -451,4 +451,19 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	public void showToast(String text) {
 		Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
 	}
+
+	@Override
+	public void setOriginalVocalizeButtonEnabled(boolean enabled) {
+		mBtnVocalizeOriginal.setEnabled(enabled);
+	}
+
+	@Override
+	public void setTranslatedVocalizeButtonEnabled(boolean enabled) {
+		mBtnVocalizeTranslated.setEnabled(enabled);
+	}
+
+	@Override
+	public void setMicButtonEnabled(boolean enabled) {
+		mBtnMic.setEnabled(enabled);
+	}
 }
