@@ -6,7 +6,6 @@ buildscript {
     ext.retrofit_version = "2.2.0"
     ext.dagger_version = "2.10"
     ext.moxy_version = "1.4.6"
-    ext.rxbinding_version = "2.0.0"
 
     repositories {
         jcenter()

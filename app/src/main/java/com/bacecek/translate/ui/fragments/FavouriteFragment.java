@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView.AdapterDataObserver;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.support.v7.widget.helper.ItemTouchHelper.SimpleCallback;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
+import butterknife.OnTextChanged.Callback;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.entities.Translation;
@@ -28,7 +31,6 @@ import com.bacecek.translate.ui.adapters.FavouriteAdapter;
 import com.bacecek.translate.ui.adapters.FavouriteAdapter.OnItemClickListener;
 import com.bacecek.translate.ui.events.ClickFavouriteEvent;
 import com.bacecek.translate.ui.events.ClickMenuEvent;
-import com.jakewharton.rxbinding2.widget.RxTextView;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmResults;
 import org.greenrobot.eventbus.EventBus;
@@ -54,6 +56,11 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 	TextView mTxtEmptyTitle;
 	@BindView(R.id.btn_clear)
 	ImageButton mBtnClear;
+
+	@OnTextChanged(value = R.id.edit_search, callback = Callback.AFTER_TEXT_CHANGED)
+	void onSearchTextChanged(Editable s) {
+		mPresenter.onInputChanged(s.toString());
+	}
 
 	@OnClick(R.id.btn_clear)
 	void onClickClear() {
@@ -118,7 +125,6 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 		mRecyclerFavourites.addItemDecoration(divider);
 		ItemTouchHelper helper = new ItemTouchHelper(mDismissCallback);
 		helper.attachToRecyclerView(mRecyclerFavourites);
-		mPresenter.setSearchObservable(RxTextView.afterTextChangeEvents(mEditSearch));
 	}
 
 	public static FavouriteFragment getInstance() {

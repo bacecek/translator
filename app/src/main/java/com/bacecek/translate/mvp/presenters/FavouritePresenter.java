@@ -7,10 +7,7 @@ import com.bacecek.translate.R;
 import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.data.entities.Translation;
 import com.bacecek.translate.mvp.views.FavouriteView;
-import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import io.realm.RealmResults;
 import javax.inject.Inject;
 
 /**
@@ -37,23 +34,16 @@ public class FavouritePresenter extends MvpPresenter<FavouriteView> {
 		mRealmController.changeFavourite(translation);
 	}
 
-	public void setSearchObservable(Observable<TextViewAfterTextChangeEvent> observable) {
-		observable
-				.subscribeOn(Schedulers.io())
-				.observeOn(AndroidSchedulers.mainThread())
-				.map(event -> {
-					String text = event.view().getText().toString();
-					if(text.isEmpty()) {
-						getViewState().hideButtonClear();
-						getViewState().setEmptyViewText(R.string.empty_list_favourites);
-					} else {
-						getViewState().showButtonClear();
-						getViewState().setEmptyViewText(R.string.empty_search);
-					}
-					return text;
-				})
-				.map(text -> mRealmController.getFavourites(text))
-				.subscribe(favourites -> getViewState().updateData(favourites));
+	public void onInputChanged(String search) {
+		if(search.isEmpty()) {
+			getViewState().hideButtonClear();
+			getViewState().setEmptyViewText(R.string.empty_list_favourites);
+		} else {
+			getViewState().showButtonClear();
+			getViewState().setEmptyViewText(R.string.empty_search);
+		}
+		RealmResults<Translation> favourites = mRealmController.getFavourites(search);
+		getViewState().updateData(favourites);
 	}
 
 	public void onDataChanged(int size, String searchText) {
