@@ -11,6 +11,7 @@ import butterknife.ButterKnife;
 import com.bacecek.translate.R;
 import com.bacecek.translate.ui.views.AutoResizeTextView;
 import com.bacecek.translate.utils.Consts;
+import com.bacecek.translate.utils.Consts.Extra;
 
 public class FullscreenTextActivity extends AppCompatActivity {
 	@BindView(R.id.txt_fullscreen)
@@ -24,7 +25,7 @@ public class FullscreenTextActivity extends AppCompatActivity {
 		initUi();
 
 		Intent intent = getIntent();
-		String text = intent.getStringExtra(Consts.EXTRA_FULLSCREEN);
+		String text = intent.getStringExtra(Extra.EXTRA_FULLSCREEN);
 		if(text != null) {
 			mTxtFullscreen.setText(text);
 		}

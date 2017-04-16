@@ -19,7 +19,7 @@ import com.bacecek.translate.mvp.presenters.ChooseLanguagePresenter;
 import com.bacecek.translate.mvp.views.ChooseLanguageView;
 import com.bacecek.translate.ui.adapters.LanguagesAdapter;
 import com.bacecek.translate.ui.adapters.LanguagesAdapter.OnItemClickListener;
-import com.bacecek.translate.utils.Consts;
+import com.bacecek.translate.utils.Consts.Extra;
 import io.realm.RealmResults;
 
 public class ChooseLanguageActivity extends MvpAppCompatActivity implements ChooseLanguageView {
@@ -57,7 +57,7 @@ public class ChooseLanguageActivity extends MvpAppCompatActivity implements Choo
 		setContentView(R.layout.activity_choose_language);
 		ButterKnife.bind(this);
 		initUi();
-		mPresenter.setChooseLangType(getIntent().getIntExtra(Consts.EXTRA_CHOOSE_LANG_TYPE, 0));
+		mPresenter.setChooseLangType(getIntent().getIntExtra(Extra.EXTRA_CHOOSE_LANG_TYPE, 0));
 	}
 
 	private void initUi() {
@@ -99,7 +99,7 @@ public class ChooseLanguageActivity extends MvpAppCompatActivity implements Choo
 
 	@Override
 	public void setAllLanguages(RealmResults<Language> languages) {
-		String currentLang = getIntent().getStringExtra(Consts.EXTRA_CHOOSE_LANG_CURRENT);
+		String currentLang = getIntent().getStringExtra(Extra.EXTRA_CHOOSE_LANG_CURRENT);
 		LanguagesAdapter allAdapter = new LanguagesAdapter(getApplicationContext(),
 				languages,
 				mOnItemClickListener,
@@ -110,8 +110,8 @@ public class ChooseLanguageActivity extends MvpAppCompatActivity implements Choo
 	@Override
 	public void setResultAndFinish(String lang, int langType) {
 		Intent data = new Intent();
-		data.putExtra(Consts.EXTRA_CHOOSE_LANG_TYPE, langType);
-		data.putExtra(Consts.EXTRA_CHOOSE_LANG_RETURN, lang);
+		data.putExtra(Extra.EXTRA_CHOOSE_LANG_TYPE, langType);
+		data.putExtra(Extra.EXTRA_CHOOSE_LANG_RETURN, lang);
 		setResult(Activity.RESULT_OK, data);
 		finish();
 	}

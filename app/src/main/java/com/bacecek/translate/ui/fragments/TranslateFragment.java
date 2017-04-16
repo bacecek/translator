@@ -39,18 +39,14 @@ import com.bacecek.translate.ui.adapters.DictionaryAdapter;
 import com.bacecek.translate.ui.adapters.DictionaryAdapter.OnWordClickListener;
 import com.bacecek.translate.ui.adapters.HistoryAdapter;
 import com.bacecek.translate.ui.adapters.HistoryAdapter.OnItemClickListener;
-import com.bacecek.translate.ui.events.ClickMenuEvent;
-import com.bacecek.translate.ui.events.TranslateEvent;
 import com.bacecek.translate.ui.views.ErrorView;
 import com.bacecek.translate.ui.views.VocalizeButton;
 import com.bacecek.translate.utils.Consts;
+import com.bacecek.translate.utils.Consts.Extra;
 import com.bacecek.translate.utils.Utils;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmResults;
 import java.util.List;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import ru.yandex.speechkit.Error;
 import ru.yandex.speechkit.Recognizer.Model;
 import ru.yandex.speechkit.gui.RecognizerActivity;
@@ -74,8 +70,6 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	ImageButton mBtnFavourite;
 	@BindView(R.id.btn_more)
 	ImageButton mBtnMore;
-	@BindView(R.id.btn_menu)
-	ImageButton mBtnMenu;
 	@BindView(R.id.btn_swap)
 	ImageButton mBtnSwap;
 	@BindView(R.id.btn_original_lang)
@@ -138,7 +132,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 				break;
 			case R.id.action_fullscreen:
 				Intent intent = new Intent(getActivity(), FullscreenTextActivity.class);
-				intent.putExtra(Consts.EXTRA_FULLSCREEN, getTranslatedText());
+				intent.putExtra(Extra.EXTRA_FULLSCREEN, getTranslatedText());
 				startActivity(intent);
 				break;
 			case R.id.action_reverse_translate:
@@ -207,7 +201,6 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 			VocalizeButton button = (VocalizeButton) v;
 			mPresenter.onClickVocalizeTranslated(button.getState());
 		});
-		mBtnMenu.setOnClickListener(v -> EventBus.getDefault().post(new ClickMenuEvent()));
 		mBtnMore.setOnClickListener(v -> {
 			PopupMenu popupMenu = new PopupMenu(getActivity(), mBtnMore);
 			popupMenu.getMenuInflater().inflate(R.menu.menu_more, popupMenu.getMenu());
@@ -229,7 +222,6 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	@Override
 	public void onStart() {
 		super.onStart();
-		EventBus.getDefault().register(this);
 	}
 
 	@Override
@@ -240,7 +232,6 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 
 	@Override
 	public void onStop() {
-		EventBus.getDefault().unregister(this);
 		super.onStop();
 	}
 
@@ -257,8 +248,8 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 			}
 		} else if(requestCode == Consts.CHOOSE_LANG_REQUEST_CODE) {
 			if(resultCode == Activity.RESULT_OK) {
-				String chosenLang = data.getStringExtra(Consts.EXTRA_CHOOSE_LANG_RETURN);
-				int typeLang = data.getIntExtra(Consts.EXTRA_CHOOSE_LANG_TYPE, 0);
+				String chosenLang = data.getStringExtra(Extra.EXTRA_CHOOSE_LANG_RETURN);
+				int typeLang = data.getIntExtra(Extra.EXTRA_CHOOSE_LANG_TYPE, 0);
 				if(typeLang == Consts.CHOOSE_LANG_TYPE_ORIGINAL) {
 					mPresenter.onChooseOriginalLang(chosenLang);
 				} else if(typeLang == Consts.CHOOSE_LANG_TYPE_TARGET) {
@@ -268,25 +259,19 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		}
 	}
 
-	@Subscribe(threadMode = ThreadMode.MAIN)
-	public void onTranslateEvent(TranslateEvent event) {
-		mPresenter.saveTranslation(true);
-		mPresenter.onClickHistoryItem(event.translation);
-	}
-
 	@Override
 	public void goToChooseOriginalLanguage(String currentLang) {
 		Intent intent = new Intent(getActivity(), ChooseLanguageActivity.class);
-		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_TYPE, Consts.CHOOSE_LANG_TYPE_ORIGINAL);
-		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_CURRENT, currentLang);
+		intent.putExtra(Extra.EXTRA_CHOOSE_LANG_TYPE, Consts.CHOOSE_LANG_TYPE_ORIGINAL);
+		intent.putExtra(Extra.EXTRA_CHOOSE_LANG_CURRENT, currentLang);
 		startActivityForResult(intent, Consts.CHOOSE_LANG_REQUEST_CODE);
 	}
 
 	@Override
 	public void goToChooseTargetLanguage(String currentLang) {
 		Intent intent = new Intent(getActivity(), ChooseLanguageActivity.class);
-		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_TYPE, Consts.CHOOSE_LANG_TYPE_TARGET);
-		intent.putExtra(Consts.EXTRA_CHOOSE_LANG_CURRENT, currentLang);
+		intent.putExtra(Extra.EXTRA_CHOOSE_LANG_TYPE, Consts.CHOOSE_LANG_TYPE_TARGET);
+		intent.putExtra(Extra.EXTRA_CHOOSE_LANG_CURRENT, currentLang);
 		startActivityForResult(intent, Consts.CHOOSE_LANG_REQUEST_CODE);
 	}
 

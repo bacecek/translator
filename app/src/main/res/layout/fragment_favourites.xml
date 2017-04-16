@@ -33,7 +33,7 @@
 			android:imeOptions="actionSearch"
 			android:background="@null"
 			android:drawableLeft="@drawable/ic_search"
-			android:drawablePadding="8dp"
+			android:drawablePadding="16dp"
 			android:hint="@string/hint_edit_search"
 			android:textColorHint="#AFAFAF"
 			android:layout_toLeftOf="@id/btn_clear"/>

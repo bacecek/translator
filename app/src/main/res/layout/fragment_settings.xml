@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:orientation="vertical"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:clickable="true">
+	android:clickable="true"
+	android:background="@android:color/white">
 
-	<include layout="@layout/layout_toolbar"/>
+	<include layout="@layout/layout_toolbar"
+		android:id="@+id/layout_toolbar"/>
 
-</LinearLayout>
+	<android.support.v7.widget.AppCompatButton
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/btn_clear_history"
+		android:layout_centerHorizontal="true"
+		android:layout_alignParentBottom="true"
+		android:layout_marginBottom="10dp"
+		android:layout_marginTop="10dp"
+		android:text="@string/settings_clear"
+		app:backgroundTint="@color/colorPrimary"
+		android:textColor="@android:color/white"/>
+
+	<android.support.v7.widget.RecyclerView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/list_settings"
+		android:layout_below="@id/layout_toolbar"
+		android:layout_above="@id/btn_clear_history"/>
+
+</RelativeLayout>

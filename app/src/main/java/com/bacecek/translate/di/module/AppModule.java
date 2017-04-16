@@ -3,7 +3,9 @@ package com.bacecek.translate.di.module;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.bacecek.translate.utils.Consts;
+import com.bacecek.translate.utils.Consts.DI;
+import com.bacecek.translate.utils.Consts.PrefsLangs;
+import com.bacecek.translate.utils.Consts.PrefsSettings;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Named;
@@ -36,15 +38,15 @@ public class AppModule {
 
 	@Provides
 	@Singleton
-	@Named(Consts.PREFS_LANGS_KEY)
+	@Named(DI.DI_PREFS_LANGS)
 	SharedPreferences provideLangsPreferences(Application app) {
-		return app.getSharedPreferences(Consts.PREFS_LANGS_KEY, Context.MODE_PRIVATE);
+		return app.getSharedPreferences(PrefsLangs.KEY, Context.MODE_PRIVATE);
 	}
 
 	@Provides
 	@Singleton
-	@Named(Consts.PREFS_SETTINGS_KEY)
+	@Named(DI.DI_PREFS_SETTINGS)
 	SharedPreferences provideSettingsPreferences(Application app) {
-		return app.getSharedPreferences(Consts.PREFS_SETTINGS_KEY, Context.MODE_PRIVATE);
+		return app.getSharedPreferences(PrefsSettings.KEY, Context.MODE_PRIVATE);
 	}
 }

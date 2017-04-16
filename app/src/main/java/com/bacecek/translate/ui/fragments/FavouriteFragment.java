@@ -29,7 +29,6 @@ import com.bacecek.translate.mvp.views.FavouriteView;
 import com.bacecek.translate.ui.adapters.FavouriteAdapter;
 import com.bacecek.translate.ui.adapters.FavouriteAdapter.OnItemClickListener;
 import com.bacecek.translate.ui.events.ClickFavouriteEvent;
-import com.bacecek.translate.ui.events.ClickMenuEvent;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmResults;
 import org.greenrobot.eventbus.EventBus;
@@ -55,8 +54,6 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 	TextView mTxtEmptyTitle;
 	@BindView(R.id.btn_clear)
 	ImageButton mBtnClear;
-	@BindView(R.id.btn_menu)
-	ImageButton mBtnMenu;
 
 	@OnTextChanged(value = R.id.edit_search, callback = Callback.AFTER_TEXT_CHANGED)
 	void onSearchTextChanged(Editable s) {
@@ -121,11 +118,6 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 
 	private void initClickListeners() {
 		mBtnClear.setOnClickListener(v -> mEditSearch.setText(""));
-		mBtnMenu.setOnClickListener(v -> EventBus.getDefault().post(new ClickMenuEvent()));
-	}
-
-	public static FavouriteFragment getInstance() {
-		return new FavouriteFragment();
 	}
 
 	@Override
@@ -184,5 +176,9 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 	@Override
 	public void updateData(RealmResults<Translation> favourites) {
 		mFavouriteAdapter.updateData(favourites);
+	}
+
+	public static FavouriteFragment getInstance() {
+		return new FavouriteFragment();
 	}
 }

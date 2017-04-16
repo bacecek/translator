@@ -115,9 +115,9 @@ public class RealmController {
 
 	public Translation getTranslation(String text, String originalLang, String targetLang) {
 		return mRealm.where(Translation.class)
-					.equalTo("originalText", text)
-					.equalTo("originalLang", originalLang)
-					.equalTo("targetLang", targetLang)
+				.equalTo("originalText", text)
+				.equalTo("originalLang", originalLang)
+				.equalTo("targetLang", targetLang)
 				.findFirst();
 	}
 
@@ -171,6 +171,22 @@ public class RealmController {
 			translation.setShowInHistory(!translation.isShowInHistory());
 			mRealm.commitTransaction();
 		}
+	}
+
+	public void clearHistory() {
+		mRealm.executeTransactionAsync(realm -> {
+			realm.where(Translation.class)
+					.equalTo("showInHistory", true)
+					.equalTo("isFavourite", false)
+					.findAll()
+					.deleteAllFromRealm();
+			RealmResults<Translation> favourites = realm.where(Translation.class)
+					.equalTo("isFavourite", true)
+					.findAll();
+			for (Translation item : favourites) {
+				item.setShowInHistory(false);
+			}
+		});
 	}
 
 	private boolean isRemovingNeeded(Translation translation) {

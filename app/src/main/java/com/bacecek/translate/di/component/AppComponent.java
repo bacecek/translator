@@ -32,7 +32,6 @@ public interface AppComponent {
 	PrefsManager getPrefsManager();
 	Context context();
 
-	//TODO:заменить на презентеры
 	void inject(ChooseLanguagePresenter presenter);
 	void inject(SplashScreenPresenter presenter);
 	void inject(AboutPresenter presenter);

@@ -6,10 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import com.bacecek.translate.R;
-import com.bacecek.translate.ui.events.ClickMenuEvent;
-import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by Denis Buzmakov on 19/03/2017.
@@ -17,11 +14,6 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class AboutFragment extends BaseFragment {
-
-	@OnClick(R.id.btn_menu)
-	void onClickMenu() {
-		EventBus.getDefault().post(new ClickMenuEvent());
-	}
 
 	@Nullable
 	@Override

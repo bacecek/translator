@@ -14,6 +14,7 @@
 	<string name="recently_used_languages">Недавно использованные</string>
 	<string name="all_languages">Все языки</string>
 	<string name="title_choose_lang">Выберите язык</string>
+	<string name="history_was_cleared">История очищена!</string>
 
 	<!--Hints-->
 	<string name="hint_edit_original_text">Введите текст</string>
@@ -35,4 +36,10 @@
 	<string name="action_share">Поделиться</string>
 	<string name="action_fullscreen">На весь экран</string>
 	<string name="action_reverse_translate">Обратный перевод</string>
+	
+	<!--Settings-->
+	<string name="settings_show_dictionary">Показывать словарь</string>
+	<string name="settings_return">Return для перевода</string>
+	<string name="settings_simultaneous_translation">Синхронный перевод</string>
+	<string name="settings_clear">Очистить историю</string>
 </resources>

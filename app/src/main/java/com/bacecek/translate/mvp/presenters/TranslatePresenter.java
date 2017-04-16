@@ -15,6 +15,7 @@ import com.bacecek.translate.data.entities.Translation;
 import com.bacecek.translate.data.network.DictionaryAPI;
 import com.bacecek.translate.data.network.TranslatorAPI;
 import com.bacecek.translate.mvp.views.TranslateView;
+import com.bacecek.translate.ui.events.TranslateEvent;
 import com.bacecek.translate.ui.views.VocalizeButton;
 import com.bacecek.translate.utils.Consts;
 import io.reactivex.Observable;
@@ -25,6 +26,9 @@ import io.reactivex.schedulers.Schedulers;
 import io.realm.RealmChangeListener;
 import java.util.List;
 import javax.inject.Inject;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import ru.yandex.speechkit.Error;
 import ru.yandex.speechkit.Synthesis;
 import ru.yandex.speechkit.Vocalizer;
@@ -119,6 +123,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		getViewState().setOriginalLangName(mLanguageManager.getCurrentOriginalLangName());
 		getViewState().setTargetLangName(mLanguageManager.getCurrentTargetLangName());
 		updateVocalizeAndMicButtonsState();
+		EventBus.getDefault().register(this);
 	}
 
 	public void onHistoryItemSwipe(Translation translation) {
@@ -143,14 +148,14 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		}
 	}
 
-	public void loadTranslation(String text) {
-		if(text.length() == 0) {
+	public void loadTranslation() {
+		if(mCurrentOriginalText.length() == 0) {
 			return;
 		}
 		onLoadStart();
 		String direction = mLanguageManager.getCurrentOriginalLangCode() + "-" + mLanguageManager.getCurrentTargetLangCode();
-		Observable<Translation> translationObservable = mTranslatorAPI.translate(text, direction);
-		Observable<List<DictionaryItem>> dictionaryObservable = mDictionaryAPI.translate(text, direction, mPrefsManager.getSavedSystemLocale());
+		Observable<Translation> translationObservable = mTranslatorAPI.translate(mCurrentOriginalText, direction);
+		Observable<List<DictionaryItem>> dictionaryObservable = mDictionaryAPI.translate(mCurrentOriginalText, direction, mPrefsManager.getSavedSystemLocale());
 		mCurrentResponseCount++;
 		final int requestCount = mCurrentResponseCount;
 		if(mTranslateDisposable != null) {
@@ -208,7 +213,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 			getViewState().showButtonVocalize();
 			getViewState().hideHistory();
 			mDelayInputHandler.removeCallbacks(mDelayInputRunnable);
-			mDelayInputRunnable = () -> loadTranslation(mCurrentOriginalText);
+			mDelayInputRunnable = this::loadTranslation;
 			mDelayInputHandler.postDelayed(mDelayInputRunnable, Consts.DELAY_INPUT);
 		}
 	}
@@ -240,7 +245,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 			}
 			mCurrentTranslatedText = result.translation.getTranslatedText();
 			getViewState().hideError();
-			if(result.items.size() > 0) {
+			if(result.items.size() > 0 && mPrefsManager.showDictionary()) {
 				getViewState().showDictionary(result.items);
 			} else {
 				getViewState().hideDictionary();
@@ -260,6 +265,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	public void onDestroy() {
 		super.onDestroy();
 		mCompositeDisposable.clear();
+		EventBus.getDefault().unregister(this);
 	}
 
 	public void onClickClear(boolean isErrorViewVisible) {
@@ -292,7 +298,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 	public void onClickSwap() {
 		mLanguageManager.swapLanguages();
-		loadTranslation(mCurrentOriginalText);
+		loadTranslation();
 	}
 
 	public void onClickMic() {
@@ -300,7 +306,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	}
 
 	public void onClickRetry() {
-		loadTranslation(mCurrentOriginalText);
+		loadTranslation();
 	}
 
 	public void onClickFavourite() {
@@ -377,6 +383,12 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	public void onDictationSuccess(String text) {
 		mCurrentOriginalText = mCurrentOriginalText + text;
 		getViewState().setOriginalText(mCurrentOriginalText);
+	}
+
+	@Subscribe(threadMode = ThreadMode.MAIN)
+	public void onTranslateEvent(TranslateEvent event) {
+		saveTranslation(true);
+		onClickHistoryItem(event.translation);
 	}
 
 	private CombineResult combine(Translation translation, List<DictionaryItem> items) {

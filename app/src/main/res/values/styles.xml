@@ -48,4 +48,8 @@
 		<item name="android:textAllCaps">true</item>
 	</style>
 
+	<style name="SwitchTheme">
+		<item name="colorControlActivated">@color/colorPrimary</item>
+	</style>
+
 </resources>

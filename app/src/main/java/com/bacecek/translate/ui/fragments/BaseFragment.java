@@ -1,9 +1,14 @@
 package com.bacecek.translate.ui.fragments;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import com.arellomobile.mvp.MvpFragment;
 import com.bacecek.translate.R;
+import com.bacecek.translate.ui.events.ClickMenuEvent;
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by Denis Buzmakov on 03/04/2017.
@@ -19,4 +24,12 @@ public class BaseFragment extends MvpFragment {
 		}
 	}
 
+	@Override
+	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		ImageButton btnMenu = (ImageButton) view.findViewById(R.id.btn_menu);
+		if(btnMenu != null) {
+			btnMenu.setOnClickListener(v -> EventBus.getDefault().post(new ClickMenuEvent()));
+		}
+	}
 }
