@@ -21,8 +21,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import io.realm.RealmChangeListener;
 import java.util.List;
 import javax.inject.Inject;
+import ru.yandex.speechkit.Error;
+import ru.yandex.speechkit.Synthesis;
+import ru.yandex.speechkit.Vocalizer;
+import ru.yandex.speechkit.VocalizerListener;
 
 /**
  * Created by Denis Buzmakov on 11/04/2017.
@@ -33,7 +38,8 @@ import javax.inject.Inject;
 public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 	private Disposable mTranslateDisposable;
-	private String mCurrentText = "";
+	private String mCurrentOriginalText = "";
+	private String mCurrentTranslatedText = "";
 	private boolean mIsLoading;
 	private Handler mDelayInputHandler = new Handler(Looper.getMainLooper());
 	private Runnable mDelayInputRunnable;
@@ -63,6 +69,35 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		}
 	};
 
+	private final RealmChangeListener<Translation> mChangeFavouriteListener = translation -> getViewState().setTranslationFavourite(translation.isFavourite());
+
+	private final VocalizerListener mOriginalVocalizerListener = new VocalizerListener() {
+		@Override
+		public void onSynthesisBegin(Vocalizer vocalizer) {
+
+		}
+
+		@Override
+		public void onSynthesisDone(Vocalizer vocalizer, Synthesis synthesis) {
+
+		}
+
+		@Override
+		public void onPlayingBegin(Vocalizer vocalizer) {
+
+		}
+
+		@Override
+		public void onPlayingDone(Vocalizer vocalizer) {
+
+		}
+
+		@Override
+		public void onVocalizerError(Vocalizer vocalizer, Error error) {
+
+		}
+	};
+
 	public TranslatePresenter() {
 		App.getAppComponent().inject(this);
 		mLanguageManager.setListener(mLanguageListener);
@@ -80,13 +115,21 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		mRealmController.removeTranslationFromHistory(translation);
 	}
 
-	public void saveTranslation(String originalText, String translatedText) {
-		if(!originalText.isEmpty() && !mIsLoading) {
-			mRealmController.insertTranslation(
-					originalText,
-					translatedText,
-					mLanguageManager.getCurrentOriginalLangCode(),
-					mLanguageManager.getCurrentTargetLangCode());
+	public void saveTranslation(boolean async) {
+		if(!mCurrentOriginalText.isEmpty() && !mIsLoading) {
+			if(async) {
+				mRealmController.insertTranslationAsync(
+						mCurrentOriginalText,
+						mCurrentTranslatedText,
+						mLanguageManager.getCurrentOriginalLangCode(),
+						mLanguageManager.getCurrentTargetLangCode());
+			} else {
+				mRealmController.insertTranslation(
+						mCurrentOriginalText,
+						mCurrentTranslatedText,
+						mLanguageManager.getCurrentOriginalLangCode(),
+						mLanguageManager.getCurrentTargetLangCode());
+			}
 		}
 	}
 
@@ -138,11 +181,11 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	}
 
 	public void onInputChanged(String text) {
-		if(mCurrentText.equals(text)) {
+		if(mCurrentOriginalText.equals(text)) {
 			return;
 		}
-		mCurrentText = text;
-		if(mCurrentText.length() == 0) {
+		mCurrentOriginalText = text;
+		if(mCurrentOriginalText.length() == 0) {
 			onLoadFinish();
 			getViewState().hideButtonClear();
 			getViewState().hideButtonVocalize();
@@ -155,7 +198,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 			getViewState().showButtonVocalize();
 			getViewState().hideHistory();
 			mDelayInputHandler.removeCallbacks(mDelayInputRunnable);
-			mDelayInputRunnable = () -> loadTranslation(mCurrentText);
+			mDelayInputRunnable = () -> loadTranslation(mCurrentOriginalText);
 			mDelayInputHandler.postDelayed(mDelayInputRunnable, Consts.DELAY_INPUT);
 		}
 	}
@@ -173,9 +216,20 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 	private void onSuccess(CombineResult result) {
 		if(mIsLoading) {
-			mCurrentTranslation = result.translation;
+			if(mCurrentTranslation != null) {
+				mCurrentTranslation.removeChangeListeners();
+			}
+			mCurrentTranslation = mRealmController.getTranslation(mCurrentOriginalText,
+					mLanguageManager.getCurrentOriginalLangCode(),
+					mLanguageManager.getCurrentTargetLangCode());
+			if(mCurrentTranslation != null) {
+				mCurrentTranslation.addChangeListener(mChangeFavouriteListener);
+				getViewState().showTranslation(mCurrentTranslation);
+			} else {
+				getViewState().showTranslation(result.translation);
+			}
+			mCurrentTranslatedText = result.translation.getTranslatedText();
 			getViewState().hideError();
-			getViewState().showTranslation(result.translation);
 			if(result.items.size() > 0) {
 				getViewState().showDictionary(result.items);
 			} else {
@@ -190,6 +244,11 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 			getViewState().hideDictionary();
 			getViewState().showError(error);
 		}
+	}
+
+	private void clearCurrentTranslation() {
+		mCurrentTranslation.removeChangeListeners();
+		mCurrentTranslation = null;
 	}
 
 	@Override
@@ -220,7 +279,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 	public void onClickSwap() {
 		mLanguageManager.swapLanguages();
-		loadTranslation(mCurrentText);
+		loadTranslation(mCurrentOriginalText);
 	}
 
 	public void onClickMic() {
@@ -228,12 +287,23 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	}
 
 	public void onClickRetry() {
-		loadTranslation(mCurrentText);
+		loadTranslation(mCurrentOriginalText);
+	}
+
+	public void onClickFavourite() {
+		if(mCurrentTranslation == null) {
+			saveTranslation(false);
+			mCurrentTranslation = mRealmController.getTranslation(mCurrentOriginalText,
+					mLanguageManager.getCurrentOriginalLangCode(),
+					mLanguageManager.getCurrentTargetLangCode());
+			mCurrentTranslation.addChangeListener(mChangeFavouriteListener);
+		}
+		mRealmController.changeFavourite(mCurrentTranslation);
 	}
 
 	public void onDictationSuccess(String text) {
-		mCurrentText = mCurrentText + text;
-		getViewState().setOriginalText(mCurrentText);
+		mCurrentOriginalText = mCurrentOriginalText + text;
+		getViewState().setOriginalText(mCurrentOriginalText);
 	}
 
 	private CombineResult combine(Translation translation, List<DictionaryItem> items) {

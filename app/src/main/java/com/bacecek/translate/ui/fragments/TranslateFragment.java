@@ -116,26 +116,14 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	}
 
 	@OnClick(R.id.btn_favourite)
-	void onClickFavourite(View view) {
-		/*Translation translation = RealmController.getInstance().getTranslation(
-				getOriginalText(),
-				LanguageManager.getInstance().getCurrentOriginalLangCode(),
-				LanguageManager.getInstance().getCurrentTargetLangCode());
-		if(translation == null) {
-			mPresenter.saveTranslation(getOriginalText(), getTranslatedText());
-		}
-		RealmController.getInstance().changeFavourite(
-				getOriginalText(),
-				LanguageManager.getInstance().getCurrentOriginalLangCode(),
-				LanguageManager.getInstance().getCurrentTargetLangCode());
-
-		view.setActivated(!view.isActivated());*/
+	void onClickFavourite() {
+		mPresenter.onClickFavourite();
 	}
 
 	@OnClick(R.id.btn_clear)
 	void onClickClear() {
 		if(mErrorView.getVisibility() == View.GONE) {
-			mPresenter.saveTranslation(getOriginalText(), getTranslatedText());
+			mPresenter.saveTranslation(true);
 		}
 		mPresenter.onLoadFinish();
 		mEditOriginal.setText("");
@@ -227,7 +215,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	private final SpeechVocalizeListener mSpeechVocalizerListener = new SpeechVocalizeListener();
 
 	private final OnWordClickListener mOnWordClickListener = word -> {
-		mPresenter.saveTranslation(getOriginalText(), getTranslatedText());
+		mPresenter.saveTranslation(true);
 		mPresenter.onClickDictionaryWord(word);
 	};
 
@@ -329,7 +317,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	@Override
 	public void onPause() {
 		super.onPause();
-		mPresenter.saveTranslation(getOriginalText(), getTranslatedText());
+		mPresenter.saveTranslation(true);
 	}
 
 	@Override
@@ -364,7 +352,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onTranslateEvent(TranslateEvent event) {
-		mPresenter.saveTranslation(getOriginalText(), getTranslatedText());
+		mPresenter.saveTranslation(true);
 		mPresenter.onClickHistoryItem(event.translation);
 	}
 
@@ -428,6 +416,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	public void showTranslation(Translation translation) {
 		mViewTranslated.setVisibility(View.VISIBLE);
 		mTxtTranslated.setText(translation.getTranslatedText());
+		mBtnFavourite.setActivated(translation.isFavourite());
 	}
 
 	@Override
@@ -490,5 +479,10 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		intent.putExtra(RecognizerActivity.EXTRA_MODEL, Model.QUERIES);
 		intent.putExtra(RecognizerActivity.EXTRA_LANGUAGE, originalLang);
 		startActivityForResult(intent, Consts.RECOGNITION_REQUEST_CODE);
+	}
+
+	@Override
+	public void setTranslationFavourite(boolean isFavourite) {
+		mBtnFavourite.setActivated(isFavourite);
 	}
 }

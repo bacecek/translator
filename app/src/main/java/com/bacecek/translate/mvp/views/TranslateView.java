@@ -40,4 +40,5 @@ public interface TranslateView extends MvpView {
 	@StateStrategyType(OneExecutionStateStrategy.class)
 	void setOriginalText(String text);
 	void startDictation(String originalLang);
+	void setTranslationFavourite(boolean isFavourite);
 }

@@ -129,7 +129,7 @@ public class RealmController {
 				.findFirst();
 	}
 
-	public void insertTranslation(String originalText, String translatedText, String originalLang, String targetLang) {
+	public void insertTranslationAsync(String originalText, String translatedText, String originalLang, String targetLang) {
 		mRealm.executeTransactionAsync(realm -> {
 			Translation translation = getTranslation(realm, originalText, originalLang, targetLang);
 			if(translation == null) {
@@ -144,6 +144,23 @@ public class RealmController {
 			translation.setShowInHistory(true);
 			realm.copyToRealmOrUpdate(translation);
 		});
+	}
+
+	public void insertTranslation(String originalText, String translatedText, String originalLang, String targetLang) {
+		Translation translation = getTranslation(originalText, originalLang, targetLang);
+		mRealm.beginTransaction();
+		if(translation == null) {
+			translation = new Translation();
+			translation.setId(getNextId(mRealm));
+			translation.setOriginalText(originalText);
+		}
+		translation.setTranslatedText(translatedText);
+		translation.setOriginalLang(originalLang);
+		translation.setTargetLang(targetLang);
+		translation.setHistoryTimestamp(System.currentTimeMillis());
+		translation.setShowInHistory(true);
+		mRealm.copyToRealmOrUpdate(translation);
+		mRealm.commitTransaction();
 	}
 
 	public void removeTranslationFromHistory(Translation translation) {
