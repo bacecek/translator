@@ -18,8 +18,6 @@ public class RealmController {
 	private static RealmController instance;
 	private Realm mRealm;
 
-	//TODO:переделать все нахуй под rx
-
 	public static RealmController getInstance() {
 		if(instance == null) {
 			instance = new RealmController();
@@ -55,16 +53,24 @@ public class RealmController {
 	public RealmResults<Language> getRecentlyUsedLanguages() {
 		return mRealm.where(Language.class)
 				.greaterThan("lastUsedTimeStamp", 0)
-				.findAllSortedAsync("name");
+				.findAllSortedAsync("lastUsedTimeStamp", Sort.DESCENDING);
+	}
+
+	private RealmResults<Language> getRecentlyUsedLanguages(Realm realm) {
+		return realm.where(Language.class)
+				.greaterThan("lastUsedTimeStamp", 0)
+				.findAllSorted("lastUsedTimeStamp", Sort.DESCENDING);
 	}
 
 	public void updateTimestampLanguage(String codeLang) {
-		Language language = getLanguageByCode(codeLang);
-		if(language != null) {
-			mRealm.beginTransaction();
+		mRealm.executeTransactionAsync(realm -> {
+			Language language = getLanguageByCode(realm, codeLang);
+			RealmResults<Language> recentlyLangs = getRecentlyUsedLanguages(realm);
+			if(recentlyLangs.size() == 5 && language.getLastUsedTimeStamp() == 0) {
+				recentlyLangs.deleteFromRealm(4);
+			}
 			language.setLastUsedTimeStamp(System.currentTimeMillis());
-			mRealm.commitTransaction();
-		}
+		});
 	}
 
 	public void insertLanguages(RealmList<Language> list) {
@@ -75,6 +81,12 @@ public class RealmController {
 
 	public Language getLanguageByCode(String code) {
 		return mRealm.where(Language.class)
+				.equalTo("code", code)
+				.findFirst();
+	}
+
+	private Language getLanguageByCode(Realm realm, String code) {
+		return realm.where(Language.class)
 				.equalTo("code", code)
 				.findFirst();
 	}
@@ -109,21 +121,29 @@ public class RealmController {
 				.findFirst();
 	}
 
+	private Translation getTranslation(Realm realm, String text, String originalLang, String targetLang) {
+		return realm.where(Translation.class)
+				.equalTo("originalText", text)
+				.equalTo("originalLang", originalLang)
+				.equalTo("targetLang", targetLang)
+				.findFirst();
+	}
+
 	public void insertTranslation(String originalText, String translatedText, String originalLang, String targetLang) {
-		Translation translation = getTranslation(originalText, originalLang, targetLang);
-		mRealm.beginTransaction();
-		if(translation == null) {
-			translation = new Translation();
-			translation.setId(getNextId());
-			translation.setOriginalText(originalText);
-		}
-		translation.setTranslatedText(translatedText);
-		translation.setOriginalLang(originalLang);
-		translation.setTargetLang(targetLang);
-		translation.setHistoryTimestamp(System.currentTimeMillis());
-		translation.setShowInHistory(true);
-		mRealm.copyToRealmOrUpdate(translation);
-		mRealm.commitTransaction();
+		mRealm.executeTransactionAsync(realm -> {
+			Translation translation = getTranslation(realm, originalText, originalLang, targetLang);
+			if(translation == null) {
+				translation = new Translation();
+				translation.setId(getNextId(realm));
+				translation.setOriginalText(originalText);
+			}
+			translation.setTranslatedText(translatedText);
+			translation.setOriginalLang(originalLang);
+			translation.setTargetLang(targetLang);
+			translation.setHistoryTimestamp(System.currentTimeMillis());
+			translation.setShowInHistory(true);
+			realm.copyToRealmOrUpdate(translation);
+		});
 	}
 
 	public void removeTranslationFromHistory(Translation translation) {
@@ -178,12 +198,12 @@ public class RealmController {
 		}
 	}
 
-	private int getNextId() {
-		Number nextId = mRealm.where(Translation.class).max("id");
+	private int getNextId(Realm realm) {
+		Number nextId = realm.where(Translation.class).max("id");
 		if(nextId == null) {
 			return 0;
 		} else {
-			return mRealm.where(Translation.class).max("id").intValue() + 1;
+			return realm.where(Translation.class).max("id").intValue() + 1;
 		}
 	}
 }
