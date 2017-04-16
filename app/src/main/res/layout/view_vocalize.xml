@@ -10,7 +10,7 @@
 	<ImageView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:id="@+id/img_listen"
+		android:id="@+id/img_play"
 		android:src="@drawable/img_listen_selector"
 		android:layout_gravity="center"/>
 

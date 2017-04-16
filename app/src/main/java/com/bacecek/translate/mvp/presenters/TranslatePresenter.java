@@ -15,7 +15,7 @@ import com.bacecek.translate.data.entities.Translation;
 import com.bacecek.translate.data.network.DictionaryAPI;
 import com.bacecek.translate.data.network.TranslatorAPI;
 import com.bacecek.translate.mvp.views.TranslateView;
-import com.bacecek.translate.ui.views.ListenButton;
+import com.bacecek.translate.ui.views.VocalizeButton;
 import com.bacecek.translate.utils.Consts;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -80,7 +80,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	private final VocalizerListener mVocalizerListener = new VocalizerListener() {
 		@Override
 		public void onSynthesisBegin(Vocalizer vocalizer) {
-			setButtonState(ListenButton.STATE_INIT);
+			setButtonState(VocalizeButton.STATE_INIT);
 		}
 
 		@Override
@@ -90,18 +90,18 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 		@Override
 		public void onPlayingBegin(Vocalizer vocalizer) {
-			setButtonState(ListenButton.STATE_STOP);
+			setButtonState(VocalizeButton.STATE_STOP);
 		}
 
 		@Override
 		public void onPlayingDone(Vocalizer vocalizer) {
-			setButtonState(ListenButton.STATE_PLAY);
+			setButtonState(VocalizeButton.STATE_PLAY);
 		}
 
 		@Override
 		public void onVocalizerError(Vocalizer vocalizer, Error error) {
 			getViewState().showToast(error.getString());
-			setButtonState(ListenButton.STATE_PLAY);
+			setButtonState(VocalizeButton.STATE_PLAY);
 		}
 	};
 
@@ -310,28 +310,28 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 	public void onClickVocalizeOriginal(int buttonState) {
 		switch (buttonState) {
-			case ListenButton.STATE_PLAY:
+			case VocalizeButton.STATE_PLAY:
 				stopVocalize();
 				mCurrentVocalizeButton = VOCALIZE_BUTTON_ORIGINAL;
 				startVocalize(mCurrentOriginalText, mLanguageManager.getCurrentOriginalLangCode());
 				break;
-			case ListenButton.STATE_STOP:
+			case VocalizeButton.STATE_STOP:
 				stopVocalize();
-				getViewState().setOriginalVocalizeButtonState(ListenButton.STATE_PLAY);
+				getViewState().setOriginalVocalizeButtonState(VocalizeButton.STATE_PLAY);
 				break;
 		}
 	}
 
 	public void onClickVocalizeTranslated(int buttonState) {
 		switch (buttonState) {
-			case ListenButton.STATE_PLAY:
+			case VocalizeButton.STATE_PLAY:
 				stopVocalize();
 				mCurrentVocalizeButton = VOCALIZE_BUTTON_TRANSLATED;
 				startVocalize(mCurrentTranslatedText, mLanguageManager.getCurrentTargetLangCode());
 				break;
-			case ListenButton.STATE_STOP:
+			case VocalizeButton.STATE_STOP:
 				stopVocalize();
-				getViewState().setTranslatedVocalizeButtonState(ListenButton.STATE_PLAY);
+				getViewState().setTranslatedVocalizeButtonState(VocalizeButton.STATE_PLAY);
 				break;
 		}
 	}
@@ -344,7 +344,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 	private void stopVocalize() {
 		resetVocalizer();
-		setButtonState(ListenButton.STATE_PLAY);
+		setButtonState(VocalizeButton.STATE_PLAY);
 	}
 
 	private void resetVocalizer() {

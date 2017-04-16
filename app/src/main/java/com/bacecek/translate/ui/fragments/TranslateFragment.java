@@ -43,9 +43,8 @@ import com.bacecek.translate.ui.adapters.HistoryAdapter.OnItemClickListener;
 import com.bacecek.translate.ui.events.ClickMenuEvent;
 import com.bacecek.translate.ui.events.TranslateEvent;
 import com.bacecek.translate.ui.views.ErrorView;
-import com.bacecek.translate.ui.views.ListenButton;
+import com.bacecek.translate.ui.views.VocalizeButton;
 import com.bacecek.translate.utils.Consts;
-import com.bacecek.translate.utils.SpeechVocalizeListener;
 import com.bacecek.translate.utils.Utils;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmResults;
@@ -55,7 +54,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import ru.yandex.speechkit.Error;
 import ru.yandex.speechkit.Recognizer.Model;
-import ru.yandex.speechkit.Vocalizer;
 import ru.yandex.speechkit.gui.RecognizerActivity;
 
 /**
@@ -77,10 +75,10 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	ImageButton mBtnFavourite;
 	@BindView(R.id.btn_more)
 	ImageButton mBtnMore;
-	@BindView(R.id.btn_listen_original)
-	ListenButton mBtnListenOriginal;
-	@BindView(R.id.btn_listen_translated)
-	ListenButton mBtnListenTranslated;
+	@BindView(R.id.btn_vocalize_original)
+	VocalizeButton mBtnVocalizeOriginal;
+	@BindView(R.id.btn_vocalize_translated)
+	VocalizeButton mBtnVocalizeTranslated;
 	@BindView(R.id.list_history)
 	RecyclerView mRecyclerHistory;
 	@BindView(R.id.list_dictionary)
@@ -102,7 +100,6 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	@BindView(R.id.view_error)
 	ErrorView mErrorView;
 
-	private Vocalizer mSpeechVocalizer;
 	private HistoryAdapter mHistoryAdapter;
 
 	@OnClick(R.id.btn_original_lang)
@@ -134,38 +131,16 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		mPresenter.onClickMic();
 	}
 
-	@OnClick(R.id.btn_listen_original)
-	void onClickListenOriginalText(View v) {
-		ListenButton button = (ListenButton) v;
+	@OnClick(R.id.btn_vocalize_original)
+	void onClickVocalizeOriginalText(View v) {
+		VocalizeButton button = (VocalizeButton) v;
 		mPresenter.onClickVocalizeOriginal(button.getState());
-		/*ListenButton button = (ListenButton) v;
-		int state = button.getState();
-		switch (state) {
-			case ListenButton.STATE_PLAY:
-				mSpeechVocalizerListener.setButton(button);
-				//startListen(getOriginalText(), LanguageManager.getInstance().getCurrentOriginalLangCode());
-				break;
-			case ListenButton.STATE_STOP:
-				stopListen();
-				button.setState(ListenButton.STATE_PLAY);
-		}*/
 	}
 
-	@OnClick(R.id.btn_listen_translated)
-	void onClickListenTranslatedText(View v) {
-		ListenButton button = (ListenButton) v;
+	@OnClick(R.id.btn_vocalize_translated)
+	void onClickVocalizeTranslatedText(View v) {
+		VocalizeButton button = (VocalizeButton) v;
 		mPresenter.onClickVocalizeTranslated(button.getState());
-		/*ListenButton button = (ListenButton) v;
-		int state = button.getState();
-		switch (state) {
-			case ListenButton.STATE_PLAY:
-				mSpeechVocalizerListener.setButton(button);
-				//startListen(getTranslatedText(), LanguageManager.getInstance().getCurrentTargetLangCode());
-				break;
-			case ListenButton.STATE_STOP:
-				stopListen();
-				button.setState(ListenButton.STATE_PLAY);
-		}*/
 	}
 
 	@OnClick(R.id.btn_menu)
@@ -207,8 +182,6 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 			mPresenter.onClickHistoryFavourite(translation);
 		}
 	};
-
-	private final SpeechVocalizeListener mSpeechVocalizerListener = new SpeechVocalizeListener();
 
 	private final OnWordClickListener mOnWordClickListener = word -> {
 		mPresenter.saveTranslation(true);
@@ -276,24 +249,6 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		mRecyclerDictionary.setLayoutManager(new LinearLayoutManager(getActivity()));
 		mRecyclerDictionary.setNestedScrollingEnabled(false);
 		mProgressBar.getIndeterminateDrawable().setColorFilter(Color.WHITE, Mode.SRC_IN);
-	}
-
-	private void startListen(String text, String lang) {
-		resetVocalizer();
-		mSpeechVocalizer = Vocalizer.createVocalizer(lang, text, true);
-		mSpeechVocalizer.setListener(mSpeechVocalizerListener);
-		mSpeechVocalizer.start();
-	}
-
-	private void resetVocalizer() {
-		if(mSpeechVocalizer != null) {
-			mSpeechVocalizer.cancel();
-			mSpeechVocalizer = null;
-		}
-	}
-
-	private void stopListen() {
-		resetVocalizer();
 	}
 
 	private String getTranslatedText() {
@@ -444,12 +399,12 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 
 	@Override
 	public void showButtonVocalize() {
-		mBtnListenOriginal.setVisibility(View.VISIBLE);
+		mBtnVocalizeOriginal.setVisibility(View.VISIBLE);
 	}
 
 	@Override
 	public void hideButtonVocalize() {
-		mBtnListenOriginal.setVisibility(View.GONE);
+		mBtnVocalizeOriginal.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -484,12 +439,12 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 
 	@Override
 	public void setOriginalVocalizeButtonState(int state) {
-		mBtnListenOriginal.setState(state);
+		mBtnVocalizeOriginal.setState(state);
 	}
 
 	@Override
 	public void setTranslatedVocalizeButtonState(int state) {
-		mBtnListenTranslated.setState(state);
+		mBtnVocalizeTranslated.setState(state);
 	}
 
 	@Override

@@ -43,5 +43,6 @@ public interface TranslateView extends MvpView {
 	void setTranslationFavourite(boolean isFavourite);
 	void setOriginalVocalizeButtonState(int state);
 	void setTranslatedVocalizeButtonState(int state);
+	@StateStrategyType(OneExecutionStateStrategy.class)
 	void showToast(String text);
 }

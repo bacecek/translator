@@ -37,10 +37,10 @@
 					android:src="@drawable/button_favourite_selector"
 					style="@style/Widget.AppCompat.ActionButton"/>
 
-				<com.bacecek.translate.ui.views.ListenButton
+				<com.bacecek.translate.ui.views.VocalizeButton
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:id="@+id/btn_listen_translated"
+					android:id="@+id/btn_vocalize_translated"
 					android:tint="@android:color/black"/>
 
 				<ImageButton
