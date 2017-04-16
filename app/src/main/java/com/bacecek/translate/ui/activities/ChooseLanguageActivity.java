@@ -89,9 +89,7 @@ public class ChooseLanguageActivity extends MvpAppCompatActivity implements Choo
 
 	@Override
 	public void setRecentlyUsedLanguages(RealmResults<Language> languages) {
-		mRecentlyLangsAdapter = new LanguagesAdapter(getApplicationContext(),
-				languages,
-				mOnItemClickListener);
+		mRecentlyLangsAdapter = new LanguagesAdapter(languages, mOnItemClickListener);
 		mRecentlyLangsAdapter.registerAdapterDataObserver(mLangsDataObserver);
 		mRecyclerRecentlyUsed.setAdapter(mRecentlyLangsAdapter);
 		mLangsDataObserver.onChanged();
@@ -100,10 +98,7 @@ public class ChooseLanguageActivity extends MvpAppCompatActivity implements Choo
 	@Override
 	public void setAllLanguages(RealmResults<Language> languages) {
 		String currentLang = getIntent().getStringExtra(Extra.EXTRA_CHOOSE_LANG_CURRENT);
-		LanguagesAdapter allAdapter = new LanguagesAdapter(getApplicationContext(),
-				languages,
-				mOnItemClickListener,
-				currentLang);
+		LanguagesAdapter allAdapter = new LanguagesAdapter(languages, mOnItemClickListener, currentLang);
 		mRecyclerAll.setAdapter(allAdapter);
 	}
 

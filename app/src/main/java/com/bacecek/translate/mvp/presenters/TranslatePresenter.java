@@ -81,7 +81,13 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		}
 	};
 
-	private final RealmChangeListener<Translation> mChangeFavouriteListener = translation -> getViewState().setTranslationFavourite(translation.isFavourite());
+	private final RealmChangeListener<Translation> mChangeFavouriteListener = translation -> {
+		if(translation.isValid()) {
+			getViewState().setTranslationFavourite(translation.isFavourite());
+		} else {
+			mCurrentTranslation = null;
+		}
+	};
 
 	private final VocalizerListener mVocalizerListener = new VocalizerListener() {
 		@Override
@@ -201,6 +207,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		}
 		mCurrentOriginalText = text;
 		if(mCurrentOriginalText.length() == 0) {
+			mCurrentTranslation = null;
 			onLoadFinish();
 			getViewState().hideButtonClear();
 			getViewState().hideButtonVocalize();
@@ -232,7 +239,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	private void onSuccess(CombineResult result) {
 		if(mIsLoading) {
 			if(mCurrentTranslation != null) {
-				mCurrentTranslation.removeChangeListeners();
+				mCurrentTranslation.removeAllChangeListeners();
 			}
 			mCurrentTranslation = mRealmController.getTranslation(mCurrentOriginalText,
 					mLanguageManager.getCurrentOriginalLangCode(),
@@ -255,6 +262,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 	private void onError(Throwable error) {
 		if(mIsLoading) {
+			mCurrentTranslation = null;
 			getViewState().hideTranslation();
 			getViewState().hideDictionary();
 			getViewState().showError(error);

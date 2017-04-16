@@ -24,10 +24,9 @@ import io.realm.RealmRecyclerViewAdapter;
 public class HistoryAdapter extends RealmRecyclerViewAdapter<Translation, HistoryAdapter.ViewHolder> {
 	private OnItemClickListener mListener;
 
-	public HistoryAdapter(@NonNull Context context,
-			@Nullable OrderedRealmCollection<Translation> data,
+	public HistoryAdapter(@Nullable OrderedRealmCollection<Translation> data,
 			OnItemClickListener listener) {
-		super(context, data, true);
+		super(data, true);
 		mListener = listener;
 	}
 

@@ -277,10 +277,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 
 	@Override
 	public void setHistoryData(RealmResults<Translation> history) {
-		mHistoryAdapter = new HistoryAdapter(
-				getActivity(),
-				history,
-				mOnItemHistoryClickListener);
+		mHistoryAdapter = new HistoryAdapter(history, mOnItemHistoryClickListener);
 		mRecyclerHistory.setAdapter(mHistoryAdapter);
 	}
 

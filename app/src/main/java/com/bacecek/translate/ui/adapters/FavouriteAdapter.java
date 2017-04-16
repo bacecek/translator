@@ -24,10 +24,9 @@ import io.realm.RealmRecyclerViewAdapter;
 public class FavouriteAdapter extends RealmRecyclerViewAdapter<Translation, ViewHolder> {
 	private OnItemClickListener mListener;
 
-	public FavouriteAdapter(@NonNull Context context,
-			@Nullable OrderedRealmCollection<Translation> data,
+	public FavouriteAdapter(@Nullable OrderedRealmCollection<Translation> data,
 			OnItemClickListener listener) {
-		super(context, data, true);
+		super(data, true);
 		mListener = listener;
 	}
 

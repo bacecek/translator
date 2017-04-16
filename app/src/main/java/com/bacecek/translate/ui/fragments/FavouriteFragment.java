@@ -167,7 +167,7 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 
 	@Override
 	public void setData(RealmResults<Translation> favourites) {
-		mFavouriteAdapter = new FavouriteAdapter(getActivity(), favourites, mOnFavouritesItemClickListener);
+		mFavouriteAdapter = new FavouriteAdapter(favourites, mOnFavouritesItemClickListener);
 		mFavouriteAdapter.registerAdapterDataObserver(mFavouritesDataObserver);
 		mFavouritesDataObserver.onChanged();
 		mRecyclerFavourites.setAdapter(mFavouriteAdapter);

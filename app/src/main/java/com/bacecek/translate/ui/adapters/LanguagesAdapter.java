@@ -1,7 +1,5 @@
 package com.bacecek.translate.ui.adapters;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,18 +25,16 @@ public class LanguagesAdapter extends RealmRecyclerViewAdapter<Language, ViewHol
 	private OnItemClickListener mListener;
 	private String mCurrentLang;
 
-	public LanguagesAdapter(@NonNull Context context,
-			@Nullable OrderedRealmCollection<Language> data,
+	public LanguagesAdapter(@Nullable OrderedRealmCollection<Language> data,
 			OnItemClickListener listener) {
-		super(context, data, true);
+		super(data, true);
 		mListener = listener;
 	}
 
-	public LanguagesAdapter(@NonNull Context context,
-			@Nullable OrderedRealmCollection<Language> data,
+	public LanguagesAdapter(@Nullable OrderedRealmCollection<Language> data,
 			OnItemClickListener listener,
 			String currentLang) {
-		super(context, data, true);
+		super(data, true);
 		mListener = listener;
 		mCurrentLang = currentLang;
 	}
