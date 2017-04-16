@@ -15,6 +15,7 @@ import com.bacecek.translate.data.entities.Translation;
 import com.bacecek.translate.data.network.DictionaryAPI;
 import com.bacecek.translate.data.network.TranslatorAPI;
 import com.bacecek.translate.mvp.views.TranslateView;
+import com.bacecek.translate.ui.views.ListenButton;
 import com.bacecek.translate.utils.Consts;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -36,6 +37,9 @@ import ru.yandex.speechkit.VocalizerListener;
 
 @InjectViewState
 public class TranslatePresenter extends MvpPresenter<TranslateView> {
+	private static final int VOCALIZE_BUTTON_ORIGINAL = 0;
+	private static final int VOCALIZE_BUTTON_TRANSLATED = 1;
+
 	private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 	private Disposable mTranslateDisposable;
 	private String mCurrentOriginalText = "";
@@ -45,6 +49,8 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	private Runnable mDelayInputRunnable;
 	private Translation mCurrentTranslation;
 	private int mCurrentResponseCount = 0;
+	private Vocalizer mSpeechVocalizer;
+	private int mCurrentVocalizeButton;
 
 	@Inject
 	LanguageManager mLanguageManager;
@@ -71,10 +77,10 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 	private final RealmChangeListener<Translation> mChangeFavouriteListener = translation -> getViewState().setTranslationFavourite(translation.isFavourite());
 
-	private final VocalizerListener mOriginalVocalizerListener = new VocalizerListener() {
+	private final VocalizerListener mVocalizerListener = new VocalizerListener() {
 		@Override
 		public void onSynthesisBegin(Vocalizer vocalizer) {
-
+			setButtonState(ListenButton.STATE_INIT);
 		}
 
 		@Override
@@ -84,17 +90,18 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 		@Override
 		public void onPlayingBegin(Vocalizer vocalizer) {
-
+			setButtonState(ListenButton.STATE_STOP);
 		}
 
 		@Override
 		public void onPlayingDone(Vocalizer vocalizer) {
-
+			setButtonState(ListenButton.STATE_PLAY);
 		}
 
 		@Override
 		public void onVocalizerError(Vocalizer vocalizer, Error error) {
-
+			getViewState().showToast(error.getString());
+			setButtonState(ListenButton.STATE_PLAY);
 		}
 	};
 
@@ -299,6 +306,60 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 			mCurrentTranslation.addChangeListener(mChangeFavouriteListener);
 		}
 		mRealmController.changeFavourite(mCurrentTranslation);
+	}
+
+	public void onClickVocalizeOriginal(int buttonState) {
+		switch (buttonState) {
+			case ListenButton.STATE_PLAY:
+				stopVocalize();
+				mCurrentVocalizeButton = VOCALIZE_BUTTON_ORIGINAL;
+				startVocalize(mCurrentOriginalText, mLanguageManager.getCurrentOriginalLangCode());
+				break;
+			case ListenButton.STATE_STOP:
+				stopVocalize();
+				getViewState().setOriginalVocalizeButtonState(ListenButton.STATE_PLAY);
+				break;
+		}
+	}
+
+	public void onClickVocalizeTranslated(int buttonState) {
+		switch (buttonState) {
+			case ListenButton.STATE_PLAY:
+				stopVocalize();
+				mCurrentVocalizeButton = VOCALIZE_BUTTON_TRANSLATED;
+				startVocalize(mCurrentTranslatedText, mLanguageManager.getCurrentTargetLangCode());
+				break;
+			case ListenButton.STATE_STOP:
+				stopVocalize();
+				getViewState().setTranslatedVocalizeButtonState(ListenButton.STATE_PLAY);
+				break;
+		}
+	}
+
+	private void startVocalize(String text, String lang) {
+		mSpeechVocalizer = Vocalizer.createVocalizer(lang, text, true);
+		mSpeechVocalizer.setListener(mVocalizerListener);
+		mSpeechVocalizer.start();
+	}
+
+	private void stopVocalize() {
+		resetVocalizer();
+		setButtonState(ListenButton.STATE_PLAY);
+	}
+
+	private void resetVocalizer() {
+		if(mSpeechVocalizer != null) {
+			mSpeechVocalizer.cancel();
+			mSpeechVocalizer = null;
+		}
+	}
+
+	private void setButtonState(int state) {
+		if(mCurrentVocalizeButton == VOCALIZE_BUTTON_ORIGINAL) {
+			getViewState().setOriginalVocalizeButtonState(state);
+		} else if(mCurrentVocalizeButton == VOCALIZE_BUTTON_TRANSLATED) {
+			getViewState().setTranslatedVocalizeButtonState(state);
+		}
 	}
 
 	public void onDictationSuccess(String text) {

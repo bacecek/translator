@@ -136,40 +136,36 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 
 	@OnClick(R.id.btn_listen_original)
 	void onClickListenOriginalText(View v) {
-		try {
-			ListenButton button = (ListenButton) v;
-			int state = button.getState();
-			switch (state) {
-				case ListenButton.STATE_PLAY:
-					mSpeechVocalizerListener.setButton(button);
-					//startListen(getOriginalText(), LanguageManager.getInstance().getCurrentOriginalLangCode());
-					break;
-				case ListenButton.STATE_STOP:
-					stopListen();
-					button.setState(ListenButton.STATE_PLAY);
-			}
-		} catch (ClassCastException e) {
-			e.printStackTrace();
-		}
+		ListenButton button = (ListenButton) v;
+		mPresenter.onClickVocalizeOriginal(button.getState());
+		/*ListenButton button = (ListenButton) v;
+		int state = button.getState();
+		switch (state) {
+			case ListenButton.STATE_PLAY:
+				mSpeechVocalizerListener.setButton(button);
+				//startListen(getOriginalText(), LanguageManager.getInstance().getCurrentOriginalLangCode());
+				break;
+			case ListenButton.STATE_STOP:
+				stopListen();
+				button.setState(ListenButton.STATE_PLAY);
+		}*/
 	}
 
 	@OnClick(R.id.btn_listen_translated)
 	void onClickListenTranslatedText(View v) {
-		try {
-			ListenButton button = (ListenButton) v;
-			int state = button.getState();
-			switch (state) {
-				case ListenButton.STATE_PLAY:
-					mSpeechVocalizerListener.setButton(button);
-					//startListen(getTranslatedText(), LanguageManager.getInstance().getCurrentTargetLangCode());
-					break;
-				case ListenButton.STATE_STOP:
-					stopListen();
-					button.setState(ListenButton.STATE_PLAY);
-			}
-		} catch (ClassCastException e) {
-			e.printStackTrace();
-		}
+		ListenButton button = (ListenButton) v;
+		mPresenter.onClickVocalizeTranslated(button.getState());
+		/*ListenButton button = (ListenButton) v;
+		int state = button.getState();
+		switch (state) {
+			case ListenButton.STATE_PLAY:
+				mSpeechVocalizerListener.setButton(button);
+				//startListen(getTranslatedText(), LanguageManager.getInstance().getCurrentTargetLangCode());
+				break;
+			case ListenButton.STATE_STOP:
+				stopListen();
+				button.setState(ListenButton.STATE_PLAY);
+		}*/
 	}
 
 	@OnClick(R.id.btn_menu)
@@ -484,5 +480,20 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	@Override
 	public void setTranslationFavourite(boolean isFavourite) {
 		mBtnFavourite.setActivated(isFavourite);
+	}
+
+	@Override
+	public void setOriginalVocalizeButtonState(int state) {
+		mBtnListenOriginal.setState(state);
+	}
+
+	@Override
+	public void setTranslatedVocalizeButtonState(int state) {
+		mBtnListenTranslated.setState(state);
+	}
+
+	@Override
+	public void showToast(String text) {
+		Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
 	}
 }

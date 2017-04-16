@@ -41,4 +41,7 @@ public interface TranslateView extends MvpView {
 	void setOriginalText(String text);
 	void startDictation(String originalLang);
 	void setTranslationFavourite(boolean isFavourite);
+	void setOriginalVocalizeButtonState(int state);
+	void setTranslatedVocalizeButtonState(int state);
+	void showToast(String text);
 }
