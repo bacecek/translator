@@ -10,7 +10,7 @@ import io.realm.RealmResults;
  * <buzmakov.da@gmail.com>
  */
 
-public interface FavoriteView extends MvpView {
+public interface FavouriteView extends MvpView {
 	void showSearch();
 	void hideSearch();
 	void showEmptyView();
@@ -20,6 +20,6 @@ public interface FavoriteView extends MvpView {
 	void showButtonClear();
 	void hideButtonClear();
 	void setEmptyViewText(@StringRes int text);
-	void setData(RealmResults<Translation> favorites);
-	void updateData(RealmResults<Translation> favorites);
+	void setData(RealmResults<Translation> favourites);
+	void updateData(RealmResults<Translation> favourites);
 }

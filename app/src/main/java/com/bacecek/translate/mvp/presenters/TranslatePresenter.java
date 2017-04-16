@@ -204,7 +204,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		getViewState().setOriginalText(translation.getOriginalText());
 	}
 
-	public void onClickHistoryFavorite(Translation translation) {
+	public void onClickHistoryFavourite(Translation translation) {
 		mRealmController.changeFavourite(translation);
 	}
 

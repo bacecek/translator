@@ -220,7 +220,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 
 		@Override
 		public void onClickFavourite(Translation translation) {
-			mPresenter.onClickHistoryFavorite(translation);
+			mPresenter.onClickHistoryFavourite(translation);
 		}
 	};
 

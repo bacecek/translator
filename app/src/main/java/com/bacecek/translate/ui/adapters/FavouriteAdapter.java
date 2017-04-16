@@ -6,14 +6,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.bacecek.translate.R;
-import com.bacecek.translate.ui.adapters.FavoriteAdapter.ViewHolder;
 import com.bacecek.translate.data.entities.Translation;
+import com.bacecek.translate.ui.adapters.FavouriteAdapter.ViewHolder;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
 
@@ -22,10 +21,10 @@ import io.realm.RealmRecyclerViewAdapter;
  * <buzmakov.da@gmail.com>
  */
 
-public class FavoriteAdapter extends RealmRecyclerViewAdapter<Translation, ViewHolder> {
+public class FavouriteAdapter extends RealmRecyclerViewAdapter<Translation, ViewHolder> {
 	private OnItemClickListener mListener;
 
-	public FavoriteAdapter(@NonNull Context context,
+	public FavouriteAdapter(@NonNull Context context,
 			@Nullable OrderedRealmCollection<Translation> data,
 			OnItemClickListener listener) {
 		super(context, data, true);
@@ -64,12 +63,7 @@ public class FavoriteAdapter extends RealmRecyclerViewAdapter<Translation, ViewH
 			mTxtTranslated.setText(translation.getTranslatedText());
 			mTxtLangs.setText(translation.getOriginalLang().toUpperCase() + "-" + translation.getTargetLang().toUpperCase());
 			if(listener != null) {
-				itemView.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						listener.onItemClick(translation);
-					}
-				});
+				itemView.setOnClickListener(view -> listener.onItemClick(translation));
 			}
 		}
 	}

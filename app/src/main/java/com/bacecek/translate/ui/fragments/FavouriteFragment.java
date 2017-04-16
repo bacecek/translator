@@ -22,10 +22,10 @@ import butterknife.OnClick;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.entities.Translation;
-import com.bacecek.translate.mvp.presenters.FavoritePresenter;
-import com.bacecek.translate.mvp.views.FavoriteView;
-import com.bacecek.translate.ui.adapters.FavoriteAdapter;
-import com.bacecek.translate.ui.adapters.FavoriteAdapter.OnItemClickListener;
+import com.bacecek.translate.mvp.presenters.FavouritePresenter;
+import com.bacecek.translate.mvp.views.FavouriteView;
+import com.bacecek.translate.ui.adapters.FavouriteAdapter;
+import com.bacecek.translate.ui.adapters.FavouriteAdapter.OnItemClickListener;
 import com.bacecek.translate.ui.events.ClickFavouriteEvent;
 import com.bacecek.translate.ui.events.ClickMenuEvent;
 import com.jakewharton.rxbinding2.widget.RxTextView;
@@ -38,9 +38,9 @@ import org.greenrobot.eventbus.EventBus;
  * <buzmakov.da@gmail.com>
  */
 
-public class FavoriteFragment extends BaseFragment implements FavoriteView{
+public class FavouriteFragment extends BaseFragment implements FavouriteView {
 	@InjectPresenter
-	FavoritePresenter mPresenter;
+	FavouritePresenter mPresenter;
 
 	@BindView(R.id.list_favourites)
 	RecyclerView mRecyclerFavourites;
@@ -76,7 +76,7 @@ public class FavoriteFragment extends BaseFragment implements FavoriteView{
 		public void onSwiped(ViewHolder viewHolder, int direction) {
 			int position = viewHolder.getAdapterPosition();
 			Translation translation = null;
-			OrderedRealmCollection data = mFavoriteAdapter.getData();
+			OrderedRealmCollection data = mFavouriteAdapter.getData();
 			if(data != null) {
 				translation = (Translation) data.get(position);
 			}
@@ -89,14 +89,14 @@ public class FavoriteFragment extends BaseFragment implements FavoriteView{
 		@Override
 		public void onChanged() {
 			super.onChanged();
-			mPresenter.onDataChanged(mFavoriteAdapter.getItemCount(), mEditSearch.getText().toString());
+			mPresenter.onDataChanged(mFavouriteAdapter.getItemCount(), mEditSearch.getText().toString());
 		}
 	};
 
 	private final OnItemClickListener mOnFavouritesItemClickListener = translation -> EventBus
 			.getDefault().post(new ClickFavouriteEvent(translation));
 
-	private FavoriteAdapter mFavoriteAdapter;
+	private FavouriteAdapter mFavouriteAdapter;
 
 	@Nullable
 	@Override
@@ -121,8 +121,8 @@ public class FavoriteFragment extends BaseFragment implements FavoriteView{
 		mPresenter.setSearchObservable(RxTextView.afterTextChangeEvents(mEditSearch));
 	}
 
-	public static FavoriteFragment getInstance() {
-		return new FavoriteFragment();
+	public static FavouriteFragment getInstance() {
+		return new FavouriteFragment();
 	}
 
 	@Override
@@ -171,15 +171,15 @@ public class FavoriteFragment extends BaseFragment implements FavoriteView{
 	}
 
 	@Override
-	public void setData(RealmResults<Translation> favorites) {
-		mFavoriteAdapter = new FavoriteAdapter(getActivity(), favorites, mOnFavouritesItemClickListener);
-		mFavoriteAdapter.registerAdapterDataObserver(mFavouritesDataObserver);
+	public void setData(RealmResults<Translation> favourites) {
+		mFavouriteAdapter = new FavouriteAdapter(getActivity(), favourites, mOnFavouritesItemClickListener);
+		mFavouriteAdapter.registerAdapterDataObserver(mFavouritesDataObserver);
 		mFavouritesDataObserver.onChanged();
-		mRecyclerFavourites.setAdapter(mFavoriteAdapter);
+		mRecyclerFavourites.setAdapter(mFavouriteAdapter);
 	}
 
 	@Override
-	public void updateData(RealmResults<Translation> favorites) {
-		mFavoriteAdapter.updateData(favorites);
+	public void updateData(RealmResults<Translation> favourites) {
+		mFavouriteAdapter.updateData(favourites);
 	}
 }

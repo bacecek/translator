@@ -6,7 +6,7 @@ import com.bacecek.translate.App;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.data.entities.Translation;
-import com.bacecek.translate.mvp.views.FavoriteView;
+import com.bacecek.translate.mvp.views.FavouriteView;
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -19,11 +19,11 @@ import javax.inject.Inject;
  */
 
 @InjectViewState
-public class FavoritePresenter extends MvpPresenter<FavoriteView> {
+public class FavouritePresenter extends MvpPresenter<FavouriteView> {
 	@Inject
 	RealmController mRealmController;
 
-	public FavoritePresenter() {
+	public FavouritePresenter() {
 		App.getAppComponent().inject(this);
 	}
 
@@ -53,7 +53,7 @@ public class FavoritePresenter extends MvpPresenter<FavoriteView> {
 					return text;
 				})
 				.map(text -> mRealmController.getFavourites(text))
-				.subscribe(favorites -> getViewState().updateData(favorites));
+				.subscribe(favourites -> getViewState().updateData(favourites));
 	}
 
 	public void onDataChanged(int size, String searchText) {
