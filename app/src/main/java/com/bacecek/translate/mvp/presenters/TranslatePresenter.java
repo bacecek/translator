@@ -19,6 +19,7 @@ import com.bacecek.translate.utils.Consts;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import java.util.List;
 import javax.inject.Inject;
@@ -31,11 +32,13 @@ import javax.inject.Inject;
 @InjectViewState
 public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+	private Disposable mTranslateDisposable;
 	private String mCurrentText = "";
 	private boolean mIsLoading;
 	private Handler mDelayInputHandler = new Handler(Looper.getMainLooper());
 	private Runnable mDelayInputRunnable;
 	private Translation mCurrentTranslation;
+	private int mCurrentResponseCount = 0;
 
 	@Inject
 	LanguageManager mLanguageManager;
@@ -95,17 +98,27 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		String direction = mLanguageManager.getCurrentOriginalLangCode() + "-" + mLanguageManager.getCurrentTargetLangCode();
 		Observable<Translation> translationObservable = mTranslatorAPI.translate(text, direction);
 		Observable<List<DictionaryItem>> dictionaryObservable = mDictionaryAPI.translate(text, direction, mPrefsManager.getSavedSystemLocale());
-		mCompositeDisposable.add(Observable.combineLatest(translationObservable,
+		mCurrentResponseCount++;
+		final int requestCount = mCurrentResponseCount;
+		if(mTranslateDisposable != null) {
+			mTranslateDisposable.dispose();
+		}
+		mTranslateDisposable = Observable.combineLatest(translationObservable,
 				dictionaryObservable, this::combine)
 				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
 				.subscribe(combineResult -> {
-					onSuccess(combineResult);
-					onLoadFinish();
+					if(requestCount == mCurrentResponseCount) {
+						onSuccess(combineResult);
+						onLoadFinish();
+					}
 				}, throwable -> {
-					onError(throwable);
-					onLoadFinish();
-				}));
+					if(requestCount == mCurrentResponseCount) {
+						onError(throwable);
+						onLoadFinish();
+					}
+				});
+		mCompositeDisposable.add(mTranslateDisposable);
 	}
 
 	public void onClickChooseOriginalLang() {
