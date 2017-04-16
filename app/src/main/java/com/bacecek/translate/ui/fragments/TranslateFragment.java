@@ -42,6 +42,7 @@ import com.bacecek.translate.ui.adapters.HistoryAdapter;
 import com.bacecek.translate.ui.adapters.HistoryAdapter.OnItemClickListener;
 import com.bacecek.translate.ui.events.ClickMenuEvent;
 import com.bacecek.translate.ui.events.TranslateEvent;
+import com.bacecek.translate.ui.views.ErrorView;
 import com.bacecek.translate.ui.views.ListenButton;
 import com.bacecek.translate.utils.Consts;
 import com.bacecek.translate.utils.SpeechVocalizeListener;
@@ -98,8 +99,9 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	NestedScrollView mScrollView;
 	@BindView(R.id.view_progress_loading)
 	ProgressBar mProgressBar;
+	@BindView(R.id.view_error)
+	ErrorView mErrorView;
 
-	private boolean isSavingEnabled = false;
 	private Vocalizer mSpeechVocalizer;
 	private HistoryAdapter mHistoryAdapter;
 
@@ -196,6 +198,11 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	@OnClick(R.id.btn_swap)
 	void onClickSwap() {
 		mPresenter.onClickSwap();
+	}
+
+	@OnClick(R.id.view_error)
+	void onClickRetry() {
+		mPresenter.onClickRetry();
 	}
 
 	@OnTextChanged(value = R.id.edit_original_text, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
@@ -395,13 +402,14 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	}
 
 	@Override
-	public void showError() {
-
+	public void showError(Throwable error) {
+		mErrorView.setVisibility(View.VISIBLE);
+		mErrorView.setError(error);
 	}
 
 	@Override
 	public void hideError() {
-
+		mErrorView.setVisibility(View.GONE);
 	}
 
 	@Override

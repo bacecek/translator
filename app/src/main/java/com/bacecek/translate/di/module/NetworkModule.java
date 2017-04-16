@@ -4,6 +4,7 @@ import com.bacecek.translate.BuildConfig;
 import com.bacecek.translate.data.entities.DictionaryItem;
 import com.bacecek.translate.data.entities.Language;
 import com.bacecek.translate.data.entities.Translation;
+import com.bacecek.translate.data.network.RxErrorHandlingCallAdapterFactory;
 import com.bacecek.translate.data.network.deserializers.DictionaryDeserializer;
 import com.bacecek.translate.data.network.deserializers.LangsDeserializer;
 import com.bacecek.translate.data.network.deserializers.TranslateDeserializer;
@@ -20,7 +21,6 @@ import javax.inject.Singleton;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.Retrofit.Builder;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -106,7 +106,7 @@ public class NetworkModule {
 		return new Builder()
 				.baseUrl(BuildConfig.YANDEX_TRANSLATE_API_URL)
 				.addConverterFactory(factory)
-				.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+				.addCallAdapterFactory(RxErrorHandlingCallAdapterFactory.create())
 				.client(client)
 				.build();
 	}
@@ -118,7 +118,7 @@ public class NetworkModule {
 		return new Builder()
 				.baseUrl(BuildConfig.YANDEX_DICTIONARY_API_URL)
 				.addConverterFactory(factory)
-				.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+				.addCallAdapterFactory(RxErrorHandlingCallAdapterFactory.create())
 				.client(client)
 				.build();
 	}

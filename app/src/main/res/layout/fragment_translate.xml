@@ -62,6 +62,12 @@
 				android:id="@+id/view_translated_text"
 				android:visibility="gone"/>
 
+			<com.bacecek.translate.ui.views.ErrorView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/view_error"
+				android:visibility="gone"/>
+
 		</FrameLayout>
 
 	</RelativeLayout>

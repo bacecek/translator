@@ -22,6 +22,9 @@
 	<!--Errors-->
 	<string name="error">Ошибочка вышла!</string>
 	<string name="error_loading_languages">Не удалось загрузить список языков!</string>
+	<string name="error_load_translation">Не удалось загрузить перевод</string>
+	<string name="error_bad_network">Проверьте соединение с сервером</string>
+	<string name="error_unexpected">Неизвестная ошибка</string>
 
 	<!--Actions-->
 	<string name="action_home">Главная страница</string>

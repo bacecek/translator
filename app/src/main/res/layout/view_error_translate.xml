@@ -1,26 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout 
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:gravity="center_horizontal">
 
+	<ImageView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:src="@drawable/ic_error"/>
+	
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:id="@+id/txt_error_title"
+		android:text="@string/error_load_translation"
+		android:textSize="16sp"
+		android:textColor="@color/colorTextGrey"
 		android:textStyle="bold"
-		android:textColor="@android:color/black"
-		android:textSize="16sp"/>
+		android:layout_marginTop="10dp"/>
 
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:id="@+id/txt_error_subtitle"
-		android:textColor="@android:color/black"
 		android:textSize="14sp"
-		android:layout_marginTop="10dp"/>
+		android:textColor="@color/colorTextGrey"
+		android:fontFamily="sans-serif-light"/>
 
 	<android.support.v7.widget.AppCompatButton
 		android:layout_width="wrap_content"

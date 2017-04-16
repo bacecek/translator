@@ -60,7 +60,6 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		}
 	};
 
-
 	public TranslatePresenter() {
 		App.getAppComponent().inject(this);
 		mLanguageManager.setListener(mLanguageListener);
@@ -75,7 +74,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	}
 
 	public void onHistoryItemSwipe(Translation translation) {
-		mRealmController.removeTranslation(translation);
+		mRealmController.removeTranslationFromHistory(translation);
 	}
 
 	public void saveTranslation(String originalText, String translatedText) {
@@ -137,6 +136,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 			getViewState().showHistory();
 			getViewState().hideTranslation();
 			getViewState().hideDictionary();
+			getViewState().hideError();
 		} else {
 			getViewState().showButtonClear();
 			getViewState().showButtonVocalize();
@@ -150,6 +150,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	public void onLoadStart() {
 		mIsLoading = true;
 		getViewState().showProgress();
+		getViewState().hideError();
 	}
 
 	public void onLoadFinish() {
@@ -174,7 +175,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		if(mIsLoading) {
 			getViewState().hideTranslation();
 			getViewState().hideDictionary();
-			getViewState().showError();
+			getViewState().showError(error);
 		}
 	}
 
@@ -211,6 +212,10 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 	public void onClickMic() {
 		getViewState().startDictation(mLanguageManager.getCurrentOriginalLangCode());
+	}
+
+	public void onClickRetry() {
+		loadTranslation(mCurrentText);
 	}
 
 	public void onDictationSuccess(String text) {

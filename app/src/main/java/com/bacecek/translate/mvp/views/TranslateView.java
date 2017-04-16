@@ -23,7 +23,7 @@ public interface TranslateView extends MvpView {
 	void setHistoryData(RealmResults<Translation> history);
 	void showProgress();
 	void hideProgress();
-	void showError();
+	void showError(Throwable error);
 	void hideError();
 	void showHistory();
 	void hideHistory();
