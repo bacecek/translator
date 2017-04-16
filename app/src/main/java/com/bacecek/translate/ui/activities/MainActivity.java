@@ -32,7 +32,6 @@ import ru.yandex.speechkit.SpeechKit;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements OnNavigationItemSelectedListener {
-	//TODO:добавить receiver на появление интернета
 	@BindView(R.id.view_navigation)
 	NavigationView mNavigationView;
 	@BindView(R.id.layout_drawer)
@@ -43,11 +42,11 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
-		initUI(savedInstanceState);
+		initUI();
 		SpeechKit.getInstance().configure(getApplicationContext(), BuildConfig.YANDEX_SPEECHKIT_API_KEY);
 	}
 
-	private void initUI(Bundle savedInstanceState) {
+	private void initUI() {
 		mNavigationView.setNavigationItemSelectedListener(this);
 		mNavigationView.setCheckedItem(R.id.action_home);
 		DrawerListener drawerListener = new DrawerListener() {

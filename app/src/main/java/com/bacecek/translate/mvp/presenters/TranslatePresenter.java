@@ -256,15 +256,18 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		}
 	}
 
-	private void clearCurrentTranslation() {
-		mCurrentTranslation.removeChangeListeners();
-		mCurrentTranslation = null;
-	}
-
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		mCompositeDisposable.clear();
+	}
+
+	public void onClickClear(boolean isErrorViewVisible) {
+		if(!isErrorViewVisible) {
+			saveTranslation(true);
+		}
+		onLoadFinish();
+		getViewState().setOriginalText("");
 	}
 
 	public void onClickHistoryItem(Translation translation) {

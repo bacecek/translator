@@ -19,7 +19,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import butterknife.OnTextChanged.Callback;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -56,20 +55,12 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 	TextView mTxtEmptyTitle;
 	@BindView(R.id.btn_clear)
 	ImageButton mBtnClear;
+	@BindView(R.id.btn_menu)
+	ImageButton mBtnMenu;
 
 	@OnTextChanged(value = R.id.edit_search, callback = Callback.AFTER_TEXT_CHANGED)
 	void onSearchTextChanged(Editable s) {
 		mPresenter.onInputChanged(s.toString());
-	}
-
-	@OnClick(R.id.btn_clear)
-	void onClickClear() {
-		mEditSearch.setText("");
-	}
-
-	@OnClick(R.id.btn_menu)
-	void onClickMenu() {
-		EventBus.getDefault().post(new ClickMenuEvent());
 	}
 
 	private final ItemTouchHelper.Callback mDismissCallback = new SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -113,6 +104,7 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 
 		setTitle(parent, getString(R.string.action_favourites));
 		initUI();
+		initClickListeners();
 
 		return parent;
 	}
@@ -125,6 +117,11 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 		mRecyclerFavourites.addItemDecoration(divider);
 		ItemTouchHelper helper = new ItemTouchHelper(mDismissCallback);
 		helper.attachToRecyclerView(mRecyclerFavourites);
+	}
+
+	private void initClickListeners() {
+		mBtnClear.setOnClickListener(v -> mEditSearch.setText(""));
+		mBtnMenu.setOnClickListener(v -> EventBus.getDefault().post(new ClickMenuEvent()));
 	}
 
 	public static FavouriteFragment getInstance() {

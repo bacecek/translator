@@ -39,6 +39,7 @@ public interface TranslateView extends MvpView {
 	void setTargetLangName(String name);
 	@StateStrategyType(OneExecutionStateStrategy.class)
 	void setOriginalText(String text);
+	@StateStrategyType(OneExecutionStateStrategy.class)
 	void startDictation(String originalLang);
 	void setTranslationFavourite(boolean isFavourite);
 	void setOriginalVocalizeButtonState(int state);

@@ -26,7 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.bacecek.translate.R;
@@ -75,6 +74,14 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	ImageButton mBtnFavourite;
 	@BindView(R.id.btn_more)
 	ImageButton mBtnMore;
+	@BindView(R.id.btn_menu)
+	ImageButton mBtnMenu;
+	@BindView(R.id.btn_swap)
+	ImageButton mBtnSwap;
+	@BindView(R.id.btn_original_lang)
+	Button mBtnOriginalLang;
+	@BindView(R.id.btn_target_lang)
+	Button mBtnTargetLang;
 	@BindView(R.id.btn_vocalize_original)
 	VocalizeButton mBtnVocalizeOriginal;
 	@BindView(R.id.btn_vocalize_translated)
@@ -89,10 +96,6 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	View mViewDictionary;
 	@BindView(R.id.txt_translated)
 	TextView mTxtTranslated;
-	@BindView(R.id.btn_original_lang)
-	Button mBtnOriginalLang;
-	@BindView(R.id.btn_target_lang)
-	Button mBtnTargetLang;
 	@BindView(R.id.scroll_view)
 	NestedScrollView mScrollView;
 	@BindView(R.id.view_progress_loading)
@@ -101,70 +104,6 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	ErrorView mErrorView;
 
 	private HistoryAdapter mHistoryAdapter;
-
-	@OnClick(R.id.btn_original_lang)
-	void onClickOriginalLang() {
-		mPresenter.onClickChooseOriginalLang();
-	}
-
-	@OnClick(R.id.btn_target_lang)
-	void onClickTargetLang() {
-		mPresenter.onClickChooseTargetLang();
-	}
-
-	@OnClick(R.id.btn_favourite)
-	void onClickFavourite() {
-		mPresenter.onClickFavourite();
-	}
-
-	@OnClick(R.id.btn_clear)
-	void onClickClear() {
-		if(mErrorView.getVisibility() == View.GONE) {
-			mPresenter.saveTranslation(true);
-		}
-		mPresenter.onLoadFinish();
-		mEditOriginal.setText("");
-	}
-
-	@OnClick(R.id.btn_mic)
-	void onClickMic() {
-		mPresenter.onClickMic();
-	}
-
-	@OnClick(R.id.btn_vocalize_original)
-	void onClickVocalizeOriginalText(View v) {
-		VocalizeButton button = (VocalizeButton) v;
-		mPresenter.onClickVocalizeOriginal(button.getState());
-	}
-
-	@OnClick(R.id.btn_vocalize_translated)
-	void onClickVocalizeTranslatedText(View v) {
-		VocalizeButton button = (VocalizeButton) v;
-		mPresenter.onClickVocalizeTranslated(button.getState());
-	}
-
-	@OnClick(R.id.btn_menu)
-	void onClickMenu() {
-		EventBus.getDefault().post(new ClickMenuEvent());
-	}
-
-	@OnClick(R.id.btn_more)
-	void onClickMore() {
-		PopupMenu popupMenu = new PopupMenu(getActivity(), mBtnMore);
-		popupMenu.getMenuInflater().inflate(R.menu.menu_more, popupMenu.getMenu());
-		popupMenu.setOnMenuItemClickListener(mOnMenuMoreItemClickListener);
-		popupMenu.show();
-	}
-
-	@OnClick(R.id.btn_swap)
-	void onClickSwap() {
-		mPresenter.onClickSwap();
-	}
-
-	@OnClick(R.id.view_error)
-	void onClickRetry() {
-		mPresenter.onClickRetry();
-	}
 
 	@OnTextChanged(value = R.id.edit_original_text, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
 	void onTextChanged(Editable s) {
@@ -232,8 +171,11 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 		View parent = inflater.inflate(R.layout.fragment_translate, container, false);
 		ButterKnife.bind(this, parent);
+
 		setTitle(parent, getString(R.string.app_name));
 		initUI();
+		initClickListeners();
+
 		return parent;
 	}
 
@@ -249,6 +191,31 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		mRecyclerDictionary.setLayoutManager(new LinearLayoutManager(getActivity()));
 		mRecyclerDictionary.setNestedScrollingEnabled(false);
 		mProgressBar.getIndeterminateDrawable().setColorFilter(Color.WHITE, Mode.SRC_IN);
+	}
+
+	private void initClickListeners() {
+		mBtnOriginalLang.setOnClickListener(v -> mPresenter.onClickChooseOriginalLang());
+		mBtnTargetLang.setOnClickListener(v -> mPresenter.onClickChooseTargetLang());
+		mBtnFavourite.setOnClickListener(v -> mPresenter.onClickFavourite());
+		mBtnClear.setOnClickListener(v -> mPresenter.onClickClear(mErrorView.getVisibility() == View.VISIBLE));
+		mBtnMic.setOnClickListener(v -> mPresenter.onClickMic());
+		mBtnVocalizeOriginal.setOnClickListener(v -> {
+			VocalizeButton button = (VocalizeButton) v;
+			mPresenter.onClickVocalizeOriginal(button.getState());
+		});
+		mBtnVocalizeTranslated.setOnClickListener(v -> {
+			VocalizeButton button = (VocalizeButton) v;
+			mPresenter.onClickVocalizeTranslated(button.getState());
+		});
+		mBtnMenu.setOnClickListener(v -> EventBus.getDefault().post(new ClickMenuEvent()));
+		mBtnMore.setOnClickListener(v -> {
+			PopupMenu popupMenu = new PopupMenu(getActivity(), mBtnMore);
+			popupMenu.getMenuInflater().inflate(R.menu.menu_more, popupMenu.getMenu());
+			popupMenu.setOnMenuItemClickListener(mOnMenuMoreItemClickListener);
+			popupMenu.show();
+		});
+		mBtnSwap.setOnClickListener(v -> mPresenter.onClickSwap());
+		mErrorView.setOnClickListener(v -> mPresenter.onClickRetry());
 	}
 
 	private String getTranslatedText() {
