@@ -22,10 +22,10 @@
 			style="@style/Widget.AppCompat.ActionButton"
 			android:visibility="invisible"/>
 
-		<com.bacecek.translate.ui.views.ListenButton
+		<com.bacecek.translate.ui.views.VocalizeButton
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:id="@+id/btn_listen_original"
+			android:id="@+id/btn_vocalize_original"
 			android:visibility="invisible"
 			android:tint="@android:color/white"/>
 

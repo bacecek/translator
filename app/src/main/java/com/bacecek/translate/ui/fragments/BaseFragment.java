@@ -1,8 +1,8 @@
 package com.bacecek.translate.ui.fragments;
 
-import android.app.Fragment;
 import android.view.View;
 import android.widget.TextView;
+import com.arellomobile.mvp.MvpFragment;
 import com.bacecek.translate.R;
 
 /**
@@ -10,7 +10,7 @@ import com.bacecek.translate.R;
  * <buzmakov.da@gmail.com>
  */
 
-public class BaseFragment extends Fragment {
+public class BaseFragment extends MvpFragment {
 
 	public void setTitle(View parent, String text) {
 		TextView txtToolbarTitle = (TextView)parent.findViewById(R.id.txt_toolbar_title);

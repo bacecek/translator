@@ -1,8 +1,8 @@
 package com.bacecek.translate.data.network;
 
 import com.bacecek.translate.data.entities.DictionaryItem;
+import io.reactivex.Observable;
 import java.util.List;
-import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
@@ -13,7 +13,7 @@ import retrofit2.http.Query;
 
 public interface DictionaryAPI {
 	@GET("lookup")
-	Call<List<DictionaryItem>> translate(
+	Observable<List<DictionaryItem>> translate(
 			@Query("text") String text,
 			@Query("lang") String langs,
 			@Query("ui") String ui

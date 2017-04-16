@@ -18,12 +18,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.bacecek.translate.BuildConfig;
 import com.bacecek.translate.R;
-import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.ui.events.ClickFavouriteEvent;
 import com.bacecek.translate.ui.events.ClickMenuEvent;
 import com.bacecek.translate.ui.events.TranslateEvent;
 import com.bacecek.translate.ui.fragments.AboutFragment;
-import com.bacecek.translate.ui.fragments.FavouritesFragment;
+import com.bacecek.translate.ui.fragments.FavouriteFragment;
 import com.bacecek.translate.ui.fragments.SettingsFragment;
 import com.bacecek.translate.utils.Utils;
 import org.greenrobot.eventbus.EventBus;
@@ -33,7 +32,6 @@ import ru.yandex.speechkit.SpeechKit;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements OnNavigationItemSelectedListener {
-	//TODO:добавить receiver на появление интернета
 	@BindView(R.id.view_navigation)
 	NavigationView mNavigationView;
 	@BindView(R.id.layout_drawer)
@@ -44,11 +42,11 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
-		initUI(savedInstanceState);
+		initUI();
 		SpeechKit.getInstance().configure(getApplicationContext(), BuildConfig.YANDEX_SPEECHKIT_API_KEY);
 	}
 
-	private void initUI(Bundle savedInstanceState) {
+	private void initUI() {
 		mNavigationView.setNavigationItemSelectedListener(this);
 		mNavigationView.setCheckedItem(R.id.action_home);
 		DrawerListener drawerListener = new DrawerListener() {
@@ -91,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 				removeFromBackStack();
 				break;
 			case R.id.action_favourites:
-				addToBackStack(FavouritesFragment.getInstance());
+				addToBackStack(FavouriteFragment.getInstance());
 				break;
 			case R.id.action_settings:
 				addToBackStack(SettingsFragment.getInstance());
@@ -152,17 +150,11 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onClickFavouriteEvent(ClickFavouriteEvent event) {
 		onNavigationItemSelected(mNavigationView.getMenu().getItem(0));
-		EventBus.getDefault().post(new TranslateEvent(event.text, event.originalLang, event.targetLang));
+		EventBus.getDefault().post(new TranslateEvent(event.translation));
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onClickMenuEvent(ClickMenuEvent event) {
 		mDrawerLayout.openDrawer(GravityCompat.START);
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		RealmController.getInstance().destroy();
 	}
 }
