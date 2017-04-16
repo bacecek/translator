@@ -398,7 +398,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 
 	@Override
 	public void hideProgress() {
-		mProgressBar.setVisibility(View.GONE);
+		mProgressBar.setVisibility(View.INVISIBLE);
 	}
 
 	@Override
