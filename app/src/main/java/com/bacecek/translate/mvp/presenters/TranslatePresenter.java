@@ -15,6 +15,7 @@ import com.bacecek.translate.data.entities.Translation;
 import com.bacecek.translate.data.network.DictionaryAPI;
 import com.bacecek.translate.data.network.TranslatorAPI;
 import com.bacecek.translate.mvp.views.TranslateView;
+import com.bacecek.translate.ui.events.ShowDictionaryEvent;
 import com.bacecek.translate.ui.events.TranslateEvent;
 import com.bacecek.translate.ui.views.VocalizeButton;
 import com.bacecek.translate.utils.Consts;
@@ -253,7 +254,8 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 			mCurrentTranslatedText = result.translation.getTranslatedText();
 			getViewState().hideError();
 			if(result.items.size() > 0 && mPrefsManager.showDictionary()) {
-				getViewState().showDictionary(result.items);
+				getViewState().showDictionary();
+				getViewState().setDictionaryData(result.items);
 			} else {
 				getViewState().hideDictionary();
 			}
@@ -397,6 +399,16 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	public void onTranslateEvent(TranslateEvent event) {
 		saveTranslation(true);
 		onClickHistoryItem(event.translation);
+	}
+
+	@Subscribe(threadMode = ThreadMode.MAIN)
+	public void onShowDictionaryEvent(ShowDictionaryEvent event) {
+		if(mPrefsManager.showDictionary()) {
+			getViewState().showDictionary();
+		} else {
+			getViewState().hideDictionary();
+		}
+
 	}
 
 	private CombineResult combine(Translation translation, List<DictionaryItem> items) {

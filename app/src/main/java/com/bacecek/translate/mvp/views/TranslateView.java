@@ -29,7 +29,8 @@ public interface TranslateView extends MvpView {
 	void hideHistory();
 	void showTranslation(Translation translation);
 	void hideTranslation();
-	void showDictionary(List<DictionaryItem> items);
+	void showDictionary();
+	void setDictionaryData(List<DictionaryItem> items);
 	void hideDictionary();
 	void showButtonClear();
 	void hideButtonClear();

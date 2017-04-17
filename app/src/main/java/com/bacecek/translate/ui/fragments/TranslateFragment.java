@@ -325,8 +325,12 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	}
 
 	@Override
-	public void showDictionary(List<DictionaryItem> items) {
+	public void showDictionary() {
 		mViewDictionary.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public void setDictionaryData(List<DictionaryItem> items) {
 		DictionaryAdapter adapter = new DictionaryAdapter(items, mOnWordClickListener);
 		mRecyclerDictionary.setAdapter(adapter);
 	}

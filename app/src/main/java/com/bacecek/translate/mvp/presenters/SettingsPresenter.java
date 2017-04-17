@@ -9,9 +9,11 @@ import com.bacecek.translate.data.db.PrefsManager;
 import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.data.entities.Setting;
 import com.bacecek.translate.mvp.views.SettingsView;
+import com.bacecek.translate.ui.events.ShowDictionaryEvent;
 import com.bacecek.translate.utils.Consts.Settings;
 import java.util.ArrayList;
 import javax.inject.Inject;
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by Denis Buzmakov on 11/04/2017.
@@ -59,6 +61,7 @@ public class SettingsPresenter extends MvpPresenter<SettingsView> {
 				break;
 			case Settings.SETTING_DICTIONARY:
 				mPrefsManager.setShowDictionary(value);
+				EventBus.getDefault().post(new ShowDictionaryEvent());
 				break;
 			case Settings.SETTING_RETURN:
 				mPrefsManager.setReturnForTranslate(value);
