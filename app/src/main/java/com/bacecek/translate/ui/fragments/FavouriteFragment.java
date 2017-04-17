@@ -86,24 +86,6 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 			super.onChanged();
 			mPresenter.onDataChanged(mFavouriteAdapter.getItemCount());
 		}
-
-		@Override
-		public void onItemRangeChanged(int positionStart, int itemCount) {
-			super.onItemRangeChanged(positionStart, itemCount);
-			mPresenter.onDataChanged(mFavouriteAdapter.getItemCount());
-		}
-
-		@Override
-		public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-			super.onItemRangeMoved(fromPosition, toPosition, itemCount);
-			mPresenter.onDataChanged(mFavouriteAdapter.getItemCount());
-		}
-
-		@Override
-		public void onItemRangeRemoved(int positionStart, int itemCount) {
-			super.onItemRangeRemoved(positionStart, itemCount);
-			mPresenter.onDataChanged(mFavouriteAdapter.getItemCount());
-		}
 	};
 
 	private final OnItemClickListener mOnFavouritesItemClickListener = translation -> EventBus
@@ -185,7 +167,7 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 
 	@Override
 	public void setData(RealmResults<Translation> favourites) {
-		mFavouriteAdapter = new FavouriteAdapter(favourites, mOnFavouritesItemClickListener);
+		mFavouriteAdapter = new FavouriteAdapter(getActivity(), favourites, mOnFavouritesItemClickListener);
 		mFavouriteAdapter.registerAdapterDataObserver(mFavouritesDataObserver);
 		mFavouritesDataObserver.onChanged();
 		mRecyclerFavourites.setAdapter(mFavouriteAdapter);

@@ -1,7 +1,6 @@
 package com.bacecek.translate.ui.adapters;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,9 +23,10 @@ import io.realm.RealmRecyclerViewAdapter;
 public class HistoryAdapter extends RealmRecyclerViewAdapter<Translation, HistoryAdapter.ViewHolder> {
 	private OnItemClickListener mListener;
 
-	public HistoryAdapter(@Nullable OrderedRealmCollection<Translation> data,
+	public HistoryAdapter(Context context,
+			@Nullable OrderedRealmCollection<Translation> data,
 			OnItemClickListener listener) {
-		super(data, true);
+		super(context, data, true);
 		mListener = listener;
 	}
 

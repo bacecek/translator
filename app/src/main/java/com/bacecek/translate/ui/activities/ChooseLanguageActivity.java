@@ -49,24 +49,6 @@ public class ChooseLanguageActivity extends MvpAppCompatActivity implements Choo
 			super.onChanged();
 			mPresenter.datasetRecentlyUsedChanged(mRecentlyLangsAdapter.getItemCount());
 		}
-
-		@Override
-		public void onItemRangeChanged(int positionStart, int itemCount) {
-			super.onItemRangeChanged(positionStart, itemCount);
-			mPresenter.datasetRecentlyUsedChanged(mRecentlyLangsAdapter.getItemCount());
-		}
-
-		@Override
-		public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-			super.onItemRangeMoved(fromPosition, toPosition, itemCount);
-			mPresenter.datasetRecentlyUsedChanged(mRecentlyLangsAdapter.getItemCount());
-		}
-
-		@Override
-		public void onItemRangeRemoved(int positionStart, int itemCount) {
-			super.onItemRangeRemoved(positionStart, itemCount);
-			mPresenter.datasetRecentlyUsedChanged(mRecentlyLangsAdapter.getItemCount());
-		}
 	};
 
 	@Override
@@ -107,7 +89,7 @@ public class ChooseLanguageActivity extends MvpAppCompatActivity implements Choo
 
 	@Override
 	public void setRecentlyUsedLanguages(RealmResults<Language> languages) {
-		mRecentlyLangsAdapter = new LanguagesAdapter(languages, mOnItemClickListener);
+		mRecentlyLangsAdapter = new LanguagesAdapter(getApplicationContext(), languages, mOnItemClickListener);
 		mRecentlyLangsAdapter.registerAdapterDataObserver(mLangsDataObserver);
 		mRecyclerRecentlyUsed.setAdapter(mRecentlyLangsAdapter);
 		mLangsDataObserver.onChanged();
@@ -116,7 +98,7 @@ public class ChooseLanguageActivity extends MvpAppCompatActivity implements Choo
 	@Override
 	public void setAllLanguages(RealmResults<Language> languages) {
 		String currentLang = getIntent().getStringExtra(Extra.EXTRA_CHOOSE_LANG_CURRENT);
-		LanguagesAdapter allAdapter = new LanguagesAdapter(languages, mOnItemClickListener, currentLang);
+		LanguagesAdapter allAdapter = new LanguagesAdapter(getApplicationContext(), languages, mOnItemClickListener, currentLang);
 		mRecyclerAll.setAdapter(allAdapter);
 	}
 
