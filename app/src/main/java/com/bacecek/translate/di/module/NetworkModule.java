@@ -1,15 +1,15 @@
 package com.bacecek.translate.di.module;
 
 import com.bacecek.translate.BuildConfig;
-import com.bacecek.translate.data.entities.DictionaryItem;
-import com.bacecek.translate.data.entities.Language;
-import com.bacecek.translate.data.entities.Translation;
+import com.bacecek.translate.data.entity.DictionaryItem;
+import com.bacecek.translate.data.entity.Language;
+import com.bacecek.translate.data.entity.Translation;
 import com.bacecek.translate.data.network.RxErrorHandlingCallAdapterFactory;
-import com.bacecek.translate.data.network.deserializers.DictionaryDeserializer;
-import com.bacecek.translate.data.network.deserializers.LangsDeserializer;
-import com.bacecek.translate.data.network.deserializers.TranslateDeserializer;
-import com.bacecek.translate.utils.Consts.DI;
-import com.bacecek.translate.utils.CustomInterceptor;
+import com.bacecek.translate.data.network.deserializer.DictionaryDeserializer;
+import com.bacecek.translate.data.network.deserializer.LangsDeserializer;
+import com.bacecek.translate.data.network.deserializer.TranslateDeserializer;
+import com.bacecek.translate.util.Consts.DI;
+import com.bacecek.translate.data.network.CustomInterceptor;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -1,6 +1,6 @@
 package com.bacecek.translate.data.db;
 
-import com.bacecek.translate.data.entities.Language;
+import com.bacecek.translate.data.entity.Language;
 import java.util.Arrays;
 import javax.inject.Inject;
 

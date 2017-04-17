@@ -12,12 +12,12 @@
 		android:supportsRtl="false"
 		android:theme="@style/AppTheme">
 		<activity
-			android:name=".ui.activities.MainActivity"
+			android:name=".ui.activity.MainActivity"
 			android:theme="@style/MainActivityTheme"
 			android:windowSoftInputMode="stateAlwaysHidden"/>
-		<activity android:name=".ui.activities.FullscreenTextActivity" />
-		<activity android:name=".ui.activities.ChooseLanguageActivity" />
-		<activity android:name=".ui.activities.SplashScreenActivity"
+		<activity android:name=".ui.activity.FullscreenTextActivity" />
+		<activity android:name=".ui.activity.ChooseLanguageActivity" />
+		<activity android:name=".ui.activity.SplashScreenActivity"
 			android:theme="@style/SplashScreen">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />

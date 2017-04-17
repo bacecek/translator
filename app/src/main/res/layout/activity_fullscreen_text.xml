@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.bacecek.translate.ui.views.AutoResizeTextView
+<com.bacecek.translate.ui.widget.AutoResizeTextView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"

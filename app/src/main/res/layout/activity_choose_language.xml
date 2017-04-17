@@ -5,7 +5,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context="com.bacecek.translate.ui.activities.ChooseLanguageActivity"
+	tools:context="com.bacecek.translate.ui.activity.ChooseLanguageActivity"
 	android:orientation="vertical"
 	android:fitsSystemWindows="true">
 

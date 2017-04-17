@@ -1,9 +1,9 @@
 package com.bacecek.translate.data.db;
 
 import android.content.SharedPreferences;
-import com.bacecek.translate.utils.Consts.DI;
-import com.bacecek.translate.utils.Consts.PrefsLangs;
-import com.bacecek.translate.utils.Consts.PrefsSettings;
+import com.bacecek.translate.util.Consts.DI;
+import com.bacecek.translate.util.Consts.PrefsLangs;
+import com.bacecek.translate.util.Consts.PrefsSettings;
 import java.util.Locale;
 import javax.inject.Inject;
 import javax.inject.Named;

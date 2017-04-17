@@ -1,7 +1,7 @@
 package com.bacecek.translate.di.module;
 
-import com.bacecek.translate.data.network.DictionaryAPI;
-import com.bacecek.translate.utils.Consts.DI;
+import com.bacecek.translate.data.network.api.DictionaryAPI;
+import com.bacecek.translate.util.Consts.DI;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Named;
