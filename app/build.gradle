@@ -13,6 +13,7 @@ apply plugin: 'me.tatarka.retrolambda'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    maven { url 'https://github.com/uPhyca/stetho-realm/raw/master/maven-repo' }
 }
 
 apply plugin: 'realm-android'
@@ -90,6 +91,11 @@ dependencies {
     annotationProcessor "com.arello-mobile:moxy-compiler:$moxy_version"
     compile "com.arello-mobile:moxy-android:$moxy_version"
     compile "com.arello-mobile:moxy-app-compat:$moxy_version"
+
+    //stetho
+    compile "com.facebook.stetho:stetho:$stetho_version"
+    compile "com.facebook.stetho:stetho-okhttp3:$stetho_version"
+    compile 'com.uphyca:stetho_realm:2.0.0'
 
     //other
     compile 'com.android.support.constraint:constraint-layout:1.0.1'

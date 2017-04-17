@@ -9,6 +9,8 @@ import com.bacecek.translate.di.module.NetworkModule;
 import com.bacecek.translate.di.module.RealmModule;
 import com.bacecek.translate.di.module.TranslatorModule;
 import com.crashlytics.android.Crashlytics;
+import com.facebook.stetho.Stetho;
+import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import timber.log.Timber;
@@ -37,6 +39,11 @@ public class App extends Application {
 		Fabric.with(this, new Crashlytics());
 		Realm.init(this);
 		Timber.plant(new DebugTree());
+		Stetho.initialize(
+				Stetho.newInitializerBuilder(this)
+						.enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+						.enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
+						.build());
 	}
 
 	public static AppComponent getAppComponent() {

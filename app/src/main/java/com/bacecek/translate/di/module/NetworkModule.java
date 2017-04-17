@@ -10,6 +10,7 @@ import com.bacecek.translate.data.network.deserializers.LangsDeserializer;
 import com.bacecek.translate.data.network.deserializers.TranslateDeserializer;
 import com.bacecek.translate.utils.Consts.DI;
 import com.bacecek.translate.utils.CustomInterceptor;
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -79,18 +80,20 @@ public class NetworkModule {
 	@Singleton
 	@Named(DI.DI_TRANSLATOR_OKHTTP)
 	OkHttpClient provideTranslatorOkHttpClient(@Named(DI.DI_TRANSLATOR_INTERCEPTOR) CustomInterceptor interceptor) {
-		return new OkHttpClient.Builder().
-				addInterceptor(interceptor).
-				build();
+		return new OkHttpClient.Builder()
+				.addInterceptor(interceptor)
+				.addNetworkInterceptor(new StethoInterceptor())
+				.build();
 	}
 
 	@Provides
 	@Singleton
 	@Named(DI.DI_DICTIONARY_OKHTTP)
 	OkHttpClient provideDictionaryOkHttpClient(@Named(DI.DI_DICTIONARY_INTERCEPTOR) CustomInterceptor interceptor) {
-		return new OkHttpClient.Builder().
-				addInterceptor(interceptor).
-				build();
+		return new OkHttpClient.Builder()
+				.addInterceptor(interceptor)
+				.addNetworkInterceptor(new StethoInterceptor())
+				.build();
 	}
 
 	@Provides
