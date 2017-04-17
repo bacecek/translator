@@ -15,14 +15,17 @@ import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.support.v7.widget.helper.ItemTouchHelper.SimpleCallback;
 import android.text.Editable;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -160,6 +163,14 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		}
 	};
 
+	private final OnEditorActionListener mOnKeyDoneListener = (view, actionId, keyEvent) -> {
+		if (actionId == EditorInfo.IME_ACTION_DONE) {
+			mPresenter.loadTranslation();
+			return true;
+		}
+		return false;
+	};
+
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -185,6 +196,8 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		mRecyclerDictionary.setLayoutManager(new LinearLayoutManager(getActivity()));
 		mRecyclerDictionary.setNestedScrollingEnabled(false);
 		mProgressBar.getIndeterminateDrawable().setColorFilter(Color.WHITE, Mode.SRC_IN);
+		mEditOriginal.setRawInputType(InputType.TYPE_CLASS_TEXT);
+		mEditOriginal.setOnEditorActionListener(mOnKeyDoneListener);
 	}
 
 	private void initClickListeners() {
@@ -418,5 +431,15 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	@Override
 	public void setMicButtonEnabled(boolean enabled) {
 		mBtnMic.setEnabled(enabled);
+	}
+
+	@Override
+	public void setInputImeOptions(int imeOptions) {
+		//очистка фокуса. каким-то образом другие методы не работали, а этот костылик работает:)
+		mEditOriginal.setFocusableInTouchMode(false);
+		mEditOriginal.setFocusable(false);
+		mEditOriginal.setFocusableInTouchMode(true);
+		mEditOriginal.setFocusable(true);
+		mEditOriginal.setImeOptions(imeOptions);
 	}
 }

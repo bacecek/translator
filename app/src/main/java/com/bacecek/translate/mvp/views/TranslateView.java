@@ -50,4 +50,5 @@ public interface TranslateView extends MvpView {
 	void setOriginalVocalizeButtonEnabled(boolean enabled);
 	void setTranslatedVocalizeButtonEnabled(boolean enabled);
 	void setMicButtonEnabled(boolean enabled);
+	void setInputImeOptions(int imeOptions);
 }

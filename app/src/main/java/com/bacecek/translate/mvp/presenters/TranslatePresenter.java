@@ -2,6 +2,7 @@ package com.bacecek.translate.mvp.presenters;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.view.inputmethod.EditorInfo;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.bacecek.translate.App;
@@ -15,6 +16,7 @@ import com.bacecek.translate.data.entities.Translation;
 import com.bacecek.translate.data.network.DictionaryAPI;
 import com.bacecek.translate.data.network.TranslatorAPI;
 import com.bacecek.translate.mvp.views.TranslateView;
+import com.bacecek.translate.ui.events.ChangeInputImeOptionsEvent;
 import com.bacecek.translate.ui.events.ShowDictionaryEvent;
 import com.bacecek.translate.ui.events.TranslateEvent;
 import com.bacecek.translate.ui.views.VocalizeButton;
@@ -131,6 +133,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		getViewState().setTargetLangName(mLanguageManager.getCurrentTargetLangName());
 		updateVocalizeAndMicButtonsState();
 		EventBus.getDefault().register(this);
+		updateInputImeOptions();
 	}
 
 	public void onHistoryItemSwipe(Translation translation) {
@@ -395,6 +398,14 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		getViewState().setOriginalText(mCurrentOriginalText);
 	}
 
+	private void updateInputImeOptions() {
+		if(mPrefsManager.returnForTranslate()) {
+			getViewState().setInputImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_ACTION_DONE);
+		} else {
+			getViewState().setInputImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_ACTION_NONE);
+		}
+	}
+
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onTranslateEvent(TranslateEvent event) {
 		saveTranslation(true);
@@ -408,7 +419,11 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		} else {
 			getViewState().hideDictionary();
 		}
+	}
 
+	@Subscribe(threadMode = ThreadMode.MAIN)
+	public void onChangeInputImeOptionsEvent(ChangeInputImeOptionsEvent event) {
+		updateInputImeOptions();
 	}
 
 	private CombineResult combine(Translation translation, List<DictionaryItem> items) {

@@ -9,6 +9,7 @@ import com.bacecek.translate.data.db.PrefsManager;
 import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.data.entities.Setting;
 import com.bacecek.translate.mvp.views.SettingsView;
+import com.bacecek.translate.ui.events.ChangeInputImeOptionsEvent;
 import com.bacecek.translate.ui.events.ShowDictionaryEvent;
 import com.bacecek.translate.utils.Consts.Settings;
 import java.util.ArrayList;
@@ -65,6 +66,7 @@ public class SettingsPresenter extends MvpPresenter<SettingsView> {
 				break;
 			case Settings.SETTING_RETURN:
 				mPrefsManager.setReturnForTranslate(value);
+				EventBus.getDefault().post(new ChangeInputImeOptionsEvent());
 				break;
 		}
 	}
