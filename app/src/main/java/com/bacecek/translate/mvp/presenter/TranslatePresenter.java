@@ -15,11 +15,11 @@ import com.bacecek.translate.data.entity.Language;
 import com.bacecek.translate.data.entity.Translation;
 import com.bacecek.translate.data.network.api.DictionaryAPI;
 import com.bacecek.translate.data.network.api.TranslatorAPI;
-import com.bacecek.translate.event.SimultaneousTranslateEvent;
-import com.bacecek.translate.mvp.view.TranslateView;
 import com.bacecek.translate.event.ChangeInputImeOptionsEvent;
 import com.bacecek.translate.event.ShowDictionaryEvent;
+import com.bacecek.translate.event.SimultaneousTranslateEvent;
 import com.bacecek.translate.event.TranslateEvent;
+import com.bacecek.translate.mvp.view.TranslateView;
 import com.bacecek.translate.ui.widget.VocalizeButton;
 import com.bacecek.translate.util.Consts;
 import io.reactivex.Observable;
@@ -165,7 +165,6 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		if(mCurrentOriginalText.length() == 0) {
 			return;
 		}
-		onLoadStart();
 		String direction = mLanguageManager.getCurrentOriginalLangCode() + "-" + mLanguageManager.getCurrentTargetLangCode();
 		Observable<Translation> translationObservable = mTranslatorAPI.translate(mCurrentOriginalText, direction);
 		Observable<List<DictionaryItem>> dictionaryObservable = mDictionaryAPI.translate(mCurrentOriginalText, direction, mPrefsManager.getSavedSystemLocale());
@@ -178,15 +177,19 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 				dictionaryObservable, this::combine)
 				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
+				.doOnSubscribe(disposable -> onLoadStart())
+				.doFinally(() -> {
+					if(requestCount == mCurrentResponseCount) {
+						onLoadFinish();
+					}
+				})
 				.subscribe(combineResult -> {
 					if(requestCount == mCurrentResponseCount) {
 						onSuccess(combineResult);
-						onLoadFinish();
 					}
 				}, throwable -> {
 					if(requestCount == mCurrentResponseCount) {
 						onError(throwable);
-						onLoadFinish();
 					}
 				});
 		mCompositeDisposable.add(mTranslateDisposable);
