@@ -97,10 +97,6 @@ public class RealmController {
 				.findFirst();
 	}
 
-	public void changeFavourite(String originalText, String originalLang, String targetLang) {
-		changeFavourite(getTranslation(originalText, originalLang, targetLang));
-	}
-
 	public void changeFavourite(Translation translation) {
 		if(translation == null) return;
 		if(isRemovingNeeded(translation)) {
@@ -220,15 +216,6 @@ public class RealmController {
 		return mRealm.where(Translation.class)
 				.equalTo("showInHistory", true)
 				.findAllSortedAsync("historyTimestamp", Sort.DESCENDING);
-	}
-
-	public boolean isTranslationFavourite(String text, String originalLang, String targetLang) {
-		Translation translation = getTranslation(text, originalLang, targetLang);
-		if(translation == null) {
-			return false;
-		} else {
-			return translation.isFavourite();
-		}
 	}
 
 	private int getNextId(Realm realm) {

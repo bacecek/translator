@@ -55,14 +55,6 @@ public class LanguageManager {
 		}
 	}
 
-	public void setCurrentOriginalLangName(String originalLangName) {
-		setCurrentOriginalLangCode(mRealmController.getLanguageByName(originalLangName).getCode());
-	}
-
-	public void setCurrentTargetLangName(String targetLangName) {
-		setCurrentTargetLangCode(mRealmController.getLanguageByName(targetLangName).getCode());
-	}
-
 	public String getCurrentTargetLangCode() {
 		return mCurrentTargetLangCode;
 	}
