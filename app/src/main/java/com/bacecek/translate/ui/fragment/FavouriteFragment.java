@@ -121,43 +121,23 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 	}
 
 	@Override
-	public void showSearch() {
-		mSearchView.setVisibility(View.VISIBLE);
+	public void setSearchVisibility(boolean visible) {
+		mSearchView.setVisibility(visible ? View.VISIBLE : View.GONE);
 	}
 
 	@Override
-	public void hideSearch() {
-		mSearchView.setVisibility(View.GONE);
+	public void setEmptyViewVisibility(boolean visible) {
+		mViewEmpty.setVisibility(visible ? View.VISIBLE : View.GONE);
 	}
 
 	@Override
-	public void showEmptyView() {
-		mViewEmpty.setVisibility(View.VISIBLE);
+	public void setListVisibility(boolean visible) {
+		mRecyclerFavourites.setVisibility(visible ? View.VISIBLE : View.GONE);
 	}
 
 	@Override
-	public void hideEmptyView() {
-		mViewEmpty.setVisibility(View.GONE);
-	}
-
-	@Override
-	public void showList() {
-		mRecyclerFavourites.setVisibility(View.VISIBLE);
-	}
-
-	@Override
-	public void hideList() {
-		mRecyclerFavourites.setVisibility(View.GONE);
-	}
-
-	@Override
-	public void showButtonClear() {
-		mBtnClear.setVisibility(View.VISIBLE);
-	}
-
-	@Override
-	public void hideButtonClear() {
-		mBtnClear.setVisibility(View.GONE);
+	public void setButtonClearVisibility(boolean visible) {
+		mBtnClear.setVisibility(visible ? View.VISIBLE : View.GONE);
 	}
 
 	@Override

@@ -44,23 +44,13 @@ public class SplashScreenActivity extends MvpAppCompatActivity implements Splash
 	}
 
 	@Override
-	public void showError() {
-		mViewError.setVisibility(View.VISIBLE);
+	public void setErrorVisibility(boolean visible) {
+		mViewError.setVisibility(visible ? View.VISIBLE : View.GONE);
 	}
 
 	@Override
-	public void hideError() {
-		mViewError.setVisibility(View.GONE);
-	}
-
-	@Override
-	public void showLoading() {
-		mViewLoading.setVisibility(View.VISIBLE);
-	}
-
-	@Override
-	public void hideLoading() {
-		mViewLoading.setVisibility(View.GONE);
+	public void setLoadingVisibility(boolean visible) {
+		mViewLoading.setVisibility(visible ? View.VISIBLE : View.GONE);
 	}
 
 	@Override

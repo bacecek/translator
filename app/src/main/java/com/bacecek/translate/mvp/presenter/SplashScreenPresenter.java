@@ -55,25 +55,23 @@ public class SplashScreenPresenter extends MvpPresenter<SplashScreenView> {
 	}
 
 	public void loadLangs() {
-		getViewState().hideError();
-		getViewState().showLoading();
-
 		Observable<List<Language>> observable = mTranslatorAPI.getLangs(Locale.getDefault().getLanguage());
 		Disposable disposable = observable
 				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(languages -> {
-					onLoadFinish();
-					onSuccess(languages);
-				}, throwable -> {
-					onLoadFinish();
-					onError(throwable);
-				});
+				.doOnSubscribe(d -> onLoadStart())
+				.doFinally(this::onLoadFinish)
+				.subscribe(this::onSuccess, this::onError);
 		mCompositeDisposable.add(disposable);
 	}
 
+	private void onLoadStart() {
+		getViewState().setLoadingVisibility(true);
+		getViewState().setErrorVisibility(false);
+	}
+
 	private void onLoadFinish() {
-		getViewState().hideLoading();
+		getViewState().setLoadingVisibility(false);
 	}
 
 	private void onSuccess(List<Language> languages) {
@@ -86,7 +84,7 @@ public class SplashScreenPresenter extends MvpPresenter<SplashScreenView> {
 	}
 
 	private void onError(Throwable throwable) {
-		getViewState().showError();
+		getViewState().setErrorVisibility(true);
 	}
 
 	@Override

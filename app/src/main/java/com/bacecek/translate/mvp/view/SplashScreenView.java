@@ -10,10 +10,8 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
  */
 
 public interface SplashScreenView extends MvpView {
-	void showError();
-	void hideError();
-	void showLoading();
-	void hideLoading();
+	void setErrorVisibility(boolean visible);
+	void setLoadingVisibility(boolean visible);
 	@StateStrategyType(OneExecutionStateStrategy.class)
 	void goToMainScreen();
 }

@@ -289,88 +289,61 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	}
 
 	@Override
+	public void setProgressVisibility(boolean visible) {
+		mProgressBar.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+	}
+
+	@Override
+	public void setErrorVisibility(boolean visible) {
+		mErrorView.setVisibility(visible ? View.VISIBLE : View.GONE);
+	}
+
+	@Override
+	public void setHistoryVisibility(boolean visible) {
+		mRecyclerHistory.setVisibility(visible ? View.VISIBLE : View.GONE);
+	}
+
+	@Override
+	public void setTranslationVisibility(boolean visible) {
+		mViewTranslated.setVisibility(visible ? View.VISIBLE : View.GONE);
+	}
+
+	@Override
+	public void setDictionaryVisibility(boolean visible) {
+		mViewDictionary.setVisibility(visible ? View.VISIBLE : View.GONE);
+	}
+
+	@Override
+	public void setButtonClearVisibility(boolean visible) {
+		mBtnClear.setVisibility(visible ? View.VISIBLE : View.GONE);
+	}
+
+	@Override
+	public void setButtonVocalizeVisibility(boolean visible) {
+		mBtnVocalizeOriginal.setVisibility(visible ? View.VISIBLE : View.GONE);
+	}
+
+	@Override
+	public void setErrorData(Throwable error) {
+		mErrorView.setError(error);
+	}
+
+	@Override
 	public void setHistoryData(RealmResults<Translation> history) {
 		mHistoryAdapter = new HistoryAdapter(getActivity(), history, mOnItemHistoryClickListener);
 		mRecyclerHistory.setAdapter(mHistoryAdapter);
 	}
 
 	@Override
-	public void showProgress() {
-		mProgressBar.setVisibility(View.VISIBLE);
-	}
-
-	@Override
-	public void hideProgress() {
-		mProgressBar.setVisibility(View.INVISIBLE);
-	}
-
-	@Override
-	public void showError(Throwable error) {
-		mErrorView.setVisibility(View.VISIBLE);
-		mErrorView.setError(error);
-	}
-
-	@Override
-	public void hideError() {
-		mErrorView.setVisibility(View.GONE);
-	}
-
-	@Override
-	public void showHistory() {
-		mRecyclerHistory.setVisibility(View.VISIBLE);
-	}
-
-	@Override
-	public void hideHistory() {
-		mRecyclerHistory.setVisibility(View.GONE);
-	}
-
-	@Override
-	public void showTranslation(Translation translation) {
-		mViewTranslated.setVisibility(View.VISIBLE);
+	public void setTranslationData(Translation translation) {
 		mTxtTranslated.setText(translation.getTranslatedText());
 		mBtnFavourite.setActivated(translation.isFavourite());
-	}
-
-	@Override
-	public void hideTranslation() {
-		mViewTranslated.setVisibility(View.GONE);
-	}
-
-	@Override
-	public void showDictionary() {
-		mViewDictionary.setVisibility(View.VISIBLE);
 	}
 
 	@Override
 	public void setDictionaryData(List<DictionaryItem> items) {
 		DictionaryAdapter adapter = new DictionaryAdapter(items, mOnWordClickListener);
 		mRecyclerDictionary.setAdapter(adapter);
-	}
-
-	@Override
-	public void hideDictionary() {
-		mViewDictionary.setVisibility(View.GONE);
-	}
-
-	@Override
-	public void showButtonClear() {
-		mBtnClear.setVisibility(View.VISIBLE);
-	}
-
-	@Override
-	public void hideButtonClear() {
-		mBtnClear.setVisibility(View.GONE);
-	}
-
-	@Override
-	public void showButtonVocalize() {
-		mBtnVocalizeOriginal.setVisibility(View.VISIBLE);
-	}
-
-	@Override
-	public void hideButtonVocalize() {
-		mBtnVocalizeOriginal.setVisibility(View.GONE);
 	}
 
 	@Override

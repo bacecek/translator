@@ -78,13 +78,8 @@ public class ChooseLanguageActivity extends MvpAppCompatActivity implements Choo
 	}
 
 	@Override
-	public void showRecentlyUsed() {
-		mViewRecentlyUsed.setVisibility(View.VISIBLE);
-	}
-
-	@Override
-	public void hideRecentlyUsed() {
-		mViewRecentlyUsed.setVisibility(View.GONE);
+	public void setRecentlyUsedVisibility(boolean visible) {
+		mViewRecentlyUsed.setVisibility(visible ? View.VISIBLE : View.GONE);
 	}
 
 	@Override

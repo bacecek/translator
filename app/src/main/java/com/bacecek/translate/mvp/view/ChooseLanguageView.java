@@ -10,8 +10,7 @@ import io.realm.RealmResults;
  */
 
 public interface ChooseLanguageView extends MvpView {
-	void showRecentlyUsed();
-	void hideRecentlyUsed();
+	void setRecentlyUsedVisibility(boolean visible);
 	void setRecentlyUsedLanguages(RealmResults<Language> languages);
 	void setAllLanguages(RealmResults<Language> languages);
 	void setResultAndFinish(String lang, int langType);

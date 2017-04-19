@@ -220,16 +220,16 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		if(mCurrentOriginalText.length() == 0) {
 			mCurrentTranslation = null;
 			onLoadFinish();
-			getViewState().hideButtonClear();
-			getViewState().hideButtonVocalize();
-			getViewState().showHistory();
-			getViewState().hideTranslation();
-			getViewState().hideDictionary();
-			getViewState().hideError();
+			getViewState().setButtonClearVisibility(false);
+			getViewState().setButtonVocalizeVisibility(false);
+			getViewState().setHistoryVisibility(true);
+			getViewState().setTranslationVisibility(false);
+			getViewState().setDictionaryVisibility(false);
+			getViewState().setErrorVisibility(false);
 		} else {
-			getViewState().showButtonClear();
-			getViewState().showButtonVocalize();
-			getViewState().hideHistory();
+			getViewState().setButtonClearVisibility(true);
+			getViewState().setButtonVocalizeVisibility(true);
+			getViewState().setHistoryVisibility(false);
 			if(mIsSimultaneousTranslate) {
 				mDelayInputRunnable = this::loadTranslation;
 				mDelayInputHandler.postDelayed(mDelayInputRunnable, Consts.DELAY_INPUT);
@@ -237,15 +237,15 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		}
 	}
 
-	public void onLoadStart() {
+	private void onLoadStart() {
 		mIsLoading = true;
-		getViewState().showProgress();
-		getViewState().hideError();
+		getViewState().setProgressVisibility(true);
+		getViewState().setErrorVisibility(false);
 	}
 
-	public void onLoadFinish() {
+	private void onLoadFinish() {
 		mIsLoading = false;
-		getViewState().hideProgress();
+		getViewState().setProgressVisibility(false);
 	}
 
 	private void onSuccess(CombineResult result) {
@@ -256,19 +256,20 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 			mCurrentTranslation = mRealmController.getTranslation(mCurrentOriginalText,
 					mLanguageManager.getCurrentOriginalLangCode(),
 					mLanguageManager.getCurrentTargetLangCode());
+			getViewState().setTranslationVisibility(true);
 			if(mCurrentTranslation != null) {
 				mCurrentTranslation.addChangeListener(mChangeFavouriteListener);
-				getViewState().showTranslation(mCurrentTranslation);
+				getViewState().setTranslationData(mCurrentTranslation);
 			} else {
-				getViewState().showTranslation(result.translation);
+				getViewState().setTranslationData(result.translation);
 			}
 			mCurrentTranslatedText = result.translation.getTranslatedText();
-			getViewState().hideError();
+			getViewState().setErrorVisibility(false);
 			if(result.items.size() > 0 && mPrefsManager.showDictionary()) {
-				getViewState().showDictionary();
+				getViewState().setDictionaryVisibility(true);
 				getViewState().setDictionaryData(result.items);
 			} else {
-				getViewState().hideDictionary();
+				getViewState().setDictionaryVisibility(false);
 			}
 		}
 	}
@@ -276,9 +277,10 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	private void onError(Throwable error) {
 		if(mIsLoading) {
 			mCurrentTranslation = null;
-			getViewState().hideTranslation();
-			getViewState().hideDictionary();
-			getViewState().showError(error);
+			getViewState().setTranslationVisibility(false);
+			getViewState().setDictionaryVisibility(false);
+			getViewState().setErrorVisibility(true);
+			getViewState().setErrorData(error);
 		}
 	}
 
@@ -422,11 +424,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onShowDictionaryEvent(ShowDictionaryEvent event) {
-		if(mPrefsManager.showDictionary()) {
-			getViewState().showDictionary();
-		} else {
-			getViewState().hideDictionary();
-		}
+		getViewState().setErrorVisibility(mPrefsManager.showDictionary());
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)

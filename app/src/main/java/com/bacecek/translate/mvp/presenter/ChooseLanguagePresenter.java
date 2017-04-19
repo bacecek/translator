@@ -42,9 +42,9 @@ public class ChooseLanguagePresenter extends MvpPresenter<ChooseLanguageView> {
 
 	public void datasetRecentlyUsedChanged(int size) {
 		if(size == 0) {
-			getViewState().hideRecentlyUsed();
+			getViewState().setRecentlyUsedVisibility(false);
 		} else {
-			getViewState().showRecentlyUsed();
+			getViewState().setRecentlyUsedVisibility(true);
 		}
 	}
 }

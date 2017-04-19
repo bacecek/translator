@@ -20,22 +20,17 @@ public interface TranslateView extends MvpView {
 	void goToChooseOriginalLanguage(String currentLang);
 	@StateStrategyType(OneExecutionStateStrategy.class)
 	void goToChooseTargetLanguage(String currentLang);
+	void setProgressVisibility(boolean visible);
+	void setErrorVisibility(boolean visible);
+	void setHistoryVisibility(boolean visible);
+	void setTranslationVisibility(boolean visible);
+	void setDictionaryVisibility(boolean visible);
+	void setButtonClearVisibility(boolean visible);
+	void setButtonVocalizeVisibility(boolean visible);
+	void setErrorData(Throwable error);
 	void setHistoryData(RealmResults<Translation> history);
-	void showProgress();
-	void hideProgress();
-	void showError(Throwable error);
-	void hideError();
-	void showHistory();
-	void hideHistory();
-	void showTranslation(Translation translation);
-	void hideTranslation();
-	void showDictionary();
+	void setTranslationData(Translation translation);
 	void setDictionaryData(List<DictionaryItem> items);
-	void hideDictionary();
-	void showButtonClear();
-	void hideButtonClear();
-	void showButtonVocalize();
-	void hideButtonVocalize();
 	void setOriginalLangName(String name);
 	void setTargetLangName(String name);
 	@StateStrategyType(OneExecutionStateStrategy.class)

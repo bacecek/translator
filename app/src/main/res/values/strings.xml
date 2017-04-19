@@ -9,7 +9,7 @@
 	<string name="try_again">Попробовать еще раз</string>
 	<string name="exit">Выйти</string>
 	<string name="wait_loading_languages">Загрузка списка языков. Пожалуйста, подождите…</string>
-	<string name="text_has_been_copied">Перевод был скопирован в буфер обмена</string>
+	<string name="text_has_been_copied">Перевод скопирован в буфер обмена</string>
 	<string name="share_translation_with">Поделиться переводом с</string>
 	<string name="recently_used_languages">Недавно использованные</string>
 	<string name="all_languages">Все языки</string>

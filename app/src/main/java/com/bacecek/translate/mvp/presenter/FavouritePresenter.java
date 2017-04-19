@@ -39,10 +39,10 @@ public class FavouritePresenter extends MvpPresenter<FavouriteView> {
 	public void onInputChanged(String search) {
 		mCurrentSearchText = search;
 		if(mCurrentSearchText.isEmpty()) {
-			getViewState().hideButtonClear();
+			getViewState().setButtonClearVisibility(false);
 			getViewState().setEmptyViewText(R.string.empty_list_favourites);
 		} else {
-			getViewState().showButtonClear();
+			getViewState().setButtonClearVisibility(true);
 			getViewState().setEmptyViewText(R.string.empty_search);
 		}
 		RealmResults<Translation> favourites = mRealmController.getFavourites(mCurrentSearchText);
@@ -51,14 +51,14 @@ public class FavouritePresenter extends MvpPresenter<FavouriteView> {
 
 	public void onDataChanged(int size) {
 		if(size == 0) {
-			getViewState().showEmptyView();
-			getViewState().hideList();
+			getViewState().setEmptyViewVisibility(true);
+			getViewState().setListVisibility(false);
 			if(mCurrentSearchText.isEmpty())
-				getViewState().hideSearch();
+				getViewState().setSearchVisibility(false);
 		} else {
-			getViewState().hideEmptyView();
-			getViewState().showList();
-			getViewState().showSearch();
+			getViewState().setEmptyViewVisibility(false);
+			getViewState().setListVisibility(true);
+			getViewState().setSearchVisibility(true);
 		}
 	}
 }
