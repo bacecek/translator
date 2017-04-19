@@ -4,9 +4,9 @@ import com.bacecek.translate.data.entity.Language;
 import com.bacecek.translate.data.entity.Translation;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmList;
 import io.realm.RealmResults;
 import io.realm.Sort;
+import java.util.ArrayList;
 import javax.inject.Inject;
 
 /**
@@ -73,7 +73,7 @@ public class RealmController {
 		});
 	}
 
-	public void insertLanguages(RealmList<Language> list) {
+	public void insertLanguages(ArrayList<Language> list) {
 		mRealm.beginTransaction();
 		mRealm.copyToRealmOrUpdate(list);
 		mRealm.commitTransaction();

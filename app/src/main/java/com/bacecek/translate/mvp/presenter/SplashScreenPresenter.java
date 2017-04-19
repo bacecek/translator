@@ -3,6 +3,7 @@ package com.bacecek.translate.mvp.presenter;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.bacecek.translate.App;
+import com.bacecek.translate.data.db.LanguageManager;
 import com.bacecek.translate.data.db.PrefsManager;
 import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.data.entity.Language;
@@ -13,7 +14,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import io.realm.RealmList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
@@ -33,6 +34,8 @@ public class SplashScreenPresenter extends MvpPresenter<SplashScreenView> {
 	RealmController mRealmController;
 	@Inject
 	PrefsManager mPrefsManager;
+	@Inject
+	LanguageManager mLanguageManager;
 
 	public SplashScreenPresenter() {
 		App.getAppComponent().inject(this);
@@ -61,7 +64,7 @@ public class SplashScreenPresenter extends MvpPresenter<SplashScreenView> {
 				.observeOn(AndroidSchedulers.mainThread())
 				.doOnSubscribe(d -> onLoadStart())
 				.doFinally(this::onLoadFinish)
-				.subscribe(this::onSuccess, this::onError);
+				.subscribe(this::onSuccess, throwable -> onError());
 		mCompositeDisposable.add(disposable);
 	}
 
@@ -75,15 +78,17 @@ public class SplashScreenPresenter extends MvpPresenter<SplashScreenView> {
 	}
 
 	private void onSuccess(List<Language> languages) {
-		//TODO:переделать под обычный list
-		RealmList<Language> list = new RealmList<Language>();
+		ArrayList<Language> list = new ArrayList<Language>();
 		list.addAll(languages);
 		mRealmController.insertLanguages(list);
 		mPrefsManager.saveSystemLocale();
 		getViewState().goToMainScreen();
+		//это все дело нужно, чтобы при первом запуске 2 дефолтных языка сразу появлялись в "недавно использованных"
+		mLanguageManager.setCurrentOriginalLangCode(mPrefsManager.getLastUsedOriginalLang());
+		mLanguageManager.setCurrentTargetLangCode(mPrefsManager.getLastUsedTargetLang());
 	}
 
-	private void onError(Throwable throwable) {
+	private void onError() {
 		getViewState().setErrorVisibility(true);
 	}
 
