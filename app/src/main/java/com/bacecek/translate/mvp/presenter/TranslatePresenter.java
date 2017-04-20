@@ -383,6 +383,14 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		}
 	}
 
+	public void onKeyBackDown() {
+		//загружать перевод при скрытии клавиатуры следует только тогда, когда отключен синхронный перевод.
+		//ибо зачем загружать 2 раза подряд перевод, сначала после ввода, потом еще раз то же самое после скрытия клавиатуры.
+		if(!mPrefsManager.simultaneousTranslation()) {
+			loadTranslation();
+		}
+	}
+
 	private void startVocalize(String text, String lang) {
 		mSpeechVocalizer = Vocalizer.createVocalizer(lang, text, true);
 		mSpeechVocalizer.setListener(mVocalizerListener);
@@ -410,8 +418,13 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	}
 
 	private void updateVocalizeAndMicButtonsState() {
-		getViewState().setOriginalVocalizeButtonEnabled(mLanguageManager.isRecognitionAndVocalizeAvailable(mLanguageManager.getCurrentOriginalLangCode()));
-		getViewState().setTranslatedVocalizeButtonEnabled(mLanguageManager.isRecognitionAndVocalizeAvailable(mLanguageManager.getCurrentTargetLangCode()));
+		//помимо проверки на доступность языка для озвучивания текста проверяем еще на количество символов в тексте - вдруг много слишком
+		boolean isOriginalVocalizeButtonEnabled = mLanguageManager.isRecognitionAndVocalizeAvailable(mLanguageManager.getCurrentOriginalLangCode()) &&
+				mCurrentOriginalText.length() < Consts.MAX_VOCALIZE_SYMBOLS;
+		boolean isTranslatedVocalizeButtonEnabled = mLanguageManager.isRecognitionAndVocalizeAvailable(mLanguageManager.getCurrentTargetLangCode()) &&
+				mCurrentTranslatedText.length() < Consts.MAX_VOCALIZE_SYMBOLS;
+		getViewState().setOriginalVocalizeButtonEnabled(isOriginalVocalizeButtonEnabled);
+		getViewState().setTranslatedVocalizeButtonEnabled(isTranslatedVocalizeButtonEnabled);
 		getViewState().setMicButtonEnabled(mLanguageManager.isRecognitionAndVocalizeAvailable(mLanguageManager.getCurrentOriginalLangCode()));
 	}
 

@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -42,6 +41,8 @@ import com.bacecek.translate.ui.adapter.DictionaryAdapter;
 import com.bacecek.translate.ui.adapter.DictionaryAdapter.OnWordClickListener;
 import com.bacecek.translate.ui.adapter.HistoryAdapter;
 import com.bacecek.translate.ui.adapter.HistoryAdapter.OnItemClickListener;
+import com.bacecek.translate.ui.widget.CustomEditText;
+import com.bacecek.translate.ui.widget.CustomEditText.OnKeyBackDownListener;
 import com.bacecek.translate.ui.widget.ErrorView;
 import com.bacecek.translate.ui.widget.VocalizeButton;
 import com.bacecek.translate.util.Consts;
@@ -64,7 +65,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	TranslatePresenter mPresenter;
 
 	@BindView(R.id.edit_original_text)
-	EditText mEditOriginal;
+	CustomEditText mEditOriginal;
 	@BindView(R.id.btn_clear)
 	ImageButton mBtnClear;
 	@BindView(R.id.btn_mic)
@@ -171,6 +172,8 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		return false;
 	};
 
+	private final OnKeyBackDownListener mKeyBackDownListener = () -> mPresenter.onKeyBackDown();
+
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -198,6 +201,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		mProgressBar.getIndeterminateDrawable().setColorFilter(Color.WHITE, Mode.SRC_IN);
 		mEditOriginal.setRawInputType(InputType.TYPE_CLASS_TEXT);
 		mEditOriginal.setOnEditorActionListener(mOnKeyDoneListener);
+		mEditOriginal.setKeyBackDownListener(mKeyBackDownListener);
 	}
 
 	private void initClickListeners() {
