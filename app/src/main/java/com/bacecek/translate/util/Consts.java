@@ -7,7 +7,7 @@ package com.bacecek.translate.util;
 
 public class Consts {
 	public static final int MAX_VOCALIZE_SYMBOLS = 10000;
-	public static final int DELAY_INPUT = 700;
+	public static final int DELAY_INPUT = 500;
 	public static final int RECOGNITION_REQUEST_CODE = 777;
 	public static final int CHOOSE_LANG_REQUEST_CODE = 666;
 	public static final int MIN_TEXTSIZE_FULLSCREEN = 25;
