@@ -38,7 +38,7 @@
 				<TextView
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					style="@style/TitleListLanguages"
+					style="@style/App.View.TitleListLanguages"
 					android:text="@string/recently_used_languages"/>
 
 				<android.support.v7.widget.RecyclerView
@@ -58,7 +58,7 @@
 				<TextView
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					style="@style/TitleListLanguages"
+					style="@style/App.View.TitleListLanguages"
 					android:text="@string/all_languages"/>
 
 				<android.support.v7.widget.RecyclerView

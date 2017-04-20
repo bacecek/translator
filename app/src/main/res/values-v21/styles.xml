@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<style name="MainActivityTheme" parent="AppTheme">
+	<style name="App.Theme.MainScreen" parent="App.Theme">
 		<item name="android:statusBarColor">@android:color/transparent</item>
 	</style>
 </resources>

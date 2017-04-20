@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:clickable="true"
+	android:background="@color/colorPrimary">
+
+	<include layout="@layout/layout_toolbar"/>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="horizontal">
+
+		<LinearLayout
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:orientation="vertical">
+
+			<ImageView
+				android:layout_width="150dp"
+				android:layout_height="150dp"
+				android:src="@drawable/ic_splash_screen"
+				android:layout_gravity="center_horizontal"
+				android:layout_marginTop="16dp"/>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/app_name"
+				android:layout_gravity="center_horizontal"
+				android:textColor="@android:color/white"
+				android:textSize="20sp"
+				android:layout_marginTop="16dp"
+				android:textStyle="bold"/>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/txt_version"
+				android:layout_gravity="center_horizontal"
+				android:textColor="#6FB8ED"
+				android:text="ver.1.0.0.777"
+				android:fontFamily="sans-serif-light"/>
+
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:orientation="vertical">
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/about_app"
+				android:textColor="@android:color/white"
+				android:textSize="16sp"
+				android:padding="16dp"
+				android:fontFamily="sans-serif-light"/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/txt_source_code"
+				android:text="@string/about_source_code_title"
+				style="@style/App.View.AboutTextView"
+				android:textSize="18sp"/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/txt_contact_me"
+				android:text="@string/about_contact_me"
+				style="@style/App.View.AboutTextView"
+				android:clickable="true"/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/txt_site"
+				android:text="@string/about_site_title"
+				style="@style/App.View.AboutTextView"
+				android:clickable="true"/>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+</LinearLayout>

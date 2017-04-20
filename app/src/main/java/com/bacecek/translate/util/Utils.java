@@ -5,10 +5,8 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import com.bacecek.translate.R;
@@ -32,14 +30,6 @@ public class Utils {
 			view = new View(activity);
 		}
 		manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-	}
-
-	public static float dpToPx(float dp, Resources resources) {
-		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
-	}
-
-	public static float dpToSp(float sp, Resources resources) {
-		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, resources.getDisplayMetrics());
 	}
 
 	public static void shareText(Context context,  String text) {

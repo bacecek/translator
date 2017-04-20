@@ -10,7 +10,7 @@
 	<string name="exit">Выйти</string>
 	<string name="wait_loading_languages">Загрузка списка языков. Пожалуйста, подождите…</string>
 	<string name="text_has_been_copied">Перевод скопирован в буфер обмена</string>
-	<string name="share_translation_with">Поделиться переводом с</string>
+	<string name="share_translation_with">Поделиться переводом с…</string>
 	<string name="recently_used_languages">Недавно использованные</string>
 	<string name="all_languages">Все языки</string>
 	<string name="title_choose_lang">Выберите язык</string>
@@ -26,6 +26,7 @@
 	<string name="error_load_translation">Не удалось загрузить перевод</string>
 	<string name="error_bad_network">Проверьте соединение с сервером</string>
 	<string name="error_unexpected">Неизвестная ошибка</string>
+	<string name="error_no_email_app">На устройстве отсутствует приложение почты. Почта скопирована в буфер обмена</string>
 
 	<!--Actions-->
 	<string name="action_home">Главная страница</string>
@@ -42,4 +43,14 @@
 	<string name="settings_return">Return для перевода</string>
 	<string name="settings_simultaneous_translation">Синхронный перевод</string>
 	<string name="settings_clear">Очистить историю</string>
+
+	<!--About-->
+	<string name="about_app">Тестовое задание для Школы мобильной разработки для Android, организованной Яндексом в рамках проекта \«Мобилизация\».</string>
+	<string name="about_contact_me">Обратная связь</string>
+	<string name="about_site_title">Сайт разработчика</string>
+	<string name="about_email">buzmakov.da@gmail.com</string>
+	<string name="about_source_code">https://github.com/bacecek/translator</string>
+	<string name="about_source_code_title">Исходный код на GitHub</string>
+	<string name="about_version_prefix">ver.</string>
+	<string name="about_contact_via">Написать с помощью…</string>
 </resources>

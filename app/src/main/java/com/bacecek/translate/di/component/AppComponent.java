@@ -9,7 +9,6 @@ import com.bacecek.translate.di.module.DictionaryModule;
 import com.bacecek.translate.di.module.NetworkModule;
 import com.bacecek.translate.di.module.RealmModule;
 import com.bacecek.translate.di.module.TranslatorModule;
-import com.bacecek.translate.mvp.presenter.AboutPresenter;
 import com.bacecek.translate.mvp.presenter.ChooseLanguagePresenter;
 import com.bacecek.translate.mvp.presenter.FavouritePresenter;
 import com.bacecek.translate.mvp.presenter.SettingsPresenter;
@@ -34,7 +33,6 @@ public interface AppComponent {
 
 	void inject(ChooseLanguagePresenter presenter);
 	void inject(SplashScreenPresenter presenter);
-	void inject(AboutPresenter presenter);
 	void inject(FavouritePresenter presenter);
 	void inject(SettingsPresenter presenter);
 	void inject(TranslatePresenter presenter);

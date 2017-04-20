@@ -1,5 +1,6 @@
 package com.bacecek.translate.ui.adapter;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Spannable;
@@ -153,7 +154,7 @@ public class DictionaryAdapter extends RecyclerView.Adapter<ViewHolder> {
 					result.append(synonym.getGen());
 					int endGenSpan = result.length();
 					result.setSpan(new ForegroundColorSpan(
-							itemView.getContext().getResources().getColor(R.color.colorTextGrey)),
+							ContextCompat.getColor(itemView.getContext(), R.color.colorTextGrey)),
 							startGenSpan,
 							endGenSpan,
 							Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

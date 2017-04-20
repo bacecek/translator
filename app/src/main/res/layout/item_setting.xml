@@ -9,7 +9,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:id="@+id/view_switch"
-		app:theme="@style/SwitchTheme"
+		app:theme="@style/App.View.SwitchCompat"
 		android:layout_alignParentRight="true"
 		android:layout_centerVertical="true"/>
 
