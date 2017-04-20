@@ -1,4 +1,4 @@
-package com.bacecek.translate.data.network;
+package com.bacecek.translate.data.network.util;
 
 import java.io.IOException;
 import okhttp3.HttpUrl;

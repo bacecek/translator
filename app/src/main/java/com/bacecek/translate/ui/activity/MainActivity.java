@@ -3,6 +3,8 @@ package com.bacecek.translate.ui.activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
@@ -18,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.bacecek.translate.BuildConfig;
 import com.bacecek.translate.R;
+import com.bacecek.translate.data.network.util.NetworkStateReceiver;
 import com.bacecek.translate.event.ClickFavouriteEvent;
 import com.bacecek.translate.event.ClickMenuEvent;
 import com.bacecek.translate.event.TranslateEvent;
@@ -37,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 	@BindView(R.id.layout_drawer)
 	DrawerLayout mDrawerLayout;
 
+	private NetworkStateReceiver mNetworkStateReceiver;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 		ButterKnife.bind(this);
 		initUI();
 		SpeechKit.getInstance().configure(getApplicationContext(), BuildConfig.YANDEX_SPEECHKIT_API_KEY);
+		mNetworkStateReceiver = new NetworkStateReceiver();
+		registerReceiver(mNetworkStateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 	}
 
 	private void initUI() {
@@ -145,6 +152,12 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 	protected void onStop() {
 		EventBus.getDefault().unregister(this);
 		super.onStop();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unregisterReceiver(mNetworkStateReceiver);
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)

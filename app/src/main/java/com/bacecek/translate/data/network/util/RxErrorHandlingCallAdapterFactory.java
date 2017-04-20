@@ -1,4 +1,4 @@
-package com.bacecek.translate.data.network;
+package com.bacecek.translate.data.network.util;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;

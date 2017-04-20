@@ -13,7 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.entity.Error;
-import com.bacecek.translate.data.network.RetrofitException;
+import com.bacecek.translate.data.network.util.RetrofitException;
 import java.io.IOException;
 
 /**

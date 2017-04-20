@@ -16,6 +16,7 @@ import com.bacecek.translate.data.entity.Translation;
 import com.bacecek.translate.data.network.api.DictionaryAPI;
 import com.bacecek.translate.data.network.api.TranslatorAPI;
 import com.bacecek.translate.event.ChangeInputImeOptionsEvent;
+import com.bacecek.translate.event.ChangeNetworkStateEvent;
 import com.bacecek.translate.event.ShowDictionaryEvent;
 import com.bacecek.translate.event.SimultaneousTranslateEvent;
 import com.bacecek.translate.event.TranslateEvent;
@@ -53,6 +54,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	private String mCurrentOriginalText = "";
 	private String mCurrentTranslatedText = "";
 	private boolean mIsLoading;
+	private boolean mIsError;
 	private Handler mDelayInputHandler = new Handler(Looper.getMainLooper());
 	private Runnable mDelayInputRunnable;
 	private Translation mCurrentTranslation;
@@ -144,7 +146,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	}
 
 	public void saveTranslation(boolean async) {
-		if(!mCurrentOriginalText.isEmpty() && !mIsLoading) {
+		if(!mCurrentOriginalText.isEmpty() && !mCurrentTranslatedText.isEmpty() && !mIsLoading) {
 			if(async) {
 				mRealmController.insertTranslationAsync(
 						mCurrentOriginalText,
@@ -226,6 +228,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 			getViewState().setTranslationVisibility(false);
 			getViewState().setDictionaryVisibility(false);
 			getViewState().setErrorVisibility(false);
+			mIsError = false;
 		} else {
 			getViewState().setButtonClearVisibility(true);
 			getViewState().setButtonVocalizeVisibility(true);
@@ -239,6 +242,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 	private void onLoadStart() {
 		mIsLoading = true;
+		mIsError = false;
 		getViewState().setProgressVisibility(true);
 		getViewState().setErrorVisibility(false);
 	}
@@ -250,6 +254,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 	private void onSuccess(CombineResult result) {
 		if(mIsLoading) {
+			mIsError = false;
 			if(mCurrentTranslation != null) {
 				mCurrentTranslation.removeAllChangeListeners();
 			}
@@ -265,9 +270,9 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 			}
 			mCurrentTranslatedText = result.translation.getTranslatedText();
 			getViewState().setErrorVisibility(false);
-			if(result.items.size() > 0 && mPrefsManager.showDictionary()) {
-				getViewState().setDictionaryVisibility(true);
+			if(result.items.size() > 0) {
 				getViewState().setDictionaryData(result.items);
+				getViewState().setDictionaryVisibility(mPrefsManager.showDictionary());
 			} else {
 				getViewState().setDictionaryVisibility(false);
 			}
@@ -276,6 +281,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 	private void onError(Throwable error) {
 		if(mIsLoading) {
+			mIsError = true;
 			mCurrentTranslation = null;
 			getViewState().setTranslationVisibility(false);
 			getViewState().setDictionaryVisibility(false);
@@ -303,6 +309,9 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		mLanguageManager.setCurrentOriginalLangCode(translation.getOriginalLang());
 		mLanguageManager.setCurrentTargetLangCode(translation.getTargetLang());
 		getViewState().setOriginalText(translation.getOriginalText());
+		if(!mPrefsManager.simultaneousTranslation()) {
+			loadTranslation();
+		}
 	}
 
 	public void onClickHistoryFavourite(Translation translation) {
@@ -312,6 +321,9 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	public void onClickDictionaryWord(String word) {
 		getViewState().setOriginalText(word);
 		mLanguageManager.swapLanguages();
+		if(!mPrefsManager.simultaneousTranslation()) {
+			loadTranslation();
+		}
 	}
 
 	public void onReverseTranslate(String translatedText) {
@@ -424,7 +436,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onShowDictionaryEvent(ShowDictionaryEvent event) {
-		getViewState().setErrorVisibility(mPrefsManager.showDictionary());
+		getViewState().setDictionaryVisibility(mPrefsManager.showDictionary());
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
@@ -435,6 +447,13 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onSimultaneousTranslateEvent(SimultaneousTranslateEvent event) {
 		mIsSimultaneousTranslate = mPrefsManager.simultaneousTranslation();
+	}
+
+	@Subscribe(threadMode = ThreadMode.MAIN)
+	public void onChangeNetworkStateEvent(ChangeNetworkStateEvent event) {
+		if(mIsError && event.isOnline) {
+			loadTranslation();
+		}
 	}
 
 	private CombineResult combine(Translation translation, List<DictionaryItem> items) {

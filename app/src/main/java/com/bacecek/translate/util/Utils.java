@@ -6,6 +6,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -46,5 +48,11 @@ public class Utils {
 		intent.putExtra(Intent.EXTRA_TEXT, text);
 		intent.setType("text/plain");
 		context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_translation_with)));
+	}
+
+	public static boolean isOnline(Context context) {
+		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		return (netInfo != null && netInfo.isConnected());
 	}
 }
