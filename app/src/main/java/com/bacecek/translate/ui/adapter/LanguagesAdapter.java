@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -70,12 +69,7 @@ public class LanguagesAdapter extends RealmRecyclerViewAdapter<Language, ViewHol
 		public void bind(final Language language, final OnItemClickListener listener, String currentLang) {
 			mTxtLang.setText(language.getName());
 			if(listener != null) {
-				itemView.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						listener.onItemClick(language.getCode());
-					}
-				});
+				itemView.setOnClickListener(view -> listener.onItemClick(language.getCode()));
 			}
 			if(currentLang != null) {
 				if(language.getCode().equals(currentLang)) {

@@ -9,7 +9,6 @@ import com.bacecek.translate.data.db.PrefsManager;
 import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.event.ChangeInputImeOptionsEvent;
 import com.bacecek.translate.event.ShowDictionaryEvent;
-import com.bacecek.translate.event.SimultaneousTranslateEvent;
 import com.bacecek.translate.mvp.view.SettingsView;
 import javax.inject.Inject;
 import org.greenrobot.eventbus.EventBus;
@@ -43,7 +42,6 @@ public class SettingsPresenter extends MvpPresenter<SettingsView> {
 
 	public void onChangeCheckedSwitchSimultaneous(boolean checked) {
 		mPrefsManager.setSimultaneousTranslation(checked);
-		EventBus.getDefault().post(new SimultaneousTranslateEvent());
 	}
 
 	public void onChangeCheckedSwitchDictionary(boolean checked) {

@@ -9,9 +9,15 @@ import javax.inject.Inject;
  * <buzmakov.da@gmail.com>
  */
 
+/**
+ * Класс для управления языками в приложении.
+ * Хранение текущих языков в SharedPreferences - быстро и удобно.
+ * Хранение всех языков в Realm.
+ */
 public class LanguageManager {
 	private String mCurrentOriginalLangCode;
 	private String mCurrentTargetLangCode;
+	//достаточно тупо. сделано так, потому что изменение/добавление языков вряд ли планируется, плюсом это быстрее и удобнее, чем через SpeechKit
 	private final String[] mAvailableRecognition = {"ru", "en", "tr", "uk"};
 	private OnChangeLanguageListener mListener;
 	private PrefsManager mPrefsManager;
@@ -109,6 +115,9 @@ public class LanguageManager {
 		mListener = listener;
 	}
 
+	/**
+	 * Интерфейс для уведомления изменения языка
+	 */
 	public interface OnChangeLanguageListener {
 		void onChangeOriginalLang(Language lang);
 		void onChangeTargetLang(Language lang);

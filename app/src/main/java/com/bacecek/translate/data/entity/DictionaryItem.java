@@ -5,4 +5,8 @@ package com.bacecek.translate.data.entity;
  * <buzmakov.da@gmail.com>
  */
 
-public class DictionaryItem {}
+/**
+ * Класс, нужный для будущего парсинга ответа из API словаря.
+ * Т.к. из несколько видов, то для отображения в одном списке нужен какой-то родительский класс, объединяющий все виды.
+ */
+public abstract class DictionaryItem {}

@@ -12,6 +12,9 @@ import org.greenrobot.eventbus.EventBus;
  * <buzmakov.da@gmail.com>
  */
 
+/**
+ * Простой BroadcastReceiver, слушающий изменение состояния сети
+ */
 public class NetworkStateReceiver extends BroadcastReceiver {
 
 	@Override

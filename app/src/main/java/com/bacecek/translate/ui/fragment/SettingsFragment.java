@@ -68,7 +68,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView{
 			dialog.setMessage(R.string.history_clear_dialog_subtitle);
 			dialog.setNegativeButton(R.string.cancel, (listener, i) -> listener.dismiss());
 			dialog.setPositiveButton(R.string.ok, (listener, i) -> mPresenter.onClickClearHistory());
-			mPresenter.onClickClearHistory();
+			dialog.show();
 		});
 
 		mItemSimultaneous.setOnClickListener(v -> mSwitchSimultaneous.setChecked(!mSwitchSimultaneous.isChecked()));
@@ -91,6 +91,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView{
 		mSwitchReturn.setChecked(checked);
 	}
 
+	//Стоило бы, наверно, перенести его в какой-нибудь BaseView и BaseFragment, но вроде нигде больше не надо, то и ладно. А так да, надо
 	@Override
 	public void showToast(@StringRes int res) {
 		Toast.makeText(getActivity(), res, Toast.LENGTH_SHORT).show();

@@ -13,6 +13,10 @@ import javax.inject.Named;
  * <buzmakov.da@gmail.com>
  */
 
+/**
+ * Класс для работы с SharedPreferences.
+ * Выбраны два instance для разнесения хранения данных о настройках и языках.
+ */
 public class PrefsManager {
 	private SharedPreferences mPrefsLangs;
 	private SharedPreferences mPrefsSettings;

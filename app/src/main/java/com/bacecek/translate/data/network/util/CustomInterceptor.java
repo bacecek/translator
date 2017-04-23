@@ -11,6 +11,9 @@ import okhttp3.Response;
  * <buzmakov.da@gmail.com>
  */
 
+/**
+ * Класс, необходимый для добавления API-ключа в каждому запросу
+ */
 public class CustomInterceptor implements Interceptor {
 	private String mKey;
 

@@ -3,7 +3,6 @@ package com.bacecek.translate.data.db;
 import com.bacecek.translate.data.entity.Language;
 import com.bacecek.translate.data.entity.Translation;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import java.util.ArrayList;
@@ -14,32 +13,20 @@ import javax.inject.Inject;
  * <buzmakov.da@gmail.com>
  */
 
+/**
+ * Класс для работы с Realm.
+ */
 public class RealmController {
-	private static RealmController instance;
 	private Realm mRealm;
-
-	public static RealmController getInstance() {
-		if(instance == null) {
-			instance = new RealmController();
-		}
-
-		return instance;
-	}
-
-	private RealmController() {
-		RealmConfiguration config = new RealmConfiguration.Builder()
-				.name(Realm.DEFAULT_REALM_NAME)
-				.deleteRealmIfMigrationNeeded()
-				.build();
-
-		mRealm = Realm.getInstance(config);
-	}
 
 	@Inject
 	public RealmController(Realm realm) {
 		mRealm = realm;
 	}
 
+	//синхронные и асинхронные в разных кейсах:
+	//синхронные - там, где нужно узнать количество, как на splash экране для того, чтобы узнать, надо ли их скачивать или нет
+	//асинхронные - при передаче в адаптер списка.
 	public RealmResults<Language> getLanguages() {
 		return mRealm.where(Language.class)
 				.findAllSorted("name");
@@ -56,6 +43,7 @@ public class RealmController {
 				.findAllSortedAsync("lastUsedTimeStamp", Sort.DESCENDING);
 	}
 
+	//передача Realm в качестве аргумента нужна в асинхронных операциях, т.к. Realm не умеет в разные потоки
 	private RealmResults<Language> getRecentlyUsedLanguages(Realm realm) {
 		return realm.where(Language.class)
 				.greaterThan("lastUsedTimeStamp", 0)
@@ -73,6 +61,7 @@ public class RealmController {
 		});
 	}
 
+	//вставка асинхронная по той причине, что могут еще не записаться языки, а уже перейдет на основной экран, где нужен будет язык -
 	public void insertLanguages(ArrayList<Language> list) {
 		mRealm.beginTransaction();
 		mRealm.copyToRealmOrUpdate(list);
@@ -103,6 +92,7 @@ public class RealmController {
 		}
 	}
 
+	//Получение перевода. На самом деле уникальных поля 3 - текст, языки перевода, но в Realm нельзя указать несколько.
 	public Translation getTranslation(String text, String originalLang, String targetLang) {
 		return mRealm.where(Translation.class)
 				.equalTo("originalText", text)
@@ -179,6 +169,11 @@ public class RealmController {
 		});
 	}
 
+	/**
+	 * Проверка необходимости удаления из базы перевода. Удаляется только при условии, что перевод не в избранном и не в истории
+	 * @param translation - перевод
+	 * @return - нужно ли удалять
+	 */
 	private boolean isRemovingNeeded(Translation translation) {
 		return !translation.isShowInHistory() && translation.isFavourite();
 	}
@@ -212,6 +207,11 @@ public class RealmController {
 				.findAllSortedAsync("historyTimestamp", Sort.DESCENDING);
 	}
 
+	/**
+	 * Костыль для автоинкремента, т.к. в Realm такого нет
+	 * @param realm - instance Realm'a
+	 * @return - id
+	 */
 	private int getNextId(Realm realm) {
 		Number nextId = realm.where(Translation.class).max("id");
 		if(nextId == null) {

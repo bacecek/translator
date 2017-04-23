@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -41,7 +42,6 @@ import com.bacecek.translate.ui.adapter.DictionaryAdapter;
 import com.bacecek.translate.ui.adapter.DictionaryAdapter.OnWordClickListener;
 import com.bacecek.translate.ui.adapter.HistoryAdapter;
 import com.bacecek.translate.ui.adapter.HistoryAdapter.OnItemClickListener;
-import com.bacecek.translate.ui.widget.CustomEditText;
 import com.bacecek.translate.ui.widget.ErrorView;
 import com.bacecek.translate.ui.widget.VocalizeButton;
 import com.bacecek.translate.util.Consts;
@@ -64,7 +64,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	TranslatePresenter mPresenter;
 
 	@BindView(R.id.edit_original_text)
-	CustomEditText mEditOriginal;
+	EditText mEditOriginal;
 	@BindView(R.id.btn_clear)
 	ImageButton mBtnClear;
 	@BindView(R.id.btn_mic)
@@ -119,10 +119,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		}
 	};
 
-	private final OnWordClickListener mOnWordClickListener = word -> {
-		mPresenter.saveTranslation(true);
-		mPresenter.onClickDictionaryWord(word);
-	};
+	private final OnWordClickListener mOnWordClickListener = word -> mPresenter.onClickDictionaryWord(word);
 
 	private final PopupMenu.OnMenuItemClickListener mOnMenuMoreItemClickListener = item -> {
 		switch (item.getItemId()) {
@@ -204,7 +201,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		mBtnOriginalLang.setOnClickListener(v -> mPresenter.onClickChooseOriginalLang());
 		mBtnTargetLang.setOnClickListener(v -> mPresenter.onClickChooseTargetLang());
 		mBtnFavourite.setOnClickListener(v -> mPresenter.onClickFavourite());
-		mBtnClear.setOnClickListener(v -> mPresenter.onClickClear(mErrorView.getVisibility() == View.VISIBLE));
+		mBtnClear.setOnClickListener(v -> mPresenter.onClickClear());
 		mBtnMic.setOnClickListener(v -> mPresenter.onClickMic());
 		mBtnVocalizeOriginal.setOnClickListener(v -> {
 			VocalizeButton button = (VocalizeButton) v;
@@ -233,19 +230,9 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	}
 
 	@Override
-	public void onStart() {
-		super.onStart();
-	}
-
-	@Override
 	public void onPause() {
 		super.onPause();
 		mPresenter.saveTranslation(true);
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
 	}
 
 	@Override

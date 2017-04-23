@@ -18,7 +18,6 @@ import com.bacecek.translate.data.network.api.TranslatorAPI;
 import com.bacecek.translate.event.ChangeInputImeOptionsEvent;
 import com.bacecek.translate.event.ChangeNetworkStateEvent;
 import com.bacecek.translate.event.ShowDictionaryEvent;
-import com.bacecek.translate.event.SimultaneousTranslateEvent;
 import com.bacecek.translate.event.TranslateEvent;
 import com.bacecek.translate.mvp.view.TranslateView;
 import com.bacecek.translate.ui.widget.VocalizeButton;
@@ -54,14 +53,13 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	private String mCurrentOriginalText = "";
 	private String mCurrentTranslatedText = "";
 	private boolean mIsLoading;
-	private boolean mIsError;
+	private boolean mIsError; //нужна при изменении состояния сети. только если показана ошибка, загружать перевод
 	private Handler mDelayInputHandler = new Handler(Looper.getMainLooper());
 	private Runnable mDelayInputRunnable;
 	private Translation mCurrentTranslation;
-	private int mCurrentResponseCount = 0;
+	private int mCurrentResponseCount = 0; //счетчик запросов. нужен для проверки, тот ли запрос, который только что завершился, который нам нужен. вдруг он опоздал
 	private Vocalizer mSpeechVocalizer;
 	private int mCurrentVocalizeButton;
-	private boolean mIsSimultaneousTranslate;
 	private List<DictionaryItem> mCurrentDictionaryItems;
 
 	@Inject
@@ -128,7 +126,6 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	public TranslatePresenter() {
 		App.getAppComponent().inject(this);
 		mLanguageManager.setListener(mLanguageListener);
-		mIsSimultaneousTranslate = mPrefsManager.simultaneousTranslation();
 	}
 
 	@Override
@@ -165,6 +162,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	}
 
 	public void loadTranslation() {
+		//загружать пустой текст нам ни к чему
 		if(mCurrentOriginalText.length() == 0) {
 			return;
 		}
@@ -173,6 +171,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		Observable<List<DictionaryItem>> dictionaryObservable = mDictionaryAPI.translate(mCurrentOriginalText, direction, mPrefsManager.getSavedSystemLocale());
 		mCurrentResponseCount++;
 		final int requestCount = mCurrentResponseCount;
+		//если какой-то запрос сейчас и идет, то отменить его не помешает
 		if(mTranslateDisposable != null) {
 			mTranslateDisposable.dispose();
 		}
@@ -182,6 +181,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 				.observeOn(AndroidSchedulers.mainThread())
 				.doOnSubscribe(disposable -> onLoadStart())
 				.doFinally(() -> {
+					//проверка запроса на валидность - вдруг он опоздал. дальше то же самое
 					if(requestCount == mCurrentResponseCount) {
 						onLoadFinish();
 					}
@@ -221,6 +221,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		mCurrentOriginalText = text;
 		mDelayInputHandler.removeCallbacks(mDelayInputRunnable);
 		if(mCurrentOriginalText.length() == 0) {
+			//если инпут пустой, все чо не надо завершаем, скрываем и тд
 			mCurrentTranslation = null;
 			onLoadFinish();
 			getViewState().setButtonClearVisibility(false);
@@ -234,7 +235,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 			getViewState().setButtonClearVisibility(true);
 			getViewState().setButtonVocalizeVisibility(true);
 			getViewState().setHistoryVisibility(false);
-			if(mIsSimultaneousTranslate) {
+			if(mPrefsManager.simultaneousTranslation()) {
 				mDelayInputRunnable = this::loadTranslation;
 				mDelayInputHandler.postDelayed(mDelayInputRunnable, Consts.DELAY_INPUT);
 			}
@@ -256,6 +257,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	private void onSuccess(CombineResult result) {
 		if(mIsLoading) {
 			mIsError = false;
+			//удалить все слушатели, а то вдруг чо утечет
 			if(mCurrentTranslation != null) {
 				mCurrentTranslation.removeAllChangeListeners();
 			}
@@ -299,8 +301,9 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		EventBus.getDefault().unregister(this);
 	}
 
-	public void onClickClear(boolean isErrorViewVisible) {
-		if(!isErrorViewVisible) {
+	public void onClickClear() {
+		if(!mIsError) {
+			//если вдруг ошибка, текущие тексты в инпуте и переведенные могут не соответствовать
 			saveTranslation(true);
 		}
 		onLoadFinish();
@@ -311,6 +314,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		mLanguageManager.setCurrentOriginalLangCode(translation.getOriginalLang());
 		mLanguageManager.setCurrentTargetLangCode(translation.getTargetLang());
 		getViewState().setOriginalText(translation.getOriginalText());
+		//если отключен синхронный перевод, то надо загрузить перевод
 		if(!mPrefsManager.simultaneousTranslation()) {
 			loadTranslation();
 		}
@@ -321,8 +325,9 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	}
 
 	public void onClickDictionaryWord(String word) {
+		saveTranslation(true);
 		getViewState().setOriginalText(word);
-		mLanguageManager.swapLanguages();
+		mLanguageManager.swapLanguages(); //смена языков местами нужна, т.к. при слово из словаря всегда на другом языке
 		if(!mPrefsManager.simultaneousTranslation()) {
 			loadTranslation();
 		}
@@ -347,6 +352,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	}
 
 	public void onClickFavourite() {
+		//если текущий перевод отсутствует в базе, то сначала нужно его записать туда и повешать слушатель
 		if(mCurrentTranslation == null) {
 			saveTranslation(false);
 			mCurrentTranslation = mRealmController.getTranslation(mCurrentOriginalText,
@@ -459,17 +465,13 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
-	public void onSimultaneousTranslateEvent(SimultaneousTranslateEvent event) {
-		mIsSimultaneousTranslate = mPrefsManager.simultaneousTranslation();
-	}
-
-	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onChangeNetworkStateEvent(ChangeNetworkStateEvent event) {
 		if(mIsError && event.isOnline) {
 			loadTranslation();
 		}
 	}
 
+	//простой способ объединения ответов с сервера
 	private CombineResult combine(Translation translation, List<DictionaryItem> items) {
 		return new CombineResult(translation, items);
 	}

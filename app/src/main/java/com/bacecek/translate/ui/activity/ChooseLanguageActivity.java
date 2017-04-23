@@ -74,6 +74,7 @@ public class ChooseLanguageActivity extends MvpAppCompatActivity implements Choo
 		mRecyclerAll.setHasFixedSize(true);
 		mRecyclerAll.setNestedScrollingEnabled(false);
 
+		//какого-то **** скроллится при открытии списка языков. я не понимаю почему, это вроде помогает
 		mScrollView.scrollTo(0, 0);
 	}
 

@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 	private void initUI() {
 		mNavigationView.setNavigationItemSelectedListener(this);
 		mNavigationView.setCheckedItem(R.id.action_home);
+		//скрытие клавиатуры при открытии NavigationDrawer
 		DrawerListener drawerListener = new DrawerListener() {
 			@Override
 			public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -88,6 +89,8 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 		return true;
 	}
 
+	//какая-то странная ***** с фрагментами, зачем 2 фрагмента одновременно и тд, спросишь ты?
+	//а я отвечу - так удобно, можно с любого фрагмента кнопкой назад возвратиться на главный экран да и вообще
 	private void navigate(@MenuRes int menuId) {
 		switch (menuId) {
 			case R.id.action_home:
@@ -105,6 +108,10 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 		}
 	}
 
+	/**
+	 * Удаление фрагмента из контейнера. Написано, что из back stack, и так оно, по сути и есть.
+	 * @return - был ли вообще фрагмент в контейнере
+	 */
 	private boolean removeFromBackStack() {
 		FragmentManager fm = getFragmentManager();
 		FragmentTransaction transaction = fm.beginTransaction();
@@ -117,6 +124,10 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 		return false;
 	}
 
+	/**
+	 * Добавление фрагмента в контейнер. Написано, что в back stack, но вроде и нет, но так-то да:)
+	 * @param fragment
+	 */
 	private void addToBackStack(Fragment fragment) {
 		removeFromBackStack();
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -129,11 +140,13 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 		if(mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
 			mDrawerLayout.closeDrawer(GravityCompat.START);
 		} else {
+			//Если мы не на основном экране - удаляем фрагмент из контейнера
 			if(removeFromBackStack()) {
 				MenuItem item = mNavigationView.getMenu().getItem(0);
 				item.setChecked(true);
 				setTitle(item.getTitle());
 			}
+			//А если на основном - то закрываем.
 			else {
 				super.onBackPressed();
 			}

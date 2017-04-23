@@ -22,6 +22,9 @@ import java.util.List;
  * <buzmakov.da@gmail.com>
  */
 
+/**
+ * Класс для парсинга ответа с API словаря
+ */
 public class DictionaryDeserializer implements JsonDeserializer<List<DictionaryItem>> {
 
 	@Override

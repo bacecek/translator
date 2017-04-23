@@ -62,6 +62,7 @@ public class NetworkModule {
 				.create();
 	}
 
+	//Более компактного решения я не придумал. Да и работает же, ну!:)
 	@Provides
 	@Singleton
 	@Named(DI.DI_TRANSLATOR_INTERCEPTOR)

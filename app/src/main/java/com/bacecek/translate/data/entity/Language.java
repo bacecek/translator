@@ -10,7 +10,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class Language extends RealmObject {
 	@PrimaryKey
-	private String code;
+	private String code; //primary key, т.к. других таких языков с таким же кодом не может быть
 	private String name;
 	private long lastUsedTimeStamp;
 

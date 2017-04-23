@@ -21,6 +21,10 @@ import java.io.IOException;
  * <buzmakov.da@gmail.com>
  */
 
+/**
+ * Класс, необходимый для показа ошибки загрузки перевода
+ * Проще было его вынести в отдельную view-ку и отделить логику показа ошибки сюда
+ */
 public class ErrorView extends FrameLayout {
 	@BindView(R.id.btn_retry)
 	AppCompatButton mBtnRetry;

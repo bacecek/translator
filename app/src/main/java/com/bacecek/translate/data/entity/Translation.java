@@ -16,9 +16,9 @@ public class Translation extends RealmObject{
 	private String originalLang;
 	private String targetLang;
 	private boolean isFavourite;
-	private boolean showInHistory;
-	private long historyTimestamp;
-	private long favouriteTimestamp;
+	private boolean showInHistory; //нужна для возможности скрытия из истории и одновременного показа в избранном
+	private long historyTimestamp; //время последнего использования перевода
+	private long favouriteTimestamp; //время добавления в избранное
 
 	public int getId() {
 		return id;

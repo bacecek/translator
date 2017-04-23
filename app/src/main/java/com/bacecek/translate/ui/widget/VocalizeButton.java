@@ -20,8 +20,10 @@ import com.bacecek.translate.R;
  * <buzmakov.da@gmail.com>
  */
 
+/**
+ * Класс для показа разных состояний кнопки озвучки - инициализация, начать озвучку и остановить
+ */
 public class VocalizeButton extends FrameLayout {
-
 	public static final int STATE_PLAY = 0;
 	public static final int STATE_INIT = 1;
 	public static final int STATE_STOP = 2;

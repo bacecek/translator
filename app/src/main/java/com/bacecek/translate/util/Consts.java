@@ -25,6 +25,7 @@ public class Consts {
 		public static final String DI_PREFS_SETTINGS = "prefs_settings";
 	}
 
+	//Ключи для SharedPreferences, а именно - для хранения языков
 	public static class PrefsLangs {
 		public static final String KEY = "prefs_langs";
 		public static final String ORIGINAL_LANG_KEY = "prefs_original_lang";
@@ -34,6 +35,7 @@ public class Consts {
 		public static final String LOCALE = "prefs_locale";
 	}
 
+	//Ключи для SharedPreferences, а именно - для хранения настроек
 	public static class PrefsSettings {
 		public static final String KEY = "prefs_settings";
 		public static final String SHOW_DICTIONARY = "settings_show_dictionary";
@@ -41,6 +43,7 @@ public class Consts {
 		public static final String SIMULTANEOUS_TRANSLATION = "settings_simultaneous_translation";
 	}
 
+	//Ключи передачи информации между Activity
 	public static class Extra {
 		public static final String EXTRA_CHOOSE_LANG_CURRENT = "extra_choose_lang_current";
 		public static final String EXTRA_CHOOSE_LANG_TYPE = "extra_choose_lang_type";
