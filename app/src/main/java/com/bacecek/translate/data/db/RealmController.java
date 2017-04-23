@@ -91,12 +91,6 @@ public class RealmController {
 				.findFirst();
 	}
 
-	public Language getLanguageByName(String name) {
-		return mRealm.where(Language.class)
-				.equalTo("name", name)
-				.findFirst();
-	}
-
 	public void changeFavourite(Translation translation) {
 		if(translation == null) return;
 		if(isRemovingNeeded(translation)) {

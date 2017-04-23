@@ -3,6 +3,8 @@ package com.bacecek.translate.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -57,7 +59,14 @@ public class SettingsFragment extends BaseFragment implements SettingsView{
 	}
 
 	private void initClickListeners() {
-		mBtnClearHistory.setOnClickListener(v -> mPresenter.onClickClearHistory());
+		mBtnClearHistory.setOnClickListener(v -> {
+			AlertDialog.Builder dialog = new Builder(getActivity());
+			dialog.setTitle(R.string.history_clear_dialog_title);
+			dialog.setMessage(R.string.history_clear_dialog_subtitle);
+			dialog.setNegativeButton(R.string.cancel, (listener, i) -> listener.dismiss());
+			dialog.setPositiveButton(R.string.ok, (listener, i) -> mPresenter.onClickClearHistory());
+			mPresenter.onClickClearHistory();
+		});
 	}
 
 	@Override

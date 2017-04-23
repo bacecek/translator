@@ -8,12 +8,16 @@
 	<string name="dictionary">Альтернативные варианты перевода</string>
 	<string name="try_again">Попробовать еще раз</string>
 	<string name="exit">Выйти</string>
+	<string name="ok">Oк</string>
+	<string name="cancel">Отмена</string>
 	<string name="wait_loading_languages">Загрузка списка языков. Пожалуйста, подождите…</string>
 	<string name="text_has_been_copied">Перевод скопирован в буфер обмена</string>
 	<string name="share_translation_with">Поделиться переводом с…</string>
 	<string name="recently_used_languages">Недавно использованные</string>
 	<string name="all_languages">Все языки</string>
 	<string name="title_choose_lang">Выберите язык</string>
+	<string name="history_clear_dialog_title">Очистка истории</string>
+	<string name="history_clear_dialog_subtitle">Вы уверены, что хотите удалить историю переводов?</string>
 	<string name="history_was_cleared">История очищена!</string>
 
 	<!--Hints-->
