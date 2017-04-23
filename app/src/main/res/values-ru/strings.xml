@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">Переводчик</string>
+
+	<string name="empty_list_favourites">Список избранных\nпереводов пуст</string>
+	<string name="empty_search">Поиск не дал результатов</string>
+	<string name="open_drawer">Открыть NavigationDrawer</string>
+	<string name="close_drawer">Закрыть NavigationDrawer</string>
+	<string name="dictionary">Альтернативные варианты перевода</string>
+	<string name="try_again">Попробовать еще раз</string>
+	<string name="ok">Oк</string>
+	<string name="cancel">Отмена</string>
+	<string name="wait_loading_languages">Загрузка списка языков. Пожалуйста, подождите…</string>
+	<string name="text_copied">Перевод скопирован в буфер обмена</string>
+	<string name="share_translation_with">Поделиться переводом с…</string>
+	<string name="recently_used_languages">Недавно использованные</string>
+	<string name="all_languages">Все языки</string>
+	<string name="title_choose_lang">Выберите язык</string>
+	<string name="history_clear_dialog_title">Очистка истории</string>
+	<string name="history_clear_dialog_subtitle">Вы уверены, что хотите удалить историю переводов?</string>
+	<string name="history_was_cleared">История очищена!</string>
+
+	<!--Hints-->
+	<string name="hint_edit_original_text">Введите текст</string>
+	<string name="hint_edit_search">Поиск</string>
+
+	<!--Errors-->
+	<string name="error_loading_languages">Не удалось загрузить список языков!</string>
+	<string name="error_load_translation">Не удалось загрузить перевод</string>
+	<string name="error_bad_network">Проверьте соединение с сервером</string>
+	<string name="error_unexpected">Неизвестная ошибка</string>
+	<string name="error_no_email_app">На устройстве отсутствует приложение почты. Почта скопирована в буфер обмена</string>
+
+	<!--Actions-->
+	<string name="action_home">Главная страница</string>
+	<string name="action_favourites">Избранное</string>
+	<string name="action_settings">Настройки</string>
+	<string name="action_about">О приложении</string>
+	<string name="action_copy">Копировать</string>
+	<string name="action_share">Поделиться</string>
+	<string name="action_fullscreen">На весь экран</string>
+	<string name="action_reverse_translate">Обратный перевод</string>
+
+	<!--Settings-->
+	<string name="settings_show_dictionary">Показывать словарь</string>
+	<string name="settings_return">Return для перевода</string>
+	<string name="settings_simultaneous_translation">Синхронный перевод</string>
+	<string name="settings_clear">Очистить историю</string>
+
+	<!--About-->
+	<string name="about_app">Тестовое задание для Школы мобильной разработки на Android, организованной Яндексом в рамках проекта \«Мобилизация\».</string>
+	<string name="about_contact_me">Обратная связь</string>
+	<string name="about_site_title">Сайт разработчика</string>
+	<string name="about_source_code_title">Исходный код на GitHub</string>
+	<string name="about_contact_via">Написать с помощью…</string>
+</resources>

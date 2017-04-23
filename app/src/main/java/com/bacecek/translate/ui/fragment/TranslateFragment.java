@@ -125,7 +125,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		switch (item.getItemId()) {
 			case R.id.action_copy:
 				Utils.copyToClipboard(getActivity(), getTranslatedText());
-				Toast.makeText(getActivity(), R.string.text_has_been_copied, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getActivity(), R.string.text_copied, Toast.LENGTH_SHORT).show();
 				break;
 			case R.id.action_share:
 				Utils.shareText(getActivity(), getTranslatedText());

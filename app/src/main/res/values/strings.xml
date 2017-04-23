@@ -1,60 +1,58 @@
 <resources>
-	<string name="app_name">Переводчик</string>
 
-	<string name="empty_list_favourites">Список избранных\nпереводов пуст</string>
-	<string name="empty_search">Поиск не дал результатов</string>
-	<string name="open_drawer">Открыть NavigationDrawer</string>
-	<string name="close_drawer">Закрыть NavigationDrawer</string>
-	<string name="dictionary">Альтернативные варианты перевода</string>
-	<string name="try_again">Попробовать еще раз</string>
-	<string name="exit">Выйти</string>
-	<string name="ok">Oк</string>
-	<string name="cancel">Отмена</string>
-	<string name="wait_loading_languages">Загрузка списка языков. Пожалуйста, подождите…</string>
-	<string name="text_has_been_copied">Перевод скопирован в буфер обмена</string>
-	<string name="share_translation_with">Поделиться переводом с…</string>
-	<string name="recently_used_languages">Недавно использованные</string>
-	<string name="all_languages">Все языки</string>
-	<string name="title_choose_lang">Выберите язык</string>
-	<string name="history_clear_dialog_title">Очистка истории</string>
-	<string name="history_clear_dialog_subtitle">Вы уверены, что хотите удалить историю переводов?</string>
-	<string name="history_was_cleared">История очищена!</string>
+	<string name="app_name">Translate</string>
+	<string name="empty_list_favourites">No translations in Favourites</string>
+	<string name="empty_search">No matches were found</string>
+	<string name="open_drawer">Open NavigationDrawer</string>
+	<string name="close_drawer">Close NavigationDrawer</string>
+	<string name="dictionary">Alternative translations</string>
+	<string name="try_again">Try again</string>
+	<string name="ok">OK</string>
+	<string name="cancel">Cancel</string>
+	<string name="wait_loading_languages">Loading languages list. Please, wait…</string>
+	<string name="text_copied">Translation copied</string>
+	<string name="share_translation_with">Share translation with…</string>
+	<string name="recently_used_languages">Recently used languages</string>
+	<string name="all_languages">All languages</string>
+	<string name="title_choose_lang">Choose language</string>
+	<string name="history_clear_dialog_title">Clear history</string>
+	<string name="history_clear_dialog_subtitle">Are you sure you want to clear history?</string>
+	<string name="history_was_cleared">History cleared!z</string>
 
 	<!--Hints-->
-	<string name="hint_edit_original_text">Введите текст</string>
-	<string name="hint_edit_search">Поиск</string>
+	<string name="hint_edit_original_text">Type text</string>
+	<string name="hint_edit_search">Search</string>
 
 	<!--Errors-->
-	<string name="error">Ошибочка вышла!</string>
-	<string name="error_loading_languages">Не удалось загрузить список языков!</string>
-	<string name="error_load_translation">Не удалось загрузить перевод</string>
-	<string name="error_bad_network">Проверьте соединение с сервером</string>
-	<string name="error_unexpected">Неизвестная ошибка</string>
-	<string name="error_no_email_app">На устройстве отсутствует приложение почты. Почта скопирована в буфер обмена</string>
+	<string name="error_loading_languages">Failed to load languages list!</string>
+	<string name="error_load_translation">Failed to load translation</string>
+	<string name="error_bad_network">Please check Internet connection</string>
+	<string name="error_unexpected">Unexpected error</string>
+	<string name="error_no_email_app">There is no E-mail application. E-mail copied in clipboard.</string>
 
 	<!--Actions-->
-	<string name="action_home">Главная страница</string>
-	<string name="action_favourites">Избранное</string>
-	<string name="action_settings">Настройки</string>
-	<string name="action_about">О программе</string>
-	<string name="action_copy">Копировать</string>
-	<string name="action_share">Поделиться</string>
-	<string name="action_fullscreen">На весь экран</string>
-	<string name="action_reverse_translate">Обратный перевод</string>
-	
+	<string name="action_home">Main screen</string>
+	<string name="action_favourites">Favourites</string>
+	<string name="action_settings">Settings</string>
+	<string name="action_about">About</string>
+	<string name="action_copy">Copy</string>
+	<string name="action_share">Share</string>
+	<string name="action_fullscreen">Fullscreen</string>
+	<string name="action_reverse_translate">Reverse translation</string>
+
 	<!--Settings-->
-	<string name="settings_show_dictionary">Показывать словарь</string>
-	<string name="settings_return">Return для перевода</string>
-	<string name="settings_simultaneous_translation">Синхронный перевод</string>
-	<string name="settings_clear">Очистить историю</string>
+	<string name="settings_show_dictionary">Show dictionary</string>
+	<string name="settings_return">Tap \"Return\" for translate</string>
+	<string name="settings_simultaneous_translation">Simultaneous translation</string>
+	<string name="settings_clear">Clear history</string>
 
 	<!--About-->
-	<string name="about_app">Тестовое задание для Школы мобильной разработки для Android, организованной Яндексом в рамках проекта \«Мобилизация\».</string>
-	<string name="about_contact_me">Обратная связь</string>
-	<string name="about_site_title">Сайт разработчика</string>
-	<string name="about_email">buzmakov.da@gmail.com</string>
-	<string name="about_source_code">https://github.com/bacecek/translator</string>
-	<string name="about_source_code_title">Исходный код на GitHub</string>
-	<string name="about_version_prefix">ver.</string>
-	<string name="about_contact_via">Написать с помощью…</string>
+	<string name="about_app">Test task for the Mobile Development School on Android, organized by Yandex in the framework of the project \ "Mobilization \"</string>
+	<string name="about_contact_me">Contact me</string>
+	<string name="about_site_title">Developer\'s site</string>
+	<string name="about_email" translatable="false">buzmakov.da@gmail.com</string>
+	<string name="about_source_code" translatable="false">https://github.com/bacecek/translator</string>
+	<string name="about_source_code_title">Source code GitHub</string>
+	<string name="about_version_prefix" translatable="false">ver.</string>
+	<string name="about_contact_via">Contact via…</string>
 </resources>
