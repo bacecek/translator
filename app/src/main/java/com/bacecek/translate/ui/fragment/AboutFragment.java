@@ -7,9 +7,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
@@ -28,8 +31,11 @@ import com.bacecek.translate.util.Utils;
 public class AboutFragment extends BaseFragment {
 	@BindView(R.id.txt_version)
 	TextView mTxtVersion;
+	@BindView(R.id.img_logo)
+	ImageView mImgLogo;
 
 	private int mClickCount = 0; //а не скажу зачем оно надо =P
+	private int mLongClickCount = 0;
 
 	//это приколюха. ну весело же:)
 	@OnClick(R.id.img_logo)
@@ -44,7 +50,25 @@ public class AboutFragment extends BaseFragment {
 
 	@OnLongClick(R.id.img_logo)
 	boolean onLongClickLogo() {
-		Toast.makeText(getActivity(), "Думал, зажал и тебе приколюха какая-то будет? Хе-хе:)", Toast.LENGTH_SHORT).show();
+		mLongClickCount++;
+		if(mLongClickCount < 2) {
+			Toast.makeText(getActivity(), "Думал, зажал и тебе приколюха какая-то будет? Хе-хе:)",
+					Toast.LENGTH_SHORT).show();
+		} else {
+			if(mLongClickCount == 3) {
+				Toast.makeText(getActivity(), "Ну лаааадно, держи приколюху:)\nЗа такое грех в школу не взять;)",
+						Toast.LENGTH_SHORT).show();
+			}
+			ViewPropertyAnimator animation = mImgLogo.animate()
+					.setDuration(500)
+					.setInterpolator(new FastOutSlowInInterpolator());
+			if(mLongClickCount % 2 == 0) {
+				animation.rotationBy(360);
+			} else {
+				animation.rotationBy(-360);
+			}
+			animation.start();
+		}
 		return true;
 	}
 
