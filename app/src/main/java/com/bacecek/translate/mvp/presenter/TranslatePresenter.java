@@ -62,6 +62,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	private Vocalizer mSpeechVocalizer;
 	private int mCurrentVocalizeButton;
 	private boolean mIsSimultaneousTranslate;
+	private List<DictionaryItem> mCurrentDictionaryItems;
 
 	@Inject
 	LanguageManager mLanguageManager;
@@ -268,10 +269,11 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 			} else {
 				getViewState().setTranslationData(result.translation);
 			}
+			mCurrentDictionaryItems = result.items;
 			mCurrentTranslatedText = result.translation.getTranslatedText();
 			getViewState().setErrorVisibility(false);
-			if(result.items.size() > 0) {
-				getViewState().setDictionaryData(result.items);
+			getViewState().setDictionaryData(mCurrentDictionaryItems);
+			if(mCurrentDictionaryItems.size() > 0) {
 				getViewState().setDictionaryVisibility(mPrefsManager.showDictionary());
 			} else {
 				getViewState().setDictionaryVisibility(false);
@@ -444,7 +446,11 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onShowDictionaryEvent(ShowDictionaryEvent event) {
-		getViewState().setDictionaryVisibility(mPrefsManager.showDictionary());
+		if(mCurrentDictionaryItems != null && mCurrentDictionaryItems.size() > 0) {
+			getViewState().setDictionaryVisibility(mPrefsManager.showDictionary());
+		} else {
+			getViewState().setDictionaryVisibility(false);
+		}
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
@@ -472,7 +478,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		private Translation translation;
 		private List<DictionaryItem> items;
 
-		public CombineResult(Translation translation,
+		CombineResult(Translation translation,
 				List<DictionaryItem> items) {
 			this.translation = translation;
 			this.items = items;
