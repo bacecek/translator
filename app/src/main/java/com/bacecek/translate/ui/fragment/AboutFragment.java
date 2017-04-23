@@ -55,7 +55,7 @@ public class AboutFragment extends BaseFragment {
 			Toast.makeText(getActivity(), "Думал, зажал и тебе приколюха какая-то будет? Хе-хе:)",
 					Toast.LENGTH_SHORT).show();
 		} else {
-			if(mLongClickCount == 3) {
+			if(mLongClickCount == 2) {
 				Toast.makeText(getActivity(), "Ну лаааадно, держи приколюху:)\nЗа такое грех в школу не взять;)",
 						Toast.LENGTH_SHORT).show();
 			}
