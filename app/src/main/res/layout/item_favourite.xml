@@ -14,7 +14,8 @@
 		android:id="@+id/txt_langs"
 		android:layout_alignParentRight="true"
 		android:layout_centerVertical="true"
-		android:textColor="@color/colorTextGrey"/>
+		android:textColor="@color/colorTextGrey"
+		android:fontFamily="sans-serif-light"/>
 
 	<LinearLayout
 		android:layout_width="wrap_content"

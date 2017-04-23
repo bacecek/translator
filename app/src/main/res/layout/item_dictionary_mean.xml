@@ -5,4 +5,5 @@
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
 	android:textSize="16sp"
-	android:textColor="#79A5C4"/>
+	android:textColor="#79A5C4"
+	android:fontFamily="sans-serif-light"/>

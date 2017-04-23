@@ -32,7 +32,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import ru.yandex.speechkit.SpeechKit;
-import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements OnNavigationItemSelectedListener {
 	@BindView(R.id.view_navigation)
@@ -82,11 +81,10 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 
 	@Override
 	public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+		mDrawerLayout.closeDrawers();
 		setTitle(item.getTitle());
 		item.setChecked(true);
 		navigate(item.getItemId());
-		Timber.d(String.valueOf(item.getTitle()));
-		mDrawerLayout.closeDrawers();
 		return true;
 	}
 
