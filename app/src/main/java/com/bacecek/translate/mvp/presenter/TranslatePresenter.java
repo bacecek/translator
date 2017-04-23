@@ -431,6 +431,9 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	public void onDictationSuccess(String text) {
 		mCurrentOriginalText = mCurrentOriginalText + text;
 		getViewState().setOriginalText(mCurrentOriginalText);
+		if(!mPrefsManager.simultaneousTranslation()) {
+			loadTranslation();
+		}
 	}
 
 	private void updateInputImeOptions() {
