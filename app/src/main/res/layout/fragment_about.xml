@@ -11,6 +11,7 @@
 	<ImageView
 		android:layout_width="150dp"
 		android:layout_height="150dp"
+		android:id="@+id/img_logo"
 		android:src="@drawable/ic_splash_screen"
 		android:layout_gravity="center_horizontal"
 		android:layout_marginTop="16dp"/>

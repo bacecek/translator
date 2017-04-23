@@ -15,6 +15,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 import com.bacecek.translate.BuildConfig;
 import com.bacecek.translate.R;
 import com.bacecek.translate.util.Utils;
@@ -27,6 +28,25 @@ import com.bacecek.translate.util.Utils;
 public class AboutFragment extends BaseFragment {
 	@BindView(R.id.txt_version)
 	TextView mTxtVersion;
+
+	private int mClickCount = 0; //а не скажу зачем оно надо =P
+
+	//это приколюха. ну весело же:)
+	@OnClick(R.id.img_logo)
+	void onClickLogo() {
+		mClickCount++;
+		if(mClickCount == 5) {
+			Toast.makeText(getActivity(), "Зажать нужно!", Toast.LENGTH_SHORT).show();
+		} else if(mClickCount == 10) {
+			Toast.makeText(getActivity(), "Ну сказал же, ЗАЖАТЬ!1!", Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	@OnLongClick(R.id.img_logo)
+	boolean onLongClickLogo() {
+		Toast.makeText(getActivity(), "Думал, зажал и тебе приколюха какая-то будет? Хе-хе:)", Toast.LENGTH_SHORT).show();
+		return true;
+	}
 
 	@OnClick(R.id.txt_source_code)
 	void goToSourceCode() {
@@ -60,6 +80,7 @@ public class AboutFragment extends BaseFragment {
 		//когда-нибудь здесь будет мой сайт, стопудово
 		//goToSite(getString(R.string.about_site));
 	}
+
 
 
 	@Nullable
