@@ -383,14 +383,6 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		}
 	}
 
-	public void onKeyBackDown() {
-		//загружать перевод при скрытии клавиатуры следует только тогда, когда отключен синхронный перевод.
-		//ибо зачем загружать 2 раза подряд перевод, сначала после ввода, потом еще раз то же самое после скрытия клавиатуры.
-		if(!mPrefsManager.simultaneousTranslation()) {
-			loadTranslation();
-		}
-	}
-
 	private void startVocalize(String text, String lang) {
 		mSpeechVocalizer = Vocalizer.createVocalizer(lang, text, true);
 		mSpeechVocalizer.setListener(mVocalizerListener);

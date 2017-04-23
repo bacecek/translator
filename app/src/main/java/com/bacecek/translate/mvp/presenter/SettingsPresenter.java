@@ -7,13 +7,10 @@ import com.bacecek.translate.App;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.db.PrefsManager;
 import com.bacecek.translate.data.db.RealmController;
-import com.bacecek.translate.data.entity.Setting;
-import com.bacecek.translate.event.SimultaneousTranslateEvent;
-import com.bacecek.translate.mvp.view.SettingsView;
 import com.bacecek.translate.event.ChangeInputImeOptionsEvent;
 import com.bacecek.translate.event.ShowDictionaryEvent;
-import com.bacecek.translate.util.Consts.Settings;
-import java.util.ArrayList;
+import com.bacecek.translate.event.SimultaneousTranslateEvent;
+import com.bacecek.translate.mvp.view.SettingsView;
 import javax.inject.Inject;
 import org.greenrobot.eventbus.EventBus;
 
@@ -24,7 +21,6 @@ import org.greenrobot.eventbus.EventBus;
 
 @InjectViewState
 public class SettingsPresenter extends MvpPresenter<SettingsView> {
-	private ArrayList<Setting> mSettingsList = new ArrayList<Setting>(Settings.SETTINGS_COUNT);
 
 	@Inject
 	Context mContext;
@@ -35,42 +31,29 @@ public class SettingsPresenter extends MvpPresenter<SettingsView> {
 
 	public SettingsPresenter() {
 		App.getAppComponent().inject(this);
-		initSettingsList();
 	}
 
 	@Override
 	protected void onFirstViewAttach() {
 		super.onFirstViewAttach();
-		getViewState().setSettingsList(mSettingsList);
+		getViewState().setCheckedSwitchSimultaneous(mPrefsManager.simultaneousTranslation());
+		getViewState().setCheckedSwitchDictionary(mPrefsManager.showDictionary());
+		getViewState().setCheckedSwitchReturn(mPrefsManager.returnForTranslate());
 	}
 
-	private void initSettingsList() {
-		Setting setting = new Setting(Settings.SETTING_SIMULTANEOUS, mContext.getString(R.string.settings_simultaneous_translation), mPrefsManager.simultaneousTranslation());
-		mSettingsList.add(Settings.SETTING_SIMULTANEOUS, setting);
-
-		setting = new Setting(Settings.SETTING_DICTIONARY, mContext.getString(R.string.settings_show_dictionary), mPrefsManager.showDictionary());
-		mSettingsList.add(Settings.SETTING_DICTIONARY, setting);
-
-		setting = new Setting(Settings.SETTING_RETURN, mContext.getString(R.string.settings_return), mPrefsManager.returnForTranslate());
-		mSettingsList.add(Settings.SETTING_RETURN, setting);
+	public void onChangeCheckedSwitchSimultaneous(boolean checked) {
+		mPrefsManager.setSimultaneousTranslation(checked);
+		EventBus.getDefault().post(new SimultaneousTranslateEvent());
 	}
 
-	public void onSwitchValue(Setting setting, boolean value) {
-		setting.setValue(value);
-		switch (setting.getId()) {
-			case Settings.SETTING_SIMULTANEOUS:
-				mPrefsManager.setSimultaneousTranslation(value);
-				EventBus.getDefault().post(new SimultaneousTranslateEvent());
-				break;
-			case Settings.SETTING_DICTIONARY:
-				mPrefsManager.setShowDictionary(value);
-				EventBus.getDefault().post(new ShowDictionaryEvent());
-				break;
-			case Settings.SETTING_RETURN:
-				mPrefsManager.setReturnForTranslate(value);
-				EventBus.getDefault().post(new ChangeInputImeOptionsEvent());
-				break;
-		}
+	public void onChangeCheckedSwitchDictionary(boolean checked) {
+		mPrefsManager.setShowDictionary(checked);
+		EventBus.getDefault().post(new ShowDictionaryEvent());
+	}
+
+	public void onChangeCheckedSwitchReturn(boolean checked) {
+		mPrefsManager.setReturnForTranslate(checked);
+		EventBus.getDefault().post(new ChangeInputImeOptionsEvent());
 	}
 
 	public void onClickClearHistory() {

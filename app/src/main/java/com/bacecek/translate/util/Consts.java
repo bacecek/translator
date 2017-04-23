@@ -47,11 +47,4 @@ public class Consts {
 		public static final String EXTRA_CHOOSE_LANG_RETURN = "extra_chosen_lang";
 		public static final String EXTRA_FULLSCREEN = "extra_fullscreen";
 	}
-
-	public static class Settings {
-		public static final int SETTINGS_COUNT = 3;
-		public static final int SETTING_SIMULTANEOUS = 0;
-		public static final int SETTING_DICTIONARY = 1;
-		public static final int SETTING_RETURN = 2;
-	}
 }

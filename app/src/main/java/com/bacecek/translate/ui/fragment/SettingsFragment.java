@@ -6,9 +6,7 @@ import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +15,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.bacecek.translate.R;
-import com.bacecek.translate.data.entity.Setting;
 import com.bacecek.translate.mvp.presenter.SettingsPresenter;
 import com.bacecek.translate.mvp.view.SettingsView;
-import com.bacecek.translate.ui.adapter.SettingsAdapter;
-import java.util.ArrayList;
 
 /**
  * Created by Denis Buzmakov on 19/03/2017.
@@ -32,10 +27,20 @@ public class SettingsFragment extends BaseFragment implements SettingsView{
 	@InjectPresenter
 	SettingsPresenter mPresenter;
 
-	@BindView(R.id.list_settings)
-	RecyclerView mRecyclerSettings;
 	@BindView(R.id.btn_clear_history)
 	AppCompatButton mBtnClearHistory;
+	@BindView(R.id.switch_sim)
+	SwitchCompat mSwitchSimultaneous;
+	@BindView(R.id.switch_dictionary)
+	SwitchCompat mSwitchDictionary;
+	@BindView(R.id.switch_return)
+	SwitchCompat mSwitchReturn;
+	@BindView(R.id.view_sim)
+	View mItemSimultaneous;
+	@BindView(R.id.view_dictionary)
+	View mItemDictionary;
+	@BindView(R.id.view_return)
+	View mItemReturn;
 
 	@Nullable
 	@Override
@@ -51,11 +56,9 @@ public class SettingsFragment extends BaseFragment implements SettingsView{
 	}
 
 	private void initUi() {
-		mRecyclerSettings.setHasFixedSize(true);
-		mRecyclerSettings.setLayoutManager(new LinearLayoutManager(getActivity()));
-		DividerItemDecoration divider = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
-		divider.setDrawable(getResources().getDrawable(R.drawable.list_divider_favourite));
-		mRecyclerSettings.addItemDecoration(divider);
+		mSwitchSimultaneous.setOnCheckedChangeListener((button, value) -> mPresenter.onChangeCheckedSwitchSimultaneous(value));
+		mSwitchDictionary.setOnCheckedChangeListener((button, value) -> mPresenter.onChangeCheckedSwitchDictionary(value));
+		mSwitchReturn.setOnCheckedChangeListener((button, value) -> mPresenter.onChangeCheckedSwitchReturn(value));
 	}
 
 	private void initClickListeners() {
@@ -67,12 +70,25 @@ public class SettingsFragment extends BaseFragment implements SettingsView{
 			dialog.setPositiveButton(R.string.ok, (listener, i) -> mPresenter.onClickClearHistory());
 			mPresenter.onClickClearHistory();
 		});
+
+		mItemSimultaneous.setOnClickListener(v -> mSwitchSimultaneous.setChecked(!mSwitchSimultaneous.isChecked()));
+		mItemDictionary.setOnClickListener(v -> mSwitchDictionary.setChecked(!mSwitchDictionary.isChecked()));
+		mItemReturn.setOnClickListener(v -> mSwitchReturn.setChecked(!mSwitchReturn.isChecked()));
 	}
 
 	@Override
-	public void setSettingsList(ArrayList<Setting> settingsList) {
-		SettingsAdapter adapter = new SettingsAdapter(settingsList, (setting, value) -> mPresenter.onSwitchValue(setting, value));
-		mRecyclerSettings.setAdapter(adapter);
+	public void setCheckedSwitchSimultaneous(boolean checked) {
+		mSwitchSimultaneous.setChecked(checked);
+	}
+
+	@Override
+	public void setCheckedSwitchDictionary(boolean checked) {
+		mSwitchDictionary.setChecked(checked);
+	}
+
+	@Override
+	public void setCheckedSwitchReturn(boolean checked) {
+		mSwitchReturn.setChecked(checked);
 	}
 
 	@Override

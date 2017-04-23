@@ -42,7 +42,6 @@ import com.bacecek.translate.ui.adapter.DictionaryAdapter.OnWordClickListener;
 import com.bacecek.translate.ui.adapter.HistoryAdapter;
 import com.bacecek.translate.ui.adapter.HistoryAdapter.OnItemClickListener;
 import com.bacecek.translate.ui.widget.CustomEditText;
-import com.bacecek.translate.ui.widget.CustomEditText.OnKeyBackDownListener;
 import com.bacecek.translate.ui.widget.ErrorView;
 import com.bacecek.translate.ui.widget.VocalizeButton;
 import com.bacecek.translate.util.Consts;
@@ -172,8 +171,6 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		return false;
 	};
 
-	private final OnKeyBackDownListener mKeyBackDownListener = () -> mPresenter.onKeyBackDown();
-
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -201,7 +198,6 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		mProgressBar.getIndeterminateDrawable().setColorFilter(Color.WHITE, Mode.SRC_IN);
 		mEditOriginal.setRawInputType(InputType.TYPE_CLASS_TEXT);
 		mEditOriginal.setOnEditorActionListener(mOnKeyDoneListener);
-		mEditOriginal.setKeyBackDownListener(mKeyBackDownListener);
 	}
 
 	private void initClickListeners() {
@@ -412,11 +408,15 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 
 	@Override
 	public void setInputImeOptions(int imeOptions) {
+		removeFocusFromInput();
+		mEditOriginal.setImeOptions(imeOptions);
+	}
+
+	private void removeFocusFromInput() {
 		//очистка фокуса. каким-то образом другие методы не работали, а этот костылик работает:)
 		mEditOriginal.setFocusableInTouchMode(false);
 		mEditOriginal.setFocusable(false);
 		mEditOriginal.setFocusableInTouchMode(true);
 		mEditOriginal.setFocusable(true);
-		mEditOriginal.setImeOptions(imeOptions);
 	}
 }
