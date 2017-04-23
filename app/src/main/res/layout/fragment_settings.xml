@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:clickable="true"
+	android:background="@android:color/white">
+
+	<include layout="@layout/layout_toolbar"
+		android:id="@+id/layout_toolbar"/>
+
+	<android.support.v7.widget.AppCompatButton
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/btn_clear_history"
+		android:layout_centerHorizontal="true"
+		android:layout_alignParentBottom="true"
+		android:layout_marginBottom="10dp"
+		android:layout_marginTop="10dp"
+		android:text="@string/settings_clear"
+		app:backgroundTint="@color/colorPrimary"
+		android:textColor="@android:color/white"/>
+
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/layout_toolbar"
+		android:layout_above="@id/btn_clear_history">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:paddingTop="8dp"
+			android:paddingBottom="8dp">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/view_sim"
+				android:orientation="horizontal"
+				style="@style/App.View.SettingsItem">
+
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					style="@style/App.View.SettingsTextView"
+					android:text="@string/settings_simultaneous_translation"/>
+
+				<android.support.v7.widget.SwitchCompat
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/switch_sim"
+					android:theme="@style/App.View.SwitchCompat" />
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/view_dictionary"
+				android:orientation="horizontal"
+				style="@style/App.View.SettingsItem">
+
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					style="@style/App.View.SettingsTextView"
+					android:text="@string/settings_show_dictionary"/>
+
+				<android.support.v7.widget.SwitchCompat
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/switch_dictionary"
+					android:theme="@style/App.View.SwitchCompat" />
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/view_return"
+				android:orientation="horizontal"
+				style="@style/App.View.SettingsItem">
+
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					style="@style/App.View.SettingsTextView"
+					android:text="@string/settings_return"/>
+
+				<android.support.v7.widget.SwitchCompat
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/switch_return"
+					android:theme="@style/App.View.SwitchCompat" />
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</ScrollView>
+
+</RelativeLayout>

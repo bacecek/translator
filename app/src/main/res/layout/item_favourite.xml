@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="?attr/selectableItemBackground"
+	app:backgroundTint="@android:color/white"
+	android:padding="16dp">
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/txt_langs"
+		android:layout_alignParentRight="true"
+		android:layout_centerVertical="true"
+		android:textColor="@color/colorTextGrey"
+		android:fontFamily="sans-serif-light"/>
+
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:layout_toLeftOf="@id/txt_langs"
+		android:layout_alignParentLeft="true">
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/txt_original"
+			android:lines="1"
+			android:ellipsize="end"
+			android:textColor="@android:color/black"
+			android:textSize="16sp"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/txt_translated"
+			android:lines="1"
+			android:ellipsize="end"
+			android:textColor="@color/colorTextGrey"
+			android:textSize="16sp"/>
+
+	</LinearLayout>
+
+</RelativeLayout>

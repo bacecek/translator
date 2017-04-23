@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.bacecek.translate.ui.widget.AutoResizeTextView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:id="@+id/txt_fullscreen"
+	android:textSize="350sp"
+	android:text="Hi"
+	android:layout_gravity="center"
+	android:gravity="center_vertical"
+	android:scrollbars="vertical"
+	android:textColor="@android:color/black"/>

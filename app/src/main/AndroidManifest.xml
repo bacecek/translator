@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.bacecek.yandextranslate">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="com.bacecek.translate">
 
-	<application android:allowBackup="true" android:icon="@mipmap/ic_launcher" android:label="@string/app_name"
-		android:roundIcon="@mipmap/ic_launcher_round" android:supportsRtl="true" android:theme="@style/AppTheme">
-		<activity android:name=".MainActivity">
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+	<application
+		android:allowBackup="true"
+		android:icon="@mipmap/ic_launcher"
+		android:label="@string/app_name"
+		android:name=".App"
+		android:supportsRtl="false"
+		android:theme="@style/App.Theme">
+		<activity
+			android:name=".ui.activity.MainActivity"
+			android:theme="@style/App.Theme.MainScreen"
+			android:windowSoftInputMode="stateAlwaysHidden"/>
+		<activity android:name=".ui.activity.FullscreenTextActivity" />
+		<activity android:name=".ui.activity.ChooseLanguageActivity" />
+		<activity android:name=".ui.activity.SplashScreenActivity"
+			android:theme="@style/App.Theme.SplashScreen">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 

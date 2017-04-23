@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:orientation="horizontal"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content">
+
+	<android.support.v7.widget.CardView
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		app:cardElevation="2dp"
+		app:cardCornerRadius="3dp"
+		android:layout_marginLeft="8dp"
+		android:layout_marginRight="8dp"
+		android:layout_marginBottom="12dp"
+		app:cardPreventCornerOverlap="false">
+
+		<RelativeLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:id="@+id/button_bar"
+				android:layout_alignParentRight="true">
+
+				<ImageButton
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/btn_favourite"
+					android:src="@drawable/button_favourite_selector"
+					style="@style/Widget.AppCompat.ActionButton"/>
+
+				<com.bacecek.translate.ui.widget.VocalizeButton
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/btn_vocalize_translated"
+					android:tint="@android:color/black"/>
+
+				<ImageButton
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/btn_more"
+					android:src="@drawable/ic_more"
+					style="@style/Widget.AppCompat.ActionButton"/>
+
+			</LinearLayout>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/txt_translated"
+				android:textSize="20sp"
+				android:textColor="@android:color/black"
+				android:layout_marginLeft="16dp"
+				android:layout_marginTop="16dp"
+				android:layout_marginBottom="16dp"
+				android:layout_toLeftOf="@id/button_bar"/>
+
+		</RelativeLayout>
+
+	</android.support.v7.widget.CardView>
+
+	<android.support.v7.widget.CardView
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:id="@+id/view_dictionary"
+		app:cardElevation="2dp"
+		app:cardCornerRadius="3dp"
+		android:layout_marginLeft="8dp"
+		android:layout_marginRight="8dp"
+		android:layout_marginBottom="12dp"
+		app:cardPreventCornerOverlap="false">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:padding="16dp">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textSize="13sp"
+				android:textColor="@android:color/black"
+				android:textAllCaps="true"
+				android:lines="1"
+				android:ellipsize="end"
+				android:text="@string/dictionary"/>
+
+			<android.support.v7.widget.RecyclerView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/list_dictionary"/>
+
+		</LinearLayout>
+
+	</android.support.v7.widget.CardView>
+
+</LinearLayout>

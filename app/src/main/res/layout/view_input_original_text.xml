@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="@color/colorPrimary"
+	android:animateLayoutChanges="true">
+
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/button_bar"
+		android:orientation="vertical"
+		android:padding="6dp"
+		android:layout_alignParentRight="true">
+
+		<ImageButton
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/btn_clear"
+			android:src="@drawable/ic_clear"
+			style="@style/Widget.AppCompat.ActionButton"
+			android:visibility="invisible"/>
+
+		<com.bacecek.translate.ui.widget.VocalizeButton
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/btn_vocalize_original"
+			android:visibility="invisible"
+			android:tint="@android:color/white"/>
+
+	</LinearLayout>
+
+	<EditText
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/edit_original_text"
+		android:textSize="20sp"
+		android:hint="@string/hint_edit_original_text"
+		android:background="@null"
+		android:minLines="3"
+		android:gravity="start"
+		android:layout_toLeftOf="@id/button_bar"
+		android:textColor="@android:color/white"
+		android:textCursorDrawable="@null"
+		android:textColorHint="#6FB8ED"
+		android:padding="16dp"
+		android:textColorHighlight="#6FB8ED"
+		android:inputType="textMultiLine"/>
+
+	<ImageButton
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/btn_mic"
+		android:src="@drawable/button_mic_selector"
+		style="@style/Widget.AppCompat.ActionButton"
+		android:layout_below="@id/edit_original_text"
+		android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>

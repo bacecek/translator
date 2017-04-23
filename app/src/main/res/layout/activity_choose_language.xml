@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context="com.bacecek.translate.ui.activity.ChooseLanguageActivity"
+	android:orientation="vertical"
+	android:fitsSystemWindows="true">
+
+	<android.support.v7.widget.Toolbar
+		android:layout_width="match_parent"
+		android:layout_height="?attr/actionBarSize"
+		android:id="@+id/toolbar"
+		android:background="@color/colorPrimary"
+		android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+		app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"/>
+
+	<android.support.v4.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:id="@+id/scrollview"
+		android:background="@color/colorBackground">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/view_recently"
+				android:orientation="vertical"
+				android:visibility="gone">
+
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					style="@style/App.View.TitleListLanguages"
+					android:text="@string/recently_used_languages"/>
+
+				<android.support.v7.widget.RecyclerView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/list_recently_langs"
+					android:focusableInTouchMode="true"/>
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/view_all"
+				android:orientation="vertical">
+
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					style="@style/App.View.TitleListLanguages"
+					android:text="@string/all_languages"/>
+
+				<android.support.v7.widget.RecyclerView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/list_all_langs"
+					android:focusableInTouchMode="true"/>
+
+			</LinearLayout>
+		</LinearLayout>
+	</android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>
