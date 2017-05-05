@@ -23,10 +23,12 @@ import com.bacecek.translate.R;
 import com.bacecek.translate.data.network.util.NetworkStateReceiver;
 import com.bacecek.translate.event.ClickFavouriteEvent;
 import com.bacecek.translate.event.ClickMenuEvent;
+import com.bacecek.translate.event.IntentTranslateEvent;
 import com.bacecek.translate.event.TranslateEvent;
 import com.bacecek.translate.ui.fragment.AboutFragment;
 import com.bacecek.translate.ui.fragment.FavouriteFragment;
 import com.bacecek.translate.ui.fragment.SettingsFragment;
+import com.bacecek.translate.util.Consts.Extra;
 import com.bacecek.translate.util.Utils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -50,6 +52,11 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 		SpeechKit.getInstance().configure(getApplicationContext(), BuildConfig.YANDEX_SPEECHKIT_API_KEY);
 		mNetworkStateReceiver = new NetworkStateReceiver();
 		registerReceiver(mNetworkStateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+		String incomingTranslation = getIntent().getStringExtra(Extra.EXTRA_INCOMING_TRANSLATION);
+		if(incomingTranslation != null) {
+			EventBus.getDefault().postSticky(new IntentTranslateEvent(incomingTranslation));
+		}
 	}
 
 	private void initUI() {
@@ -89,8 +96,10 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 		return true;
 	}
 
-	//какая-то странная ***** с фрагментами, зачем 2 фрагмента одновременно и тд, спросишь ты?
-	//а я отвечу - так удобно, можно с любого фрагмента кнопкой назад возвратиться на главный экран да и вообще
+	/**
+	 * Добавление фрагмента на экран в зависимости от выбранного итема в drawer
+	 * @param menuId - выбранный итем в drawer
+	 */
 	private void navigate(@MenuRes int menuId) {
 		switch (menuId) {
 			case R.id.action_home:
@@ -109,30 +118,29 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 	}
 
 	/**
-	 * Удаление фрагмента из контейнера. Написано, что из back stack, и так оно, по сути и есть.
+	 * Удаление фрагмента из контейнера.
 	 * @return - был ли вообще фрагмент в контейнере
 	 */
 	private boolean removeFromBackStack() {
 		FragmentManager fm = getFragmentManager();
-		FragmentTransaction transaction = fm.beginTransaction();
-		Fragment fragment = fm.findFragmentById(R.id.container_main);
-		if (fragment != null) {
-			transaction.remove(fragment);
-			transaction.commit();
+		if(fm.getBackStackEntryCount() > 0) {
+			fm.popBackStack();
 			return true;
+		} else {
+			return false;
 		}
-		return false;
 	}
 
 	/**
-	 * Добавление фрагмента в контейнер. Написано, что в back stack, но вроде и нет, но так-то да:)
+	 * Добавление фрагмента в контейнер.
 	 * @param fragment
 	 */
 	private void addToBackStack(Fragment fragment) {
 		removeFromBackStack();
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.add(R.id.container_main, fragment);
-		transaction.commit();
+		transaction.add(R.id.container_main, fragment)
+				.addToBackStack(null)
+				.commit();
 	}
 
 	@Override

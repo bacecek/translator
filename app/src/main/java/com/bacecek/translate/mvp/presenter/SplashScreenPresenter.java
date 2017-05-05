@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by Denis Buzmakov on 11/04/2017.
@@ -27,6 +28,7 @@ import javax.inject.Inject;
 @InjectViewState
 public class SplashScreenPresenter extends MvpPresenter<SplashScreenView> {
 	private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+	private String mIncomingTranslation = null;
 
 	@Inject
 	TranslatorAPI mTranslatorAPI;
@@ -44,11 +46,16 @@ public class SplashScreenPresenter extends MvpPresenter<SplashScreenView> {
 	@Override
 	protected void onFirstViewAttach() {
 		super.onFirstViewAttach();
+		Timber.d("onFirstViewAttach");
 		if(isLoadLangsNeeded()) {
 			loadLangs();
 		} else {
-			 getViewState().goToMainScreen();
+			 getViewState().goToMainScreen(mIncomingTranslation);
 		}
+	}
+
+	public void incomingTranslation(String text) {
+		mIncomingTranslation = text;
 	}
 
 	private boolean isLoadLangsNeeded() {
@@ -82,7 +89,7 @@ public class SplashScreenPresenter extends MvpPresenter<SplashScreenView> {
 		list.addAll(languages);
 		mRealmController.insertLanguages(list);
 		mPrefsManager.saveSystemLocale();
-		getViewState().goToMainScreen();
+		getViewState().goToMainScreen(mIncomingTranslation);
 		//это все дело нужно, чтобы при первом запуске 2 дефолтных языка сразу появлялись в "недавно использованных"
 		mLanguageManager.setCurrentOriginalLangCode(mPrefsManager.getLastUsedOriginalLang());
 		mLanguageManager.setCurrentTargetLangCode(mPrefsManager.getLastUsedTargetLang());

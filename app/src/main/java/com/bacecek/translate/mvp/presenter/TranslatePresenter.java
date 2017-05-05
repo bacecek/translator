@@ -17,6 +17,7 @@ import com.bacecek.translate.data.network.api.DictionaryAPI;
 import com.bacecek.translate.data.network.api.TranslatorAPI;
 import com.bacecek.translate.event.ChangeInputImeOptionsEvent;
 import com.bacecek.translate.event.ChangeNetworkStateEvent;
+import com.bacecek.translate.event.IntentTranslateEvent;
 import com.bacecek.translate.event.ShowDictionaryEvent;
 import com.bacecek.translate.event.TranslateEvent;
 import com.bacecek.translate.mvp.view.TranslateView;
@@ -469,6 +470,12 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		if(mIsError && event.isOnline) {
 			loadTranslation();
 		}
+	}
+
+	@Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+	public void onIntentTranslateEvent(IntentTranslateEvent event) {
+		saveTranslation(true);
+		getViewState().setOriginalText(event.text);
 	}
 
 	//простой способ объединения ответов с сервера

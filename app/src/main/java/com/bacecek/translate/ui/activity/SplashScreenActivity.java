@@ -14,6 +14,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.bacecek.translate.R;
 import com.bacecek.translate.mvp.presenter.SplashScreenPresenter;
 import com.bacecek.translate.mvp.view.SplashScreenView;
+import com.bacecek.translate.util.Consts.Extra;
 
 public class SplashScreenActivity extends MvpAppCompatActivity implements SplashScreenView {
 	@InjectPresenter
@@ -37,6 +38,14 @@ public class SplashScreenActivity extends MvpAppCompatActivity implements Splash
 		setContentView(R.layout.activity_splash_screen);
 		ButterKnife.bind(this);
 		initUI();
+
+		Intent intent = getIntent();
+		if (Intent.ACTION_SEND.equals(intent.getAction()) && intent.getType() != null) {
+			String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+			if (sharedText != null) {
+				mPresenter.incomingTranslation(sharedText);
+			}
+		}
 	}
 
 	private void initUI() {
@@ -54,9 +63,10 @@ public class SplashScreenActivity extends MvpAppCompatActivity implements Splash
 	}
 
 	@Override
-	public void goToMainScreen() {
+	public void goToMainScreen(String text) {
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+		intent.putExtra(Extra.EXTRA_INCOMING_TRANSLATION, text);
 		startActivity(intent);
 		finish();
 	}

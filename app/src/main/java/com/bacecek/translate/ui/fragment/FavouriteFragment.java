@@ -24,11 +24,11 @@ import butterknife.OnTextChanged.Callback;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.entity.Translation;
+import com.bacecek.translate.event.ClickFavouriteEvent;
 import com.bacecek.translate.mvp.presenter.FavouritePresenter;
 import com.bacecek.translate.mvp.view.FavouriteView;
 import com.bacecek.translate.ui.adapter.FavouriteAdapter;
 import com.bacecek.translate.ui.adapter.FavouriteAdapter.OnItemClickListener;
-import com.bacecek.translate.event.ClickFavouriteEvent;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmResults;
 import org.greenrobot.eventbus.EventBus;
@@ -46,8 +46,6 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 	RecyclerView mRecyclerFavourites;
 	@BindView(R.id.empty_view)
 	View mViewEmpty;
-	@BindView(R.id.view_search)
-	View mSearchView;
 	@BindView(R.id.edit_search)
 	EditText mEditSearch;
 	@BindView(R.id.txt_empty_title)
@@ -122,7 +120,8 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 
 	@Override
 	public void setSearchVisibility(boolean visible) {
-		mSearchView.setVisibility(visible ? View.VISIBLE : View.GONE);
+		mEditSearch.setVisibility(visible ? View.VISIBLE : View.GONE);
+		mBtnClear.setVisibility(visible ? View.VISIBLE : View.GONE);
 	}
 
 	@Override

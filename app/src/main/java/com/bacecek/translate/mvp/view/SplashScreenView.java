@@ -13,5 +13,5 @@ public interface SplashScreenView extends MvpView {
 	void setErrorVisibility(boolean visible);
 	void setLoadingVisibility(boolean visible);
 	@StateStrategyType(OneExecutionStateStrategy.class)
-	void goToMainScreen();
+	void goToMainScreen(String text);
 }

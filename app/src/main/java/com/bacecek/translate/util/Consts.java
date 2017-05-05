@@ -49,5 +49,6 @@ public class Consts {
 		public static final String EXTRA_CHOOSE_LANG_TYPE = "extra_choose_lang_type";
 		public static final String EXTRA_CHOOSE_LANG_RETURN = "extra_chosen_lang";
 		public static final String EXTRA_FULLSCREEN = "extra_fullscreen";
+		public static final String EXTRA_INCOMING_TRANSLATION = "incoming translation";
 	}
 }
