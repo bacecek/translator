@@ -11,13 +11,8 @@ import javax.inject.Inject;
 
 /**
  * Класс для управления языками в приложении.
- * Хранение текущих языков в SharedPreferences - быстро и удобно.
- * Хранение всех языков в Realm.
  */
 public class LanguageManager {
-	private String mCurrentOriginalLangCode;
-	private String mCurrentTargetLangCode;
-	//достаточно тупо. сделано так, потому что изменение/добавление языков вряд ли планируется, плюсом это быстрее и удобнее, чем через SpeechKit
 	private final String[] mAvailableRecognition = {"ru", "en", "tr", "uk"};
 	private OnChangeLanguageListener mListener;
 	private PrefsManager mPrefsManager;
@@ -27,50 +22,46 @@ public class LanguageManager {
 	public LanguageManager(PrefsManager prefsManager, RealmController realmController) {
 		mPrefsManager = prefsManager;
 		mRealmController = realmController;
-		mCurrentOriginalLangCode = mPrefsManager.getLastUsedOriginalLang();
-		mCurrentTargetLangCode = mPrefsManager.getLastUsedTargetLang();
 	}
 
 	public String getCurrentOriginalLangCode() {
-		return mCurrentOriginalLangCode;
+		return mPrefsManager.getLastUsedOriginalLang();
 	}
 
 	public void setCurrentOriginalLangCode(String originalLangCode) {
-		if(originalLangCode.equals(mCurrentTargetLangCode)) {
+		if(originalLangCode.equals(getCurrentTargetLangCode())) {
 			swapLanguages();
 		} else {
-			mCurrentOriginalLangCode = originalLangCode;
-			saveOriginalLanguage();
+			saveOriginalLanguage(originalLangCode);
 			if(mListener != null) {
 				mListener.onChangeOriginalLang(getCurrentOriginalLanguage());
 			}
-			mRealmController.updateTimestampLanguage(mCurrentOriginalLangCode);
+			mRealmController.updateTimestampLanguage(originalLangCode);
 		}
 	}
 
 	public void setCurrentTargetLangCode(String targetLangCode) {
-		if(targetLangCode.equals(mCurrentOriginalLangCode)) {
+		if(targetLangCode.equals(getCurrentOriginalLangCode())) {
 			swapLanguages();
 		} else {
-			mCurrentTargetLangCode = targetLangCode;
-			saveTargetLanguage();
+			saveTargetLanguage(targetLangCode);
 			if(mListener != null) {
 				mListener.onChangeTargetLang(getCurrentTargetLanguage());
 			}
-			mRealmController.updateTimestampLanguage(mCurrentTargetLangCode);
+			mRealmController.updateTimestampLanguage(targetLangCode);
 		}
 	}
 
 	public String getCurrentTargetLangCode() {
-		return mCurrentTargetLangCode;
+		return mPrefsManager.getLastUsedTargetLang();
 	}
 
 	public Language getCurrentOriginalLanguage() {
-		return mRealmController.getLanguageByCode(mCurrentOriginalLangCode);
+		return mRealmController.getLanguageByCode(getCurrentOriginalLangCode());
 	}
 
 	public Language getCurrentTargetLanguage() {
-		return mRealmController.getLanguageByCode(mCurrentTargetLangCode);
+		return mRealmController.getLanguageByCode(getCurrentTargetLangCode());
 	}
 
 	public String getCurrentOriginalLangName() {
@@ -82,25 +73,24 @@ public class LanguageManager {
 	}
 
 	public void swapLanguages() {
-		String temp = mCurrentOriginalLangCode;
-		mCurrentOriginalLangCode = mCurrentTargetLangCode;
-		mCurrentTargetLangCode = temp;
-		saveOriginalLanguage();
-		saveTargetLanguage();
+		String originalLangCode = getCurrentOriginalLangCode();
+		String targetLangCode = getCurrentTargetLangCode();
+		saveOriginalLanguage(targetLangCode);
+		saveTargetLanguage(originalLangCode);
 		if(mListener != null){
 			mListener.onChangeOriginalLang(getCurrentOriginalLanguage());
 			mListener.onChangeTargetLang(getCurrentTargetLanguage());
 		}
-		mRealmController.updateTimestampLanguage(mCurrentOriginalLangCode);
-		mRealmController.updateTimestampLanguage(mCurrentTargetLangCode);
+		mRealmController.updateTimestampLanguage(originalLangCode);
+		mRealmController.updateTimestampLanguage(targetLangCode);
 	}
 
-	private void saveOriginalLanguage() {
-		mPrefsManager.setLastUsedOriginalLang(mCurrentOriginalLangCode);
+	private void saveOriginalLanguage(String langCode) {
+		mPrefsManager.setLastUsedOriginalLang(langCode);
 	}
 
-	private void saveTargetLanguage() {
-		mPrefsManager.setLastUsedTargetLang(mCurrentTargetLangCode);
+	private void saveTargetLanguage(String langCode) {
+		mPrefsManager.setLastUsedTargetLang(langCode);
 	}
 
 	public boolean isRecognitionAndVocalizeAvailable(String langCode) {

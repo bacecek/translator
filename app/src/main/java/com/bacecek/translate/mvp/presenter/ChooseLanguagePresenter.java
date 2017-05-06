@@ -3,8 +3,7 @@ package com.bacecek.translate.mvp.presenter;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.bacecek.translate.App;
-import com.bacecek.translate.data.db.LanguageManager;
-import com.bacecek.translate.data.db.RealmController;
+import com.bacecek.translate.mvp.interactor.ChooseLanguageInteractor;
 import com.bacecek.translate.mvp.view.ChooseLanguageView;
 import javax.inject.Inject;
 
@@ -16,9 +15,7 @@ import javax.inject.Inject;
 @InjectViewState
 public class ChooseLanguagePresenter extends MvpPresenter<ChooseLanguageView> {
 	@Inject
-	RealmController mRealmController;
-	@Inject
-	LanguageManager mLanguageManager;
+	ChooseLanguageInteractor mInteractor;
 	private int mChooseLangType;
 
 	public ChooseLanguagePresenter() {
@@ -28,8 +25,8 @@ public class ChooseLanguagePresenter extends MvpPresenter<ChooseLanguageView> {
 	@Override
 	protected void onFirstViewAttach() {
 		super.onFirstViewAttach();
-		getViewState().setRecentlyUsedLanguages(mRealmController.getRecentlyUsedLanguages());
-		getViewState().setAllLanguages(mRealmController.getLanguagesAsync());
+		getViewState().setRecentlyUsedLanguages(mInteractor.getRecentlyUsedLanguages());
+		getViewState().setAllLanguages(mInteractor.getAllLanguages());
 	}
 
 	public void setChooseLangType(int chooseLangType) {

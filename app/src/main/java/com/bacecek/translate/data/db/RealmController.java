@@ -5,7 +5,7 @@ import com.bacecek.translate.data.entity.Translation;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
-import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 
 /**
@@ -62,7 +62,7 @@ public class RealmController {
 	}
 
 	//вставка асинхронная по той причине, что могут еще не записаться языки, а уже перейдет на основной экран, где нужен будет язык -
-	public void insertLanguages(ArrayList<Language> list) {
+	public void insertLanguages(List<Language> list) {
 		mRealm.beginTransaction();
 		mRealm.copyToRealmOrUpdate(list);
 		mRealm.commitTransaction();

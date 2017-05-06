@@ -8,25 +8,22 @@ import com.arellomobile.mvp.MvpPresenter;
 import com.bacecek.translate.App;
 import com.bacecek.translate.data.db.LanguageManager;
 import com.bacecek.translate.data.db.LanguageManager.OnChangeLanguageListener;
-import com.bacecek.translate.data.db.PrefsManager;
-import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.data.entity.DictionaryItem;
 import com.bacecek.translate.data.entity.Language;
 import com.bacecek.translate.data.entity.Translation;
-import com.bacecek.translate.data.network.api.DictionaryAPI;
-import com.bacecek.translate.data.network.api.TranslatorAPI;
+import com.bacecek.translate.data.network.util.TranslateResult;
 import com.bacecek.translate.event.ChangeInputImeOptionsEvent;
 import com.bacecek.translate.event.ChangeNetworkStateEvent;
 import com.bacecek.translate.event.IntentTranslateEvent;
 import com.bacecek.translate.event.ShowDictionaryEvent;
 import com.bacecek.translate.event.TranslateEvent;
+import com.bacecek.translate.mvp.interactor.TranslateInteractor;
 import com.bacecek.translate.mvp.view.TranslateView;
 import com.bacecek.translate.ui.widget.VocalizeButton;
 import com.bacecek.translate.util.Consts;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.disposables.Disposables;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.RealmChangeListener;
 import java.util.List;
@@ -49,8 +46,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	private static final int VOCALIZE_BUTTON_ORIGINAL = 0;
 	private static final int VOCALIZE_BUTTON_TRANSLATED = 1;
 
-	private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
-	private Disposable mTranslateDisposable;
+	private Disposable mCurrentDisposable = Disposables.empty();
 	private String mCurrentOriginalText = "";
 	private String mCurrentTranslatedText = "";
 	private boolean mIsLoading;
@@ -58,7 +54,6 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	private Handler mDelayInputHandler = new Handler(Looper.getMainLooper());
 	private Runnable mDelayInputRunnable;
 	private Translation mCurrentTranslation;
-	private int mCurrentResponseCount = 0; //счетчик запросов. нужен для проверки, тот ли запрос, который только что завершился, который нам нужен. вдруг он опоздал
 	private Vocalizer mSpeechVocalizer;
 	private int mCurrentVocalizeButton;
 	private List<DictionaryItem> mCurrentDictionaryItems;
@@ -66,13 +61,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	@Inject
 	LanguageManager mLanguageManager;
 	@Inject
-	RealmController mRealmController;
-	@Inject
-	PrefsManager mPrefsManager;
-	@Inject
-	TranslatorAPI mTranslatorAPI;
-	@Inject
-	DictionaryAPI mDictionaryAPI;
+	TranslateInteractor mInteractor;
 
 	private final OnChangeLanguageListener mLanguageListener = new OnChangeLanguageListener() {
 		@Override
@@ -132,7 +121,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	@Override
 	protected void onFirstViewAttach() {
 		super.onFirstViewAttach();
-		getViewState().setHistoryData(mRealmController.getHistory());
+		getViewState().setHistoryData(mInteractor.getHistory());
 		getViewState().setOriginalLangName(mLanguageManager.getCurrentOriginalLangName());
 		getViewState().setTargetLangName(mLanguageManager.getCurrentTargetLangName());
 		updateVocalizeAndMicButtonsState();
@@ -141,24 +130,12 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	}
 
 	public void onHistoryItemSwipe(Translation translation) {
-		mRealmController.removeTranslationFromHistory(translation);
+		mInteractor.removeTranslationFromHistory(translation);
 	}
 
 	public void saveTranslation(boolean async) {
 		if(!mCurrentOriginalText.isEmpty() && !mCurrentTranslatedText.isEmpty() && !mIsLoading) {
-			if(async) {
-				mRealmController.insertTranslationAsync(
-						mCurrentOriginalText,
-						mCurrentTranslatedText,
-						mLanguageManager.getCurrentOriginalLangCode(),
-						mLanguageManager.getCurrentTargetLangCode());
-			} else {
-				mRealmController.insertTranslation(
-						mCurrentOriginalText,
-						mCurrentTranslatedText,
-						mLanguageManager.getCurrentOriginalLangCode(),
-						mLanguageManager.getCurrentTargetLangCode());
-			}
+			mInteractor.saveTranslation(mCurrentOriginalText, mCurrentTranslatedText, async);
 		}
 	}
 
@@ -167,36 +144,14 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		if(mCurrentOriginalText.length() == 0) {
 			return;
 		}
+		mCurrentDisposable.dispose();
 		String direction = mLanguageManager.getCurrentOriginalLangCode() + "-" + mLanguageManager.getCurrentTargetLangCode();
-		Observable<Translation> translationObservable = mTranslatorAPI.translate(mCurrentOriginalText, direction);
-		Observable<List<DictionaryItem>> dictionaryObservable = mDictionaryAPI.translate(mCurrentOriginalText, direction, mPrefsManager.getSavedSystemLocale());
-		mCurrentResponseCount++;
-		final int requestCount = mCurrentResponseCount;
-		//если какой-то запрос сейчас и идет, то отменить его не помешает
-		if(mTranslateDisposable != null) {
-			mTranslateDisposable.dispose();
-		}
-		mTranslateDisposable = Observable.combineLatest(translationObservable,
-				dictionaryObservable, this::combine)
+		mCurrentDisposable = mInteractor.translate(mCurrentOriginalText)
 				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
 				.doOnSubscribe(disposable -> onLoadStart())
-				.doFinally(() -> {
-					//проверка запроса на валидность - вдруг он опоздал. дальше то же самое
-					if(requestCount == mCurrentResponseCount) {
-						onLoadFinish();
-					}
-				})
-				.subscribe(combineResult -> {
-					if(requestCount == mCurrentResponseCount) {
-						onSuccess(combineResult);
-					}
-				}, throwable -> {
-					if(requestCount == mCurrentResponseCount) {
-						onError(throwable);
-					}
-				});
-		mCompositeDisposable.add(mTranslateDisposable);
+				.doFinally(this::onLoadFinish)
+				.subscribe(this::onSuccess, this::onError);
 	}
 
 	public void onClickChooseOriginalLang() {
@@ -236,7 +191,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 			getViewState().setButtonClearVisibility(true);
 			getViewState().setButtonVocalizeVisibility(true);
 			getViewState().setHistoryVisibility(false);
-			if(mPrefsManager.simultaneousTranslation()) {
+			if(mInteractor.getSettingSimultaneousTranslation()) {
 				mDelayInputRunnable = this::loadTranslation;
 				mDelayInputHandler.postDelayed(mDelayInputRunnable, Consts.DELAY_INPUT);
 			}
@@ -255,29 +210,27 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		getViewState().setProgressVisibility(false);
 	}
 
-	private void onSuccess(CombineResult result) {
+	private void onSuccess(TranslateResult result) {
 		if(mIsLoading) {
 			mIsError = false;
-			//удалить все слушатели, а то вдруг чо утечет
+			//удалить все слушатели во избежании утечки
 			if(mCurrentTranslation != null) {
 				mCurrentTranslation.removeAllChangeListeners();
 			}
-			mCurrentTranslation = mRealmController.getTranslation(mCurrentOriginalText,
-					mLanguageManager.getCurrentOriginalLangCode(),
-					mLanguageManager.getCurrentTargetLangCode());
+			mCurrentTranslation = mInteractor.getTranslation(mCurrentOriginalText);
 			getViewState().setTranslationVisibility(true);
 			if(mCurrentTranslation != null) {
 				mCurrentTranslation.addChangeListener(mChangeFavouriteListener);
 				getViewState().setTranslationData(mCurrentTranslation);
 			} else {
-				getViewState().setTranslationData(result.translation);
+				getViewState().setTranslationData(result.getTranslation());
 			}
-			mCurrentDictionaryItems = result.items;
-			mCurrentTranslatedText = result.translation.getTranslatedText();
+			mCurrentDictionaryItems = result.getItems();
+			mCurrentTranslatedText = result.getTranslation().getTranslatedText();
 			getViewState().setErrorVisibility(false);
 			getViewState().setDictionaryData(mCurrentDictionaryItems);
 			if(mCurrentDictionaryItems.size() > 0) {
-				getViewState().setDictionaryVisibility(mPrefsManager.showDictionary());
+				getViewState().setDictionaryVisibility(mInteractor.getSettingShowDictionary());
 			} else {
 				getViewState().setDictionaryVisibility(false);
 			}
@@ -298,7 +251,6 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		mCompositeDisposable.clear();
 		EventBus.getDefault().unregister(this);
 	}
 
@@ -316,20 +268,20 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		mLanguageManager.setCurrentTargetLangCode(translation.getTargetLang());
 		getViewState().setOriginalText(translation.getOriginalText());
 		//если отключен синхронный перевод, то надо загрузить перевод
-		if(!mPrefsManager.simultaneousTranslation()) {
+		if(!mInteractor.getSettingSimultaneousTranslation()) {
 			loadTranslation();
 		}
 	}
 
 	public void onClickHistoryFavourite(Translation translation) {
-		mRealmController.changeFavourite(translation);
+		mInteractor.changeFavourite(translation);
 	}
 
 	public void onClickDictionaryWord(String word) {
 		saveTranslation(true);
 		getViewState().setOriginalText(word);
-		mLanguageManager.swapLanguages(); //смена языков местами нужна, т.к. при слово из словаря всегда на другом языке
-		if(!mPrefsManager.simultaneousTranslation()) {
+		mLanguageManager.swapLanguages(); //смена языков, т.к. слово в словаре всегда на другом языке
+		if(!mInteractor.getSettingSimultaneousTranslation()) {
 			loadTranslation();
 		}
 	}
@@ -356,12 +308,10 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		//если текущий перевод отсутствует в базе, то сначала нужно его записать туда и повешать слушатель
 		if(mCurrentTranslation == null) {
 			saveTranslation(false);
-			mCurrentTranslation = mRealmController.getTranslation(mCurrentOriginalText,
-					mLanguageManager.getCurrentOriginalLangCode(),
-					mLanguageManager.getCurrentTargetLangCode());
+			mCurrentTranslation = mInteractor.getTranslation(mCurrentOriginalText);
 			mCurrentTranslation.addChangeListener(mChangeFavouriteListener);
 		}
-		mRealmController.changeFavourite(mCurrentTranslation);
+		mInteractor.changeFavourite(mCurrentTranslation);
 	}
 
 	public void onClickVocalizeOriginal(int buttonState) {
@@ -432,13 +382,13 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	public void onDictationSuccess(String text) {
 		mCurrentOriginalText = mCurrentOriginalText + text;
 		getViewState().setOriginalText(mCurrentOriginalText);
-		if(!mPrefsManager.simultaneousTranslation()) {
+		if(!mInteractor.getSettingSimultaneousTranslation()) {
 			loadTranslation();
 		}
 	}
 
 	private void updateInputImeOptions() {
-		if(mPrefsManager.returnForTranslate()) {
+		if(mInteractor.getSettingReturnForTranslate()) {
 			getViewState().setInputImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_ACTION_DONE);
 		} else {
 			getViewState().setInputImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_ACTION_NONE);
@@ -454,7 +404,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onShowDictionaryEvent(ShowDictionaryEvent event) {
 		if(mCurrentDictionaryItems != null && mCurrentDictionaryItems.size() > 0) {
-			getViewState().setDictionaryVisibility(mPrefsManager.showDictionary());
+			getViewState().setDictionaryVisibility(mInteractor.getSettingShowDictionary());
 		} else {
 			getViewState().setDictionaryVisibility(false);
 		}
@@ -476,21 +426,5 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	public void onIntentTranslateEvent(IntentTranslateEvent event) {
 		saveTranslation(true);
 		getViewState().setOriginalText(event.text);
-	}
-
-	//простой способ объединения ответов с сервера
-	private CombineResult combine(Translation translation, List<DictionaryItem> items) {
-		return new CombineResult(translation, items);
-	}
-
-	private static class CombineResult {
-		private Translation translation;
-		private List<DictionaryItem> items;
-
-		CombineResult(Translation translation,
-				List<DictionaryItem> items) {
-			this.translation = translation;
-			this.items = items;
-		}
 	}
 }

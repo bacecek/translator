@@ -1,6 +1,5 @@
 package com.bacecek.translate.mvp.presenter;
 
-import android.content.Context;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.bacecek.translate.App;
@@ -9,6 +8,7 @@ import com.bacecek.translate.data.db.PrefsManager;
 import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.event.ChangeInputImeOptionsEvent;
 import com.bacecek.translate.event.ShowDictionaryEvent;
+import com.bacecek.translate.mvp.interactor.SettingsInteractor;
 import com.bacecek.translate.mvp.view.SettingsView;
 import javax.inject.Inject;
 import org.greenrobot.eventbus.EventBus;
@@ -20,9 +20,8 @@ import org.greenrobot.eventbus.EventBus;
 
 @InjectViewState
 public class SettingsPresenter extends MvpPresenter<SettingsView> {
-
 	@Inject
-	Context mContext;
+	SettingsInteractor mInteractor;
 	@Inject
 	PrefsManager mPrefsManager;
 	@Inject
@@ -35,27 +34,27 @@ public class SettingsPresenter extends MvpPresenter<SettingsView> {
 	@Override
 	protected void onFirstViewAttach() {
 		super.onFirstViewAttach();
-		getViewState().setCheckedSwitchSimultaneous(mPrefsManager.simultaneousTranslation());
-		getViewState().setCheckedSwitchDictionary(mPrefsManager.showDictionary());
-		getViewState().setCheckedSwitchReturn(mPrefsManager.returnForTranslate());
+		getViewState().setCheckedSwitchSimultaneous(mInteractor.getSettingSimultaneousTranslation());
+		getViewState().setCheckedSwitchDictionary(mInteractor.getSettingShowDictionary());
+		getViewState().setCheckedSwitchReturn(mInteractor.getSettingReturnForTranslate());
 	}
 
 	public void onChangeCheckedSwitchSimultaneous(boolean checked) {
-		mPrefsManager.setSimultaneousTranslation(checked);
+		mInteractor.setSettingSimultaneousTranslation(checked);
 	}
 
 	public void onChangeCheckedSwitchDictionary(boolean checked) {
-		mPrefsManager.setShowDictionary(checked);
+		mInteractor.setSettingShowDictionary(checked);
 		EventBus.getDefault().post(new ShowDictionaryEvent());
 	}
 
 	public void onChangeCheckedSwitchReturn(boolean checked) {
-		mPrefsManager.setReturnForTranslate(checked);
+		mInteractor.setSettingReturnForTranslate(checked);
 		EventBus.getDefault().post(new ChangeInputImeOptionsEvent());
 	}
 
 	public void onClickClearHistory() {
-		mRealmController.clearHistory();
+		mInteractor.clearHistory();
 		getViewState().showToast(R.string.history_was_cleared);
 	}
 }

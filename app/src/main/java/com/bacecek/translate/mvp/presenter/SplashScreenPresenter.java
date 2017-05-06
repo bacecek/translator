@@ -3,22 +3,13 @@ package com.bacecek.translate.mvp.presenter;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.bacecek.translate.App;
-import com.bacecek.translate.data.db.LanguageManager;
-import com.bacecek.translate.data.db.PrefsManager;
-import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.data.entity.Language;
-import com.bacecek.translate.data.network.api.TranslatorAPI;
+import com.bacecek.translate.mvp.interactor.SplashScreenInteractor;
 import com.bacecek.translate.mvp.view.SplashScreenView;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 /**
  * Created by Denis Buzmakov on 11/04/2017.
@@ -27,17 +18,10 @@ import timber.log.Timber;
 
 @InjectViewState
 public class SplashScreenPresenter extends MvpPresenter<SplashScreenView> {
-	private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 	private String mIncomingTranslation = null;
 
 	@Inject
-	TranslatorAPI mTranslatorAPI;
-	@Inject
-	RealmController mRealmController;
-	@Inject
-	PrefsManager mPrefsManager;
-	@Inject
-	LanguageManager mLanguageManager;
+	SplashScreenInteractor mInteractor;
 
 	public SplashScreenPresenter() {
 		App.getAppComponent().inject(this);
@@ -46,8 +30,7 @@ public class SplashScreenPresenter extends MvpPresenter<SplashScreenView> {
 	@Override
 	protected void onFirstViewAttach() {
 		super.onFirstViewAttach();
-		Timber.d("onFirstViewAttach");
-		if(isLoadLangsNeeded()) {
+		if(mInteractor.isLoadingLangsNeeded()) {
 			loadLangs();
 		} else {
 			 getViewState().goToMainScreen(mIncomingTranslation);
@@ -58,21 +41,13 @@ public class SplashScreenPresenter extends MvpPresenter<SplashScreenView> {
 		mIncomingTranslation = text;
 	}
 
-	private boolean isLoadLangsNeeded() {
-		int langsCount = mRealmController.getLanguages().size();
-		return langsCount == 0 ||
-				!mPrefsManager.getSavedSystemLocale().equals(Locale.getDefault().getLanguage());
-	}
-
 	public void loadLangs() {
-		Observable<List<Language>> observable = mTranslatorAPI.getLangs(Locale.getDefault().getLanguage());
-		Disposable disposable = observable
+		mInteractor.getLangs()
 				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
 				.doOnSubscribe(d -> onLoadStart())
 				.doFinally(this::onLoadFinish)
 				.subscribe(this::onSuccess, throwable -> onError());
-		mCompositeDisposable.add(disposable);
 	}
 
 	private void onLoadStart() {
@@ -85,23 +60,11 @@ public class SplashScreenPresenter extends MvpPresenter<SplashScreenView> {
 	}
 
 	private void onSuccess(List<Language> languages) {
-		ArrayList<Language> list = new ArrayList<Language>();
-		list.addAll(languages);
-		mRealmController.insertLanguages(list);
-		mPrefsManager.saveSystemLocale();
+		mInteractor.saveLangs(languages);
 		getViewState().goToMainScreen(mIncomingTranslation);
-		//это все дело нужно, чтобы при первом запуске 2 дефолтных языка сразу появлялись в "недавно использованных"
-		mLanguageManager.setCurrentOriginalLangCode(mPrefsManager.getLastUsedOriginalLang());
-		mLanguageManager.setCurrentTargetLangCode(mPrefsManager.getLastUsedTargetLang());
 	}
 
 	private void onError() {
 		getViewState().setErrorVisibility(true);
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		mCompositeDisposable.clear();
 	}
 }

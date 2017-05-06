@@ -4,8 +4,8 @@ import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.bacecek.translate.App;
 import com.bacecek.translate.R;
-import com.bacecek.translate.data.db.RealmController;
 import com.bacecek.translate.data.entity.Translation;
+import com.bacecek.translate.mvp.interactor.FavouritesInteractor;
 import com.bacecek.translate.mvp.view.FavouriteView;
 import io.realm.RealmResults;
 import javax.inject.Inject;
@@ -18,7 +18,7 @@ import javax.inject.Inject;
 @InjectViewState
 public class FavouritePresenter extends MvpPresenter<FavouriteView> {
 	@Inject
-	RealmController mRealmController;
+	FavouritesInteractor mInteractor;
 
 	private String mCurrentSearchText = "";
 
@@ -29,11 +29,11 @@ public class FavouritePresenter extends MvpPresenter<FavouriteView> {
 	@Override
 	protected void onFirstViewAttach() {
 		super.onFirstViewAttach();
-		getViewState().setData(mRealmController.getFavourites());
+		getViewState().setData(mInteractor.getFavourites());
 	}
 
 	public void onItemSwiped(Translation translation) {
-		mRealmController.changeFavourite(translation);
+		mInteractor.changeFavourite(translation);
 	}
 
 	public void onInputChanged(String search) {
@@ -45,7 +45,7 @@ public class FavouritePresenter extends MvpPresenter<FavouriteView> {
 			getViewState().setButtonClearVisibility(true);
 			getViewState().setEmptyViewText(R.string.empty_search);
 		}
-		RealmResults<Translation> favourites = mRealmController.getFavourites(mCurrentSearchText);
+		RealmResults<Translation> favourites = mInteractor.getFavourites(mCurrentSearchText);
 		getViewState().updateData(favourites);
 	}
 
