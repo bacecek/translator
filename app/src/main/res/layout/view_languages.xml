@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:paddingLeft="16dp"
 	android:paddingRight="16dp">
 
@@ -12,20 +12,25 @@
 		android:id="@+id/btn_swap"
 		style="@style/Widget.AppCompat.ActionButton"
 		android:src="@drawable/ic_swap"
-		android:layout_centerInParent="true"/>
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"/>
 
 	<Button
-		android:layout_width="match_parent"
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:id="@+id/btn_original_lang"
-		android:layout_toLeftOf="@id/btn_swap"
-		style="@style/App.View.ChooseLanguageButton" />
+		style="@style/App.View.ChooseLanguageButton"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toLeftOf="@id/btn_swap"
+		app:layout_constraintHorizontal_weight="1"/>
 
 	<Button
-		android:layout_width="match_parent"
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:id="@+id/btn_target_lang"
-		android:layout_toRightOf="@id/btn_swap"
-		style="@style/App.View.ChooseLanguageButton"/>
+		style="@style/App.View.ChooseLanguageButton"
+		app:layout_constraintHorizontal_weight="1"
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintLeft_toRightOf="@id/btn_swap"/>
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
