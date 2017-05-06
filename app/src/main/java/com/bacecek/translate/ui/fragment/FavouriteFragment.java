@@ -121,7 +121,6 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 	@Override
 	public void setSearchVisibility(boolean visible) {
 		mEditSearch.setVisibility(visible ? View.VISIBLE : View.GONE);
-		mBtnClear.setVisibility(visible ? View.VISIBLE : View.GONE);
 	}
 
 	@Override
@@ -154,7 +153,11 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 
 	@Override
 	public void updateData(RealmResults<Translation> favourites) {
-		mFavouriteAdapter.updateData(favourites);
+		if(mFavouriteAdapter == null) {
+			setData(favourites);
+		} else {
+			mFavouriteAdapter.updateData(favourites);
+		}
 	}
 
 	public static FavouriteFragment getInstance() {

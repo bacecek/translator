@@ -29,7 +29,9 @@ public class FavouritePresenter extends MvpPresenter<FavouriteView> {
 	@Override
 	protected void onFirstViewAttach() {
 		super.onFirstViewAttach();
-		getViewState().setData(mInteractor.getFavourites());
+		if(mCurrentSearchText.isEmpty()) {
+			getViewState().setData(mInteractor.getFavourites());
+		}
 	}
 
 	public void onItemSwiped(Translation translation) {
@@ -58,7 +60,6 @@ public class FavouritePresenter extends MvpPresenter<FavouriteView> {
 		} else {
 			getViewState().setEmptyViewVisibility(false);
 			getViewState().setListVisibility(true);
-			getViewState().setSearchVisibility(true);
 		}
 	}
 }
