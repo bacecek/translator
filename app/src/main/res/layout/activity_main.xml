@@ -6,7 +6,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:id="@+id/layout_drawer"
-	tools:context=".ui.activity.MainActivity"
+	tools:context=".mvp.main.MainActivity"
 	android:fitsSystemWindows="true">
 
 	<FrameLayout
@@ -16,7 +16,7 @@
 		<fragment
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:name="com.bacecek.translate.ui.fragment.TranslateFragment"
+			android:name="com.bacecek.translate.mvp.translate.TranslateFragment"
 			android:id="@+id/fragment_translate"/>
 
 		<FrameLayout

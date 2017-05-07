@@ -13,12 +13,12 @@
 		android:supportsRtl="false"
 		android:theme="@style/App.Theme">
 		<activity
-			android:name=".ui.activity.MainActivity"
+			android:name=".mvp.main.MainActivity"
 			android:theme="@style/App.Theme.MainScreen"
 			android:windowSoftInputMode="stateAlwaysHidden"/>
-		<activity android:name=".ui.activity.FullscreenTextActivity" />
-		<activity android:name=".ui.activity.ChooseLanguageActivity" />
-		<activity android:name=".ui.activity.SplashScreenActivity"
+		<activity android:name=".mvp.fullscreen.FullscreenTextActivity" />
+		<activity android:name=".mvp.choose_language.ChooseLanguageActivity" />
+		<activity android:name=".mvp.splash.SplashScreenActivity"
 			android:theme="@style/App.Theme.SplashScreen">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />

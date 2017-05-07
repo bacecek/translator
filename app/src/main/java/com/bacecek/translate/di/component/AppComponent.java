@@ -9,11 +9,11 @@ import com.bacecek.translate.di.module.DictionaryModule;
 import com.bacecek.translate.di.module.NetworkModule;
 import com.bacecek.translate.di.module.RealmModule;
 import com.bacecek.translate.di.module.TranslatorModule;
-import com.bacecek.translate.mvp.presenter.ChooseLanguagePresenter;
-import com.bacecek.translate.mvp.presenter.FavouritePresenter;
-import com.bacecek.translate.mvp.presenter.SettingsPresenter;
-import com.bacecek.translate.mvp.presenter.SplashScreenPresenter;
-import com.bacecek.translate.mvp.presenter.TranslatePresenter;
+import com.bacecek.translate.mvp.choose_language.ChooseLanguagePresenter;
+import com.bacecek.translate.mvp.favourites.FavouritePresenter;
+import com.bacecek.translate.mvp.settings.SettingsPresenter;
+import com.bacecek.translate.mvp.splash.SplashScreenPresenter;
+import com.bacecek.translate.mvp.translate.TranslatePresenter;
 import dagger.Component;
 import javax.inject.Singleton;
 
