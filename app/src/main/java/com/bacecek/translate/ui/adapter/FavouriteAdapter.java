@@ -49,7 +49,7 @@ public class FavouriteAdapter extends RealmRecyclerViewAdapter<Translation, View
 		TextView mTxtOriginal;
 		@BindView(R.id.txt_translated)
 		TextView mTxtTranslated;
-		@BindView(R.id.txt_langs)
+		@BindView(R.id.txt_direction)
 		TextView mTxtLangs;
 
 		ViewHolder(View itemView) {

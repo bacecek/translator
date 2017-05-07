@@ -186,7 +186,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		mRecyclerHistory.setNestedScrollingEnabled(false);
 		mRecyclerHistory.setHasFixedSize(true);
 		DividerItemDecoration divider = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
-		divider.setDrawable(getResources().getDrawable(R.drawable.list_divider_history));
+		divider.setDrawable(getResources().getDrawable(R.drawable.list_divider));
 		mRecyclerHistory.addItemDecoration(divider);
 		ItemTouchHelper helper = new ItemTouchHelper(mHistoryItemSwipeCallback);
 		helper.attachToRecyclerView(mRecyclerHistory);

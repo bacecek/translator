@@ -108,7 +108,7 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 		mRecyclerFavourites.setHasFixedSize(true);
 		mRecyclerFavourites.setLayoutManager(new LinearLayoutManager(getActivity()));
 		DividerItemDecoration divider = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
-		divider.setDrawable(getResources().getDrawable(R.drawable.list_divider_favourite));
+		divider.setDrawable(getResources().getDrawable(R.drawable.list_divider));
 		mRecyclerFavourites.addItemDecoration(divider);
 		ItemTouchHelper helper = new ItemTouchHelper(mDismissCallback);
 		helper.attachToRecyclerView(mRecyclerFavourites);

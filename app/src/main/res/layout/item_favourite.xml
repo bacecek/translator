@@ -1,47 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:orientation="vertical"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:background="?attr/selectableItemBackground"
-	app:backgroundTint="@android:color/white"
-	android:padding="16dp">
+	android:layout_marginLeft="8dp"
+	android:layout_marginRight="8dp">
 
-	<TextView
-		android:layout_width="wrap_content"
+	<android.support.constraint.ConstraintLayout
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:id="@+id/txt_langs"
-		android:layout_alignParentRight="true"
-		android:layout_centerVertical="true"
-		android:textColor="@color/colorTextGrey"
-		android:fontFamily="sans-serif-light"/>
-
-	<LinearLayout
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:orientation="vertical"
-		android:layout_toLeftOf="@id/txt_langs"
-		android:layout_alignParentLeft="true">
+		android:background="?attr/selectableItemBackground"
+		app:backgroundTint="@android:color/white"
+		android:padding="12dp">
 
 		<TextView
 			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/txt_direction"
+			android:textColor="@color/colorTextGrey"
+			android:fontFamily="sans-serif-light"
+			app:layout_constraintRight_toRightOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"/>
+
+		<TextView
+			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:id="@+id/txt_original"
-			android:lines="1"
-			android:ellipsize="end"
 			android:textColor="@android:color/black"
-			android:textSize="16sp"/>
+			android:textSize="16sp"
+			android:maxLines="1"
+			android:ellipsize="end"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toLeftOf="@id/txt_direction"
+			app:layout_constraintHorizontal_weight="1"
+			android:layout_marginRight="12dp"/>
 
 		<TextView
-			android:layout_width="wrap_content"
+			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:id="@+id/txt_translated"
-			android:lines="1"
-			android:ellipsize="end"
 			android:textColor="@color/colorTextGrey"
-			android:textSize="16sp"/>
+			android:textSize="16sp"
+			android:maxLines="1"
+			android:ellipsize="end"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/txt_original"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toLeftOf="@id/txt_direction"
+			app:layout_constraintHorizontal_weight="1"
+			android:layout_marginRight="12dp"/>
 
-	</LinearLayout>
+	</android.support.constraint.ConstraintLayout>
 
-</RelativeLayout>
+</android.support.v7.widget.CardView>
