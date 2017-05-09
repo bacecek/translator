@@ -51,6 +51,7 @@
 	<string name="about_app">Тестовое задание для Школы мобильной разработки на Android, организованной Яндексом в рамках проекта \«Мобилизация\».</string>
 	<string name="about_contact_me">Обратная связь</string>
 	<string name="about_site_title">Сайт разработчика</string>
+	<string name="about_view_in_play_store">Приложение в Google Play</string>
 	<string name="about_source_code_title">Исходный код на GitHub</string>
 	<string name="about_contact_via">Написать с помощью…</string>
 </resources>

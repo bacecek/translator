@@ -47,9 +47,10 @@
 	<string name="settings_clear">Clear history</string>
 
 	<!--About-->
-	<string name="about_app">Test task for the Mobile Development School on Android, organized by Yandex in the framework of the project \"Mobilization \"</string>
+	<string name="about_app">Test task for the Mobile Development School on Android, organized by Yandex in the framework of the project \"Mobilization\"</string>
 	<string name="about_contact_me">Contact me</string>
 	<string name="about_site_title">Developer\'s site</string>
+	<string name="about_view_in_play_store">View in Play Store</string>
 	<string name="about_email" translatable="false">buzmakov.da@gmail.com</string>
 	<string name="about_source_code" translatable="false">https://github.com/bacecek/translator</string>
 	<string name="about_source_code_title">Source code on GitHub</string>

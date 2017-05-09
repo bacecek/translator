@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
@@ -32,44 +31,21 @@ import com.bacecek.translate.util.Utils;
 public class AboutFragment extends BaseFragment {
 	@BindView(R.id.txt_version)
 	TextView mTxtVersion;
-	@BindView(R.id.img_logo)
-	ImageView mImgLogo;
 
-	private int mClickCount = 0; //а не скажу зачем оно надо =P
 	private int mLongClickCount = 0;
 
-	//это приколюха. ну весело же:)
-	@OnClick(R.id.img_logo)
-	void onClickLogo() {
-		mClickCount++;
-		if(mClickCount == 5) {
-			Toast.makeText(getActivity(), "Зажать нужно!", Toast.LENGTH_SHORT).show();
-		} else if(mClickCount == 10) {
-			Toast.makeText(getActivity(), "Ну сказал же, ЗАЖАТЬ!1!", Toast.LENGTH_SHORT).show();
-		}
-	}
-
 	@OnLongClick(R.id.img_logo)
-	boolean onLongClickLogo() {
+	boolean onLongClickLogo(View view) {
 		mLongClickCount++;
-		if(mLongClickCount < 2) {
-			Toast.makeText(getActivity(), "Думал, зажал и тебе приколюха какая-то будет? Хе-хе:)",
-					Toast.LENGTH_SHORT).show();
+		ViewPropertyAnimator animation = view.animate()
+				.setDuration(500)
+				.setInterpolator(new FastOutSlowInInterpolator());
+		if(mLongClickCount % 2 == 0) {
+			animation.rotationBy(360);
 		} else {
-			if(mLongClickCount == 2) {
-				Toast.makeText(getActivity(), "Ну лаааадно, держи приколюху:)\nЗа такое грех в школу не взять;)",
-						Toast.LENGTH_SHORT).show();
-			}
-			ViewPropertyAnimator animation = mImgLogo.animate()
-					.setDuration(500)
-					.setInterpolator(new FastOutSlowInInterpolator());
-			if(mLongClickCount % 2 == 0) {
-				animation.rotationBy(360);
-			} else {
-				animation.rotationBy(-360);
-			}
-			animation.start();
+			animation.rotationBy(-360);
 		}
+		animation.start();
 		return true;
 	}
 
