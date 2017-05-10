@@ -45,8 +45,8 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
-				android:paddingTop="8dp"
-				android:paddingBottom="8dp"
+				android:paddingTop="6dp"
+				android:paddingBottom="6dp"
 				android:background="@android:color/white">
 
 				<LinearLayout
@@ -71,6 +71,11 @@
 
 				</LinearLayout>
 
+				<View
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:background="@drawable/list_langs_divider"/>
+
 				<LinearLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
@@ -92,6 +97,11 @@
 						android:theme="@style/App.View.SwitchCompat" />
 
 				</LinearLayout>
+
+				<View
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:background="@drawable/list_langs_divider"/>
 
 				<LinearLayout
 					android:layout_width="match_parent"

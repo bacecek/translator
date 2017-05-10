@@ -8,4 +8,5 @@
 	<color name="colorTextGrey">#AFAFAF</color>
 	<color name="colorBackground">#F5F5F5</color>
 	<color name="colorPrimaryTint">#6FB8ED</color>
+	<color name="colorDivider">#DEDEDE</color>
 </resources>

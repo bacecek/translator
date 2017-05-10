@@ -40,15 +40,14 @@
 	</style>
 
 	<style name="App.View.TitleListLanguages">
-		<item name="android:paddingTop">12dp</item>
-		<item name="android:paddingBottom">6dp</item>
+		<item name="android:paddingTop">10dp</item>
+		<item name="android:paddingBottom">10dp</item>
 		<item name="android:paddingLeft">16dp</item>
 		<item name="android:paddingRight">16dp</item>
 		<item name="android:textColor">@color/colorTextGrey</item>
-		<item name="android:textSize">13sp</item>
+		<item name="android:textSize">14sp</item>
 		<item name="android:lines">1</item>
 		<item name="android:ellipsize">end</item>
-		<item name="android:textAllCaps">true</item>
 	</style>
 
 	<style name="App.View.SwitchCompat">

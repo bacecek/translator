@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.AdapterDataObserver;
@@ -15,9 +16,9 @@ import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.entity.Language;
+import com.bacecek.translate.util.Consts.Extra;
 import com.bacecek.translate.util.adapter.LanguagesAdapter;
 import com.bacecek.translate.util.adapter.LanguagesAdapter.OnItemClickListener;
-import com.bacecek.translate.util.Consts.Extra;
 import io.realm.RealmResults;
 
 public class ChooseLanguageActivity extends MvpAppCompatActivity implements ChooseLanguageView {
@@ -64,13 +65,18 @@ public class ChooseLanguageActivity extends MvpAppCompatActivity implements Choo
 		getSupportActionBar().setTitle(R.string.title_choose_lang);
 		mToolbar.setNavigationOnClickListener(view -> onBackPressed());
 
+		DividerItemDecoration divider = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
+		divider.setDrawable(getResources().getDrawable(R.drawable.list_langs_divider));
+
 		mRecyclerRecentlyUsed.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 		mRecyclerRecentlyUsed.setHasFixedSize(true);
 		mRecyclerRecentlyUsed.setNestedScrollingEnabled(false);
+		mRecyclerRecentlyUsed.addItemDecoration(divider);
 
 		mRecyclerAll.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 		mRecyclerAll.setHasFixedSize(true);
 		mRecyclerAll.setNestedScrollingEnabled(false);
+		mRecyclerAll.addItemDecoration(divider);
 
 		//какого-то **** скроллится при открытии списка языков. я не понимаю почему, это вроде помогает
 		mScrollView.scrollTo(0, 0);
