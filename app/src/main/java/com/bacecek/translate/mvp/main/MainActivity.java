@@ -28,6 +28,7 @@ import com.bacecek.translate.event.TranslateEvent;
 import com.bacecek.translate.mvp.about.AboutFragment;
 import com.bacecek.translate.mvp.favourites.FavouriteFragment;
 import com.bacecek.translate.mvp.settings.SettingsFragment;
+import com.bacecek.translate.mvp.translate.TranslateFragment;
 import com.bacecek.translate.util.Consts.Extra;
 import com.bacecek.translate.util.Utils;
 import org.greenrobot.eventbus.EventBus;
@@ -49,6 +50,13 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
 		initUI();
+
+		if(savedInstanceState == null) {
+			getFragmentManager().beginTransaction()
+					.replace(R.id.container_main, TranslateFragment.getInstance())
+					.commit();
+		}
+
 		SpeechKit.getInstance().configure(getApplicationContext(), BuildConfig.YANDEX_SPEECHKIT_API_KEY);
 		mNetworkStateReceiver = new NetworkStateReceiver();
 		registerReceiver(mNetworkStateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
@@ -138,7 +146,9 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 	private void addToBackStack(Fragment fragment) {
 		removeFromBackStack();
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.add(R.id.container_main, fragment)
+		transaction
+				.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_out)
+				.add(R.id.container_main, fragment)
 				.addToBackStack(null)
 				.commit();
 	}

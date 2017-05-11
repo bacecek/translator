@@ -4,4 +4,5 @@
 	<dimen name="card_margin_size">-4dp</dimen>
 	<dimen name="item_settings_padding_side">16dp</dimen>
 	<dimen name="item_settings_padding_top_bottom">12dp</dimen>
+	<integer name="transition_time">300</integer>
 </resources>

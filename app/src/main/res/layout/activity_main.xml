@@ -13,12 +13,6 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
-		<fragment
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:name="com.bacecek.translate.mvp.translate.TranslateFragment"
-			android:id="@+id/fragment_translate"/>
-
 		<FrameLayout
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"

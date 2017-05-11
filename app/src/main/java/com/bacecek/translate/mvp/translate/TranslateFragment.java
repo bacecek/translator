@@ -37,15 +37,15 @@ import com.bacecek.translate.data.entity.Translation;
 import com.bacecek.translate.mvp.base.BaseFragment;
 import com.bacecek.translate.mvp.choose_language.ChooseLanguageActivity;
 import com.bacecek.translate.mvp.fullscreen.FullscreenTextActivity;
+import com.bacecek.translate.util.Consts;
+import com.bacecek.translate.util.Consts.Extra;
+import com.bacecek.translate.util.Utils;
 import com.bacecek.translate.util.adapter.DictionaryAdapter;
 import com.bacecek.translate.util.adapter.DictionaryAdapter.OnWordClickListener;
 import com.bacecek.translate.util.adapter.HistoryAdapter;
 import com.bacecek.translate.util.adapter.HistoryAdapter.OnItemClickListener;
 import com.bacecek.translate.util.widget.ErrorView;
 import com.bacecek.translate.util.widget.VocalizeButton;
-import com.bacecek.translate.util.Consts;
-import com.bacecek.translate.util.Consts.Extra;
-import com.bacecek.translate.util.Utils;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmResults;
 import java.util.List;
@@ -404,5 +404,9 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		mEditOriginal.setFocusable(false);
 		mEditOriginal.setFocusableInTouchMode(true);
 		mEditOriginal.setFocusable(true);
+	}
+
+	public static TranslateFragment getInstance() {
+		return new TranslateFragment();
 	}
 }
