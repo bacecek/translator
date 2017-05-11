@@ -46,7 +46,7 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/btn_more"
-					android:src="@drawable/ic_more"
+					app:srcCompat="@drawable/ic_more"
 					style="@style/Widget.AppCompat.ActionButton"/>
 
 			</LinearLayout>

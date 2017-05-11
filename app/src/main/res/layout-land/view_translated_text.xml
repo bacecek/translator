@@ -27,7 +27,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:id="@+id/btn_favourite"
-				android:src="@drawable/button_favourite_selector"
+				app:srcCompat="@drawable/button_favourite_selector"
 				style="@style/Widget.AppCompat.ActionButton"
 				app:layout_constraintRight_toRightOf="parent"/>
 
@@ -43,7 +43,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:id="@+id/btn_more"
-				android:src="@drawable/ic_more"
+				app:srcCompat="@drawable/ic_more"
 				style="@style/Widget.AppCompat.ActionButton"
 				app:layout_constraintRight_toRightOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/btn_vocalize_translated"/>

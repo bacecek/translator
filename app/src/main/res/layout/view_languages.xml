@@ -11,7 +11,7 @@
 		android:layout_height="wrap_content"
 		android:id="@+id/btn_swap"
 		style="@style/Widget.AppCompat.ActionButton"
-		android:src="@drawable/ic_swap"
+		app:srcCompat="@drawable/ic_swap"
 		app:layout_constraintLeft_toLeftOf="parent"
 		app:layout_constraintRight_toRightOf="parent"/>
 

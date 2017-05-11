@@ -1,8 +1,10 @@
 package com.bacecek.translate.mvp.favourites;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -104,6 +106,8 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 	}
 
 	private void initUI() {
+		Drawable leftDrawable = AppCompatResources.getDrawable(getActivity().getApplicationContext(), R.drawable.ic_search);
+		mEditSearch.setCompoundDrawablesWithIntrinsicBounds(leftDrawable, null, null, null);
 		mRecyclerFavourites.setHasFixedSize(true);
 		mRecyclerFavourites.setLayoutManager(new LinearLayoutManager(getActivity()));
 		DividerItemDecoration divider = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);

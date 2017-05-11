@@ -14,6 +14,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayout.DrawerListener;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.MenuItem;
 import android.view.View;
 import butterknife.BindView;
@@ -43,6 +44,10 @@ public class MainActivity extends AppCompatActivity implements OnNavigationItemS
 	DrawerLayout mDrawerLayout;
 
 	private NetworkStateReceiver mNetworkStateReceiver;
+
+	static {
+		AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
