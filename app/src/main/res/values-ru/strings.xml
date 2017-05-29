@@ -48,7 +48,7 @@
 	<string name="settings_clear">Очистить историю</string>
 
 	<!--About-->
-	<string name="about_app">Тестовое задание для Школы мобильной разработки на Android, организованной Яндексом в рамках проекта \«Мобилизация\».</string>
+	<string name="about_app">Тестовое задание для Школы мобильной разработки на Android, организованной Яндексом в рамках проекта \"Мобилизация\".</string>
 	<string name="about_contact_me">Обратная связь</string>
 	<string name="about_site_title">Сайт разработчика</string>
 	<string name="about_view_in_play_store">Приложение в Google Play</string>

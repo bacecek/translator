@@ -43,7 +43,6 @@
 				android:id="@+id/txt_version"
 				android:layout_gravity="center_horizontal"
 				android:textColor="#6FB8ED"
-				android:text="ver.1.0.0.777"
 				android:fontFamily="sans-serif-light"
 				android:layout_marginBottom="16dp"/>
 
