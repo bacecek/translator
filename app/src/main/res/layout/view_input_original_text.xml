@@ -45,15 +45,4 @@
 		app:layout_constraintRight_toLeftOf="@id/btn_clear"
 		app:layout_constraintLeft_toLeftOf="parent"/>
 
-	<android.support.v7.widget.AppCompatImageButton
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:id="@+id/btn_mic"
-		app:srcCompat="@drawable/button_mic_selector"
-		style="@style/Widget.AppCompat.ActionButton"
-		app:layout_constraintRight_toRightOf="parent"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/edit_original_text"/>
-
 </android.support.constraint.ConstraintLayout>

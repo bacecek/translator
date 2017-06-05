@@ -33,6 +33,14 @@
 
 				<include layout="@layout/view_input_original_text"/>
 
+				<android.support.v7.widget.AppCompatImageButton
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/btn_mic"
+					app:srcCompat="@drawable/button_mic_selector"
+					style="@style/Widget.AppCompat.ActionButton"
+					android:layout_gravity="center_horizontal"/>
+
 				<ProgressBar
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
