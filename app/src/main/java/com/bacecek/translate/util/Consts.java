@@ -14,6 +14,14 @@ public class Consts {
 	public static final int CHOOSE_LANG_TYPE_ORIGINAL = 0;
 	public static final int CHOOSE_LANG_TYPE_TARGET = 1;
 
+	public static class Pager {
+		public static final int MAIN_PAGES_COUNT = 4;
+		public static final int PAGE_TRANSLATE = 0;
+		public static final int PAGE_HISTORY = 1;
+		public static final int PAGE_FAVOURITES = 2;
+		public static final int PAGE_SETTINGS = 3;
+	}
+
 	public static class DI {
 		public static final String DI_TRANSLATOR_RETROFIT = "translator_retrofit";
 		public static final String DI_TRANSLATOR_OKHTTP = "translator_okhttp";

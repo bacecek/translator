@@ -2,11 +2,14 @@ package com.bacecek.translate.data.db;
 
 import com.bacecek.translate.data.entity.Language;
 import com.bacecek.translate.data.entity.Translation;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
-import java.util.List;
-import javax.inject.Inject;
 
 /**
  * Created by Denis Buzmakov on 21/03/2017.
@@ -203,6 +206,17 @@ public class RealmController {
 
 	public RealmResults<Translation> getHistory() {
 		return mRealm.where(Translation.class)
+				.equalTo("showInHistory", true)
+				.findAllSortedAsync("historyTimestamp", Sort.DESCENDING);
+	}
+
+	public RealmResults<Translation> getHistory(String search) {
+		return mRealm.where(Translation.class)
+				.beginGroup()
+					.contains("originalText", search)
+					.or()
+					.contains("translatedText", search)
+				.endGroup()
 				.equalTo("showInHistory", true)
 				.findAllSortedAsync("historyTimestamp", Sort.DESCENDING);
 	}

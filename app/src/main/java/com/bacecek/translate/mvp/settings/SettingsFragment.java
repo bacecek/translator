@@ -96,7 +96,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView{
 		Toast.makeText(getActivity(), res, Toast.LENGTH_SHORT).show();
 	}
 
-	public static SettingsFragment getInstance() {
+	public static SettingsFragment newInstance() {
 		return new SettingsFragment();
 	}
 }

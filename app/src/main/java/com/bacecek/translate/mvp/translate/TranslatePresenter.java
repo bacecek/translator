@@ -119,16 +119,11 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 	@Override
 	protected void onFirstViewAttach() {
 		super.onFirstViewAttach();
-		getViewState().setHistoryData(mInteractor.getHistory());
 		getViewState().setOriginalLangName(mLanguageManager.getCurrentOriginalLangName());
 		getViewState().setTargetLangName(mLanguageManager.getCurrentTargetLangName());
 		updateVocalizeAndMicButtonsState();
 		EventBus.getDefault().register(this);
 		updateInputImeOptions();
-	}
-
-	public void onHistoryItemSwipe(Translation translation) {
-		mInteractor.removeTranslationFromHistory(translation);
 	}
 
 	public void saveTranslation(boolean async) {
@@ -180,7 +175,6 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 			onLoadFinish();
 			getViewState().setButtonClearVisibility(false);
 			getViewState().setButtonVocalizeVisibility(false);
-			getViewState().setHistoryVisibility(true);
 			getViewState().setTranslationVisibility(false);
 			getViewState().setDictionaryVisibility(false);
 			getViewState().setErrorVisibility(false);
@@ -188,7 +182,6 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		} else {
 			getViewState().setButtonClearVisibility(true);
 			getViewState().setButtonVocalizeVisibility(true);
-			getViewState().setHistoryVisibility(false);
 			if(mInteractor.getSettingSimultaneousTranslation()) {
 				mDelayInputRunnable = this::loadTranslation;
 				mDelayInputHandler.postDelayed(mDelayInputRunnable, Consts.DELAY_INPUT);
@@ -259,20 +252,6 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		}
 		onLoadFinish();
 		getViewState().setOriginalText("");
-	}
-
-	public void onClickHistoryItem(Translation translation) {
-		mLanguageManager.setCurrentOriginalLangCode(translation.getOriginalLang());
-		mLanguageManager.setCurrentTargetLangCode(translation.getTargetLang());
-		getViewState().setOriginalText(translation.getOriginalText());
-		//если отключен синхронный перевод, то надо загрузить перевод
-		if(!mInteractor.getSettingSimultaneousTranslation()) {
-			loadTranslation();
-		}
-	}
-
-	public void onClickHistoryFavourite(Translation translation) {
-		mInteractor.changeFavourite(translation);
 	}
 
 	public void onClickDictionaryWord(String word) {
@@ -391,12 +370,6 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 		} else {
 			getViewState().setInputImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_ACTION_NONE);
 		}
-	}
-
-	@Subscribe(threadMode = ThreadMode.MAIN)
-	public void onTranslateEvent(TranslateEvent event) {
-		saveTranslation(true);
-		onClickHistoryItem(event.translation);
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)

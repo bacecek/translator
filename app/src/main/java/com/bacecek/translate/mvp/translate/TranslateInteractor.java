@@ -8,10 +8,12 @@ import com.bacecek.translate.data.entity.Translation;
 import com.bacecek.translate.data.network.api.DictionaryAPI;
 import com.bacecek.translate.data.network.api.TranslatorAPI;
 import com.bacecek.translate.data.network.util.TranslateResult;
-import io.reactivex.Observable;
-import io.realm.RealmResults;
+
 import java.util.List;
+
 import javax.inject.Inject;
+
+import io.reactivex.Observable;
 
 /**
  * Created by Denis Buzmakov on 06/05/2017.
@@ -57,14 +59,6 @@ public class TranslateInteractor {
 		return mRealmController.getTranslation(originalText,
 				mLanguageManager.getCurrentOriginalLangCode(),
 				mLanguageManager.getCurrentTargetLangCode());
-	}
-
-	public void removeTranslationFromHistory(Translation translation) {
-		mRealmController.removeTranslationFromHistory(translation);
-	}
-
-	public RealmResults<Translation> getHistory() {
-		return mRealmController.getHistory();
 	}
 
 	public boolean getSettingSimultaneousTranslation() {

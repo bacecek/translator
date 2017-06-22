@@ -19,20 +19,23 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnTextChanged;
-import butterknife.OnTextChanged.Callback;
+
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.entity.Translation;
 import com.bacecek.translate.event.ClickFavouriteEvent;
 import com.bacecek.translate.mvp.base.BaseFragment;
-import com.bacecek.translate.util.adapter.FavouriteAdapter;
-import com.bacecek.translate.util.adapter.FavouriteAdapter.OnItemClickListener;
+import com.bacecek.translate.util.adapter.TranslateAdapter;
+import com.bacecek.translate.util.adapter.TranslateAdapter.OnItemClickListener;
+
+import org.greenrobot.eventbus.EventBus;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnTextChanged;
+import butterknife.OnTextChanged.Callback;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmResults;
-import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by Denis Buzmakov on 17/03/2017.
@@ -45,7 +48,7 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 
 	@BindView(R.id.list_favourites)
 	RecyclerView mRecyclerFavourites;
-	@BindView(R.id.empty_view)
+	@BindView(R.id.view_empty)
 	View mViewEmpty;
 	@BindView(R.id.edit_search)
 	EditText mEditSearch;
@@ -70,7 +73,7 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 		public void onSwiped(ViewHolder viewHolder, int direction) {
 			int position = viewHolder.getAdapterPosition();
 			Translation translation = null;
-			OrderedRealmCollection data = mFavouriteAdapter.getData();
+			OrderedRealmCollection data = mTranslateAdapter.getData();
 			if(data != null) {
 				translation = (Translation) data.get(position);
 			}
@@ -83,14 +86,14 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 		@Override
 		public void onChanged() {
 			super.onChanged();
-			mPresenter.onDataChanged(mFavouriteAdapter.getItemCount());
+			mPresenter.onDataChanged(mTranslateAdapter.getItemCount());
 		}
 	};
 
 	private final OnItemClickListener mOnFavouritesItemClickListener = translation -> EventBus
 			.getDefault().post(new ClickFavouriteEvent(translation));
 
-	private FavouriteAdapter mFavouriteAdapter;
+	private TranslateAdapter mTranslateAdapter;
 
 	@Nullable
 	@Override
@@ -148,22 +151,22 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView {
 
 	@Override
 	public void setData(RealmResults<Translation> favourites) {
-		mFavouriteAdapter = new FavouriteAdapter(getActivity(), favourites, mOnFavouritesItemClickListener);
-		mFavouriteAdapter.registerAdapterDataObserver(mFavouritesDataObserver);
+		mTranslateAdapter = new TranslateAdapter(getActivity(), favourites, mOnFavouritesItemClickListener);
+		mTranslateAdapter.registerAdapterDataObserver(mFavouritesDataObserver);
 		mFavouritesDataObserver.onChanged();
-		mRecyclerFavourites.setAdapter(mFavouriteAdapter);
+		mRecyclerFavourites.setAdapter(mTranslateAdapter);
 	}
 
 	@Override
 	public void updateData(RealmResults<Translation> favourites) {
-		if(mFavouriteAdapter == null) {
+		if(mTranslateAdapter == null) {
 			setData(favourites);
 		} else {
-			mFavouriteAdapter.updateData(favourites);
+			mTranslateAdapter.updateData(favourites);
 		}
 	}
 
-	public static FavouriteFragment getInstance() {
+	public static FavouriteFragment newInstance() {
 		return new FavouriteFragment();
 	}
 }

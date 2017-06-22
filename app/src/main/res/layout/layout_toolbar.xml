@@ -8,13 +8,6 @@
 
 	android:background="@color/colorPrimary">
 
-	<ImageButton
-		android:layout_width="?attr/actionBarSize"
-		android:layout_height="?attr/actionBarSize"
-		android:id="@+id/btn_menu"
-		style="@style/Base.Widget.AppCompat.ActionButton"
-		app:srcCompat="@drawable/ic_menu"/>
-
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

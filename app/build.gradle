@@ -71,6 +71,7 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$support_version"
     compile "com.android.support:design:$support_version"
     compile "com.android.support:customtabs:$support_version"
+    compile "com.android.support:support-v13:$support_version"
 
     //butterknife
     compile "com.jakewharton:butterknife:$butterknife_version"
@@ -109,4 +110,5 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
     }
+    compile 'com.roughike:bottom-bar:2.3.1'
 }

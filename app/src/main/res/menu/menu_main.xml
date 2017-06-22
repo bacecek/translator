@@ -4,9 +4,14 @@
 	<group android:checkableBehavior="single">
 
 		<item
-			android:id="@+id/action_home"
-			android:title="@string/action_home"
-			android:icon="@drawable/ic_home"/>
+			android:id="@+id/action_translate"
+			android:title="@string/action_translate"
+			android:icon="@drawable/ic_translate"/>
+
+		<item
+			android:id="@+id/action_history"
+			android:title="@string/action_history"
+			android:icon="@drawable/ic_history"/>
 
 		<item
 			android:id="@+id/action_favourites"
@@ -17,11 +22,6 @@
 			android:id="@+id/action_settings"
 			android:title="@string/action_settings"
 			android:icon="@drawable/ic_settings"/>
-
-		<item
-			android:id="@+id/action_about"
-			android:title="@string/action_about"
-			android:icon="@drawable/ic_about"/>
 
 	</group>
 

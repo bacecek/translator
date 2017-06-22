@@ -7,11 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.entity.Translation;
-import com.bacecek.translate.util.adapter.FavouriteAdapter.ViewHolder;
+import com.bacecek.translate.util.adapter.TranslateAdapter.ViewHolder;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
 
@@ -20,12 +22,12 @@ import io.realm.RealmRecyclerViewAdapter;
  * <buzmakov.da@gmail.com>
  */
 
-public class FavouriteAdapter extends RealmRecyclerViewAdapter<Translation, ViewHolder> {
+public class TranslateAdapter extends RealmRecyclerViewAdapter<Translation, ViewHolder> {
 	private OnItemClickListener mListener;
 
-	public FavouriteAdapter(Context context,
-			@Nullable OrderedRealmCollection<Translation> data,
-			OnItemClickListener listener) {
+	public TranslateAdapter(Context context,
+							@Nullable OrderedRealmCollection<Translation> data,
+							OnItemClickListener listener) {
 		super(context, data, true);
 		mListener = listener;
 	}

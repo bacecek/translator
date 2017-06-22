@@ -1,6 +1,7 @@
 package com.bacecek.translate.di.component;
 
 import android.content.Context;
+
 import com.bacecek.translate.data.db.LanguageManager;
 import com.bacecek.translate.data.db.PrefsManager;
 import com.bacecek.translate.data.db.RealmController;
@@ -11,11 +12,14 @@ import com.bacecek.translate.di.module.RealmModule;
 import com.bacecek.translate.di.module.TranslatorModule;
 import com.bacecek.translate.mvp.choose_language.ChooseLanguagePresenter;
 import com.bacecek.translate.mvp.favourites.FavouritePresenter;
+import com.bacecek.translate.mvp.history.HistoryPresenter;
 import com.bacecek.translate.mvp.settings.SettingsPresenter;
 import com.bacecek.translate.mvp.splash.SplashScreenPresenter;
 import com.bacecek.translate.mvp.translate.TranslatePresenter;
-import dagger.Component;
+
 import javax.inject.Singleton;
+
+import dagger.Component;
 
 /**
  * Created by Denis Buzmakov on 10/04/2017.
@@ -33,6 +37,7 @@ public interface AppComponent {
 
 	void inject(ChooseLanguagePresenter presenter);
 	void inject(SplashScreenPresenter presenter);
+	void inject(HistoryPresenter presenter);
 	void inject(FavouritePresenter presenter);
 	void inject(SettingsPresenter presenter);
 	void inject(TranslatePresenter presenter);

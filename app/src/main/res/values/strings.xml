@@ -1,6 +1,7 @@
 <resources>
 
 	<string name="app_name">Translate</string>
+	<string name="empty_list_history">No translations in History</string>
 	<string name="empty_list_favourites">No translations in Favourites</string>
 	<string name="empty_search">No matches were found</string>
 	<string name="open_drawer">Open NavigationDrawer</string>
@@ -31,7 +32,8 @@
 	<string name="error_no_email_app">There is no E-mail application. E-mail copied in clipboard.</string>
 
 	<!--Actions-->
-	<string name="action_home">Main screen</string>
+	<string name="action_translate">Translate</string>
+	<string name="action_history">History</string>
 	<string name="action_favourites">Favourites</string>
 	<string name="action_settings">Settings</string>
 	<string name="action_about">About</string>

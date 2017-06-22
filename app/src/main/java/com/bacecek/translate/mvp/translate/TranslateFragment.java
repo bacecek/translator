@@ -42,12 +42,8 @@ import com.bacecek.translate.util.Consts.Extra;
 import com.bacecek.translate.util.Utils;
 import com.bacecek.translate.util.adapter.DictionaryAdapter;
 import com.bacecek.translate.util.adapter.DictionaryAdapter.OnWordClickListener;
-import com.bacecek.translate.util.adapter.HistoryAdapter;
-import com.bacecek.translate.util.adapter.HistoryAdapter.OnItemClickListener;
 import com.bacecek.translate.util.widget.ErrorView;
 import com.bacecek.translate.util.widget.VocalizeButton;
-import io.realm.OrderedRealmCollection;
-import io.realm.RealmResults;
 import java.util.List;
 import ru.yandex.speechkit.Error;
 import ru.yandex.speechkit.Recognizer.Model;
@@ -82,8 +78,6 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	VocalizeButton mBtnVocalizeOriginal;
 	@BindView(R.id.btn_vocalize_translated)
 	VocalizeButton mBtnVocalizeTranslated;
-	@BindView(R.id.list_history)
-	RecyclerView mRecyclerHistory;
 	@BindView(R.id.list_dictionary)
 	RecyclerView mRecyclerDictionary;
 	@BindView(R.id.view_translated_text)
@@ -99,24 +93,10 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	@BindView(R.id.view_error)
 	ErrorView mErrorView;
 
-	private HistoryAdapter mHistoryAdapter;
-
 	@OnTextChanged(value = R.id.edit_original_text, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
 	void onTextChanged(Editable s) {
 		mPresenter.onInputChanged(getOriginalText());
 	}
-
-	private final OnItemClickListener mOnItemHistoryClickListener = new OnItemClickListener() {
-		@Override
-		public void onItemClick(Translation translation) {
-			mPresenter.onClickHistoryItem(translation);
-		}
-
-		@Override
-		public void onClickFavourite(Translation translation) {
-			mPresenter.onClickHistoryFavourite(translation);
-		}
-	};
 
 	private final OnWordClickListener mOnWordClickListener = word -> mPresenter.onClickDictionaryWord(word);
 
@@ -141,24 +121,6 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		return false;
 	};
 
-	private final ItemTouchHelper.Callback mHistoryItemSwipeCallback = new SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-		@Override
-		public boolean onMove(RecyclerView recyclerView, ViewHolder viewHolder, ViewHolder target) {
-			return false;
-		}
-
-		@Override
-		public void onSwiped(ViewHolder viewHolder, int direction) {
-			int position = viewHolder.getAdapterPosition();
-			Translation translation = null;
-			OrderedRealmCollection data = mHistoryAdapter.getData();
-			if(data != null) {
-				translation = (Translation) data.get(position);
-			}
-			mPresenter.onHistoryItemSwipe(translation);
-		}
-	};
-
 	private final OnEditorActionListener mOnKeyDoneListener = (view, actionId, keyEvent) -> {
 		if (actionId == EditorInfo.IME_ACTION_DONE) {
 			mPresenter.loadTranslation();
@@ -173,7 +135,6 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		View parent = inflater.inflate(R.layout.fragment_translate, container, false);
 		ButterKnife.bind(this, parent);
 
-		setTitle(parent, getString(R.string.app_name));
 		initUI();
 		initClickListeners();
 
@@ -181,14 +142,6 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	}
 
 	private void initUI() {
-		mRecyclerHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
-		mRecyclerHistory.setNestedScrollingEnabled(false);
-		mRecyclerHistory.setHasFixedSize(true);
-		DividerItemDecoration divider = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
-		divider.setDrawable(getResources().getDrawable(R.drawable.list_divider));
-		mRecyclerHistory.addItemDecoration(divider);
-		ItemTouchHelper helper = new ItemTouchHelper(mHistoryItemSwipeCallback);
-		helper.attachToRecyclerView(mRecyclerHistory);
 		mRecyclerDictionary.setLayoutManager(new LinearLayoutManager(getActivity()));
 		mRecyclerDictionary.setNestedScrollingEnabled(false);
 		mProgressBar.getIndeterminateDrawable().setColorFilter(Color.WHITE, Mode.SRC_IN);
@@ -229,8 +182,8 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	}
 
 	@Override
-	public void onPause() {
-		super.onPause();
+	public void onStop() {
+		super.onStop();
 		mPresenter.saveTranslation(true);
 	}
 
@@ -285,11 +238,6 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	}
 
 	@Override
-	public void setHistoryVisibility(boolean visible) {
-		mRecyclerHistory.setVisibility(visible ? View.VISIBLE : View.GONE);
-	}
-
-	@Override
 	public void setTranslationVisibility(boolean visible) {
 		mViewTranslated.setVisibility(visible ? View.VISIBLE : View.GONE);
 	}
@@ -312,12 +260,6 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 	@Override
 	public void setErrorData(Throwable error) {
 		mErrorView.setError(error);
-	}
-
-	@Override
-	public void setHistoryData(RealmResults<Translation> history) {
-		mHistoryAdapter = new HistoryAdapter(getActivity(), history, mOnItemHistoryClickListener);
-		mRecyclerHistory.setAdapter(mHistoryAdapter);
 	}
 
 	@Override
@@ -406,7 +348,7 @@ public class TranslateFragment extends BaseFragment implements TranslateView{
 		mEditOriginal.setFocusable(true);
 	}
 
-	public static TranslateFragment getInstance() {
+	public static TranslateFragment newInstance() {
 		return new TranslateFragment();
 	}
 }

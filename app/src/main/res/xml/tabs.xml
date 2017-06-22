@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/tab_translate"
+        icon="@drawable/ic_translate"
+        title="@string/action_translate" />
+    <tab
+        id="@+id/tab_history"
+        icon="@drawable/ic_history"
+        title="@string/action_history" />
+    <tab
+        id="@+id/tab_favorites"
+        icon="@drawable/ic_favourite"
+        title="@string/action_favourites" />
+    <tab
+        id="@+id/tab_settings"
+        icon="@drawable/ic_settings"
+        title="@string/action_settings" />
+</tabs>

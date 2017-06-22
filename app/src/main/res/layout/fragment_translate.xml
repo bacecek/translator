@@ -27,8 +27,6 @@
 				android:orientation="vertical"
 				android:background="@color/colorPrimary">
 
-				<include layout="@layout/layout_toolbar"/>
-
 				<include layout="@layout/view_languages"/>
 
 				<include layout="@layout/view_input_original_text"/>
@@ -60,11 +58,6 @@
 			android:layout_height="match_parent"
 			android:layout_below="@id/view_header"
 			android:layout_marginBottom="5dp">
-
-			<android.support.v7.widget.RecyclerView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:id="@+id/list_history"/>
 
 			<include layout="@layout/view_translated_text"
 				android:id="@+id/view_translated_text"

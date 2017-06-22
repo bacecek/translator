@@ -2,6 +2,7 @@
 <resources>
 	<string name="app_name">Переводчик</string>
 
+	<string name="empty_list_history">Список последних переводов пуст</string>
 	<string name="empty_list_favourites">Список избранных\nпереводов пуст</string>
 	<string name="empty_search">Поиск не дал результатов</string>
 	<string name="open_drawer">Открыть NavigationDrawer</string>
@@ -32,7 +33,8 @@
 	<string name="error_no_email_app">На устройстве отсутствует приложение почты. Почта скопирована в буфер обмена</string>
 
 	<!--Actions-->
-	<string name="action_home">Главная страница</string>
+	<string name="action_translate">Переводчик</string>
+	<string name="action_history">История</string>
 	<string name="action_favourites">Избранное</string>
 	<string name="action_settings">Настройки</string>
 	<string name="action_about">О приложении</string>

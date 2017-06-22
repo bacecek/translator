@@ -6,7 +6,7 @@ import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 import com.bacecek.translate.data.entity.DictionaryItem;
 import com.bacecek.translate.data.entity.Translation;
-import io.realm.RealmResults;
+
 import java.util.List;
 
 /**
@@ -22,13 +22,11 @@ public interface TranslateView extends MvpView {
 	void goToChooseTargetLanguage(String currentLang);
 	void setProgressVisibility(boolean visible);
 	void setErrorVisibility(boolean visible);
-	void setHistoryVisibility(boolean visible);
 	void setTranslationVisibility(boolean visible);
 	void setDictionaryVisibility(boolean visible);
 	void setButtonClearVisibility(boolean visible);
 	void setButtonVocalizeVisibility(boolean visible);
 	void setErrorData(Throwable error);
-	void setHistoryData(RealmResults<Translation> history);
 	void setTranslationData(Translation translation);
 	void setDictionaryData(List<DictionaryItem> items);
 	void setOriginalLangName(String name);
