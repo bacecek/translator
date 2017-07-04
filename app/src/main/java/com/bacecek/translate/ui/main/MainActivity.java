@@ -1,4 +1,4 @@
-package com.bacecek.translate.mvp.main;
+package com.bacecek.translate.ui.main;
 
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;

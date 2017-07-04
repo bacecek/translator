@@ -14,14 +14,14 @@
 		android:theme="@style/App.Theme">
 
 		<activity
-			android:name=".mvp.main.MainActivity"
+			android:name=".ui.main.MainActivity"
 			android:windowSoftInputMode="stateAlwaysHidden"/>
 
-		<activity android:name=".mvp.fullscreen.FullscreenTextActivity" />
+		<activity android:name=".ui.fullscreen.FullscreenTextActivity" />
 
-		<activity android:name=".mvp.choose_language.ChooseLanguageActivity" />
+		<activity android:name=".ui.choose_language.ChooseLanguageActivity" />
 
-		<activity android:name=".mvp.splash.SplashScreenActivity"
+		<activity android:name=".ui.splash.SplashScreenActivity"
 			android:theme="@style/App.Theme.SplashScreen">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />

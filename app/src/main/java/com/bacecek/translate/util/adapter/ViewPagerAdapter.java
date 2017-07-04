@@ -4,10 +4,10 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v13.app.FragmentPagerAdapter;
 
-import com.bacecek.translate.mvp.favourites.FavouriteFragment;
-import com.bacecek.translate.mvp.history.HistoryFragment;
-import com.bacecek.translate.mvp.settings.SettingsFragment;
-import com.bacecek.translate.mvp.translate.TranslateFragment;
+import com.bacecek.translate.ui.favourites.FavouriteFragment;
+import com.bacecek.translate.ui.history.HistoryFragment;
+import com.bacecek.translate.ui.settings.SettingsFragment;
+import com.bacecek.translate.ui.translate.TranslateFragment;
 import com.bacecek.translate.util.Consts;
 
 /**

@@ -1,4 +1,4 @@
-package com.bacecek.translate.mvp.translate;
+package com.bacecek.translate.ui.translate;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,13 +7,9 @@ import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.support.v7.widget.helper.ItemTouchHelper.SimpleCallback;
 import android.text.Editable;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -34,9 +30,11 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.entity.DictionaryItem;
 import com.bacecek.translate.data.entity.Translation;
-import com.bacecek.translate.mvp.base.BaseFragment;
-import com.bacecek.translate.mvp.choose_language.ChooseLanguageActivity;
-import com.bacecek.translate.mvp.fullscreen.FullscreenTextActivity;
+import com.bacecek.translate.mvp.translate.TranslatePresenter;
+import com.bacecek.translate.mvp.translate.TranslateView;
+import com.bacecek.translate.ui.base.BaseFragment;
+import com.bacecek.translate.ui.choose_language.ChooseLanguageActivity;
+import com.bacecek.translate.ui.fullscreen.FullscreenTextActivity;
 import com.bacecek.translate.util.Consts;
 import com.bacecek.translate.util.Consts.Extra;
 import com.bacecek.translate.util.Utils;
@@ -54,7 +52,7 @@ import ru.yandex.speechkit.gui.RecognizerActivity;
  * <buzmakov.da@gmail.com>
  */
 
-public class TranslateFragment extends BaseFragment implements TranslateView{
+public class TranslateFragment extends BaseFragment implements TranslateView {
 	@InjectPresenter
 	TranslatePresenter mPresenter;
 

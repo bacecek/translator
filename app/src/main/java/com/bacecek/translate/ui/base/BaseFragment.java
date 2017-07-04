@@ -1,4 +1,4 @@
-package com.bacecek.translate.mvp.base;
+package com.bacecek.translate.ui.base;
 
 import android.view.View;
 import android.widget.TextView;

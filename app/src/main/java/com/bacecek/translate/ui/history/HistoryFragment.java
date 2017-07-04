@@ -1,4 +1,4 @@
-package com.bacecek.translate.mvp.history;
+package com.bacecek.translate.ui.history;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -21,7 +21,9 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.entity.Translation;
 import com.bacecek.translate.event.ClickFavouriteEvent;
-import com.bacecek.translate.mvp.base.BaseFragment;
+import com.bacecek.translate.mvp.history.HistoryPresenter;
+import com.bacecek.translate.mvp.history.HistoryView;
+import com.bacecek.translate.ui.base.BaseFragment;
 import com.bacecek.translate.util.adapter.TranslateAdapter;
 
 import org.greenrobot.eventbus.EventBus;

@@ -1,4 +1,4 @@
-package com.bacecek.translate.mvp.choose_language;
+package com.bacecek.translate.ui.choose_language;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,20 +10,24 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.AdapterDataObserver;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.entity.Language;
+import com.bacecek.translate.mvp.choose_language.ChooseLanguagePresenter;
+import com.bacecek.translate.mvp.choose_language.ChooseLanguageView;
 import com.bacecek.translate.util.Consts.Extra;
 import com.bacecek.translate.util.adapter.LanguagesAdapter;
 import com.bacecek.translate.util.adapter.LanguagesAdapter.OnItemClickListener;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.realm.RealmResults;
 
 public class ChooseLanguageActivity extends MvpAppCompatActivity implements ChooseLanguageView {
 	@InjectPresenter
-	ChooseLanguagePresenter mPresenter;
+    ChooseLanguagePresenter mPresenter;
 
 	@BindView(R.id.toolbar)
 	Toolbar mToolbar;

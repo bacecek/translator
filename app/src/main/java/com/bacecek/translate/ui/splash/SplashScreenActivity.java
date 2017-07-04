@@ -1,4 +1,4 @@
-package com.bacecek.translate.mvp.splash;
+package com.bacecek.translate.ui.splash;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -6,14 +6,18 @@ import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.bacecek.translate.R;
-import com.bacecek.translate.mvp.main.MainActivity;
+import com.bacecek.translate.mvp.splash.SplashScreenPresenter;
+import com.bacecek.translate.mvp.splash.SplashScreenView;
+import com.bacecek.translate.ui.main.MainActivity;
 import com.bacecek.translate.util.Consts.Extra;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class SplashScreenActivity extends MvpAppCompatActivity implements SplashScreenView {
 	@InjectPresenter

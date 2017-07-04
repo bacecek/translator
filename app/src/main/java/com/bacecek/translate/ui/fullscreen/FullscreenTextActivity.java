@@ -1,4 +1,4 @@
-package com.bacecek.translate.mvp.fullscreen;
+package com.bacecek.translate.ui.fullscreen;
 
 import android.content.Intent;
 import android.os.Bundle;

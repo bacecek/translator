@@ -1,4 +1,4 @@
-package com.bacecek.translate.mvp.settings;
+package com.bacecek.translate.ui.settings;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,18 +11,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.bacecek.translate.R;
-import com.bacecek.translate.mvp.base.BaseFragment;
+import com.bacecek.translate.mvp.settings.SettingsPresenter;
+import com.bacecek.translate.mvp.settings.SettingsView;
+import com.bacecek.translate.ui.base.BaseFragment;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Denis Buzmakov on 19/03/2017.
  * <buzmakov.da@gmail.com>
  */
 
-public class SettingsFragment extends BaseFragment implements SettingsView{
+public class SettingsFragment extends BaseFragment implements SettingsView {
 	@InjectPresenter
 	SettingsPresenter mPresenter;
 

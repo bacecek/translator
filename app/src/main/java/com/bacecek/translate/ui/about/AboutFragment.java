@@ -1,4 +1,4 @@
-package com.bacecek.translate.mvp.about;
+package com.bacecek.translate.ui.about;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -14,14 +14,16 @@ import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bacecek.translate.BuildConfig;
+import com.bacecek.translate.R;
+import com.bacecek.translate.ui.base.BaseFragment;
+import com.bacecek.translate.util.Utils;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
-import com.bacecek.translate.BuildConfig;
-import com.bacecek.translate.R;
-import com.bacecek.translate.mvp.base.BaseFragment;
-import com.bacecek.translate.util.Utils;
 
 /**
  * Created by Denis Buzmakov on 19/03/2017.
