@@ -60,6 +60,7 @@ public class HistoryPresenter extends MvpPresenter<HistoryView> {
         } else {
             getViewState().setEmptyViewVisibility(false);
             getViewState().setListVisibility(true);
+            getViewState().setSearchVisibility(true);
         }
     }
 }

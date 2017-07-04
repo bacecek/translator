@@ -78,7 +78,7 @@ public class HistoryFragment extends BaseFragment implements HistoryView {
         }
     };
 
-    private final RecyclerView.AdapterDataObserver mFavouritesDataObserver = new RecyclerView.AdapterDataObserver() {
+    private final RecyclerView.AdapterDataObserver mHistoryDataObserver = new RecyclerView.AdapterDataObserver() {
         @Override
         public void onChanged() {
             super.onChanged();
@@ -108,6 +108,7 @@ public class HistoryFragment extends BaseFragment implements HistoryView {
         Drawable leftDrawable = AppCompatResources.getDrawable(getActivity().getApplicationContext(), R.drawable.ic_search);
         mEditSearch.setCompoundDrawablesWithIntrinsicBounds(leftDrawable, null, null, null);
         mRecyclerHistory.setHasFixedSize(true);
+        mRecyclerHistory.setNestedScrollingEnabled(false);
         mRecyclerHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
         DividerItemDecoration divider = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
         divider.setDrawable(getResources().getDrawable(R.drawable.list_divider));
@@ -148,8 +149,8 @@ public class HistoryFragment extends BaseFragment implements HistoryView {
     @Override
     public void setData(RealmResults<Translation> favourites) {
         mTranslateAdapter = new TranslateAdapter(getActivity(), favourites, mOnHistoryItemClickListener);
-        mTranslateAdapter.registerAdapterDataObserver(mFavouritesDataObserver);
-        mFavouritesDataObserver.onChanged();
+        mTranslateAdapter.registerAdapterDataObserver(mHistoryDataObserver);
+        mHistoryDataObserver.onChanged();
         mRecyclerHistory.setAdapter(mTranslateAdapter);
     }
 

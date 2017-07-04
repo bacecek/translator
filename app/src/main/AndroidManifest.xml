@@ -12,12 +12,15 @@
 		android:name=".App"
 		android:supportsRtl="false"
 		android:theme="@style/App.Theme">
+
 		<activity
 			android:name=".mvp.main.MainActivity"
-			android:theme="@style/App.Theme.MainScreen"
 			android:windowSoftInputMode="stateAlwaysHidden"/>
+
 		<activity android:name=".mvp.fullscreen.FullscreenTextActivity" />
+
 		<activity android:name=".mvp.choose_language.ChooseLanguageActivity" />
+
 		<activity android:name=".mvp.splash.SplashScreenActivity"
 			android:theme="@style/App.Theme.SplashScreen">
 			<intent-filter>
@@ -31,6 +34,7 @@
 				<data android:mimeType="text/plain" />
 			</intent-filter>
 		</activity>
+
 	    <meta-data
             android:name="io.fabric.ApiKey"
             android:value="93e65c14fafa7c6133bb604c9672f68bfa8af504" />

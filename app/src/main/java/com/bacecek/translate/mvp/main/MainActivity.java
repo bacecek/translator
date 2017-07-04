@@ -3,8 +3,6 @@ package com.bacecek.translate.mvp.main;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -12,16 +10,9 @@ import android.support.v7.app.AppCompatDelegate;
 import com.bacecek.translate.BuildConfig;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.network.util.NetworkStateReceiver;
-import com.bacecek.translate.event.ClickFavouriteEvent;
-import com.bacecek.translate.event.ClickMenuEvent;
-import com.bacecek.translate.event.TranslateEvent;
 import com.bacecek.translate.util.Consts;
 import com.bacecek.translate.util.adapter.ViewPagerAdapter;
 import com.roughike.bottombar.BottomBar;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
