@@ -1,7 +1,8 @@
-package com.bacecek.translate.ui.history;
+package com.bacecek.translate.ui.translations;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.content.res.AppCompatResources;
@@ -21,12 +22,16 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.entity.Translation;
 import com.bacecek.translate.event.ClickFavouriteEvent;
-import com.bacecek.translate.mvp.history.HistoryPresenter;
-import com.bacecek.translate.mvp.history.HistoryView;
+import com.bacecek.translate.mvp.translations.TranslationsPresenter;
+import com.bacecek.translate.mvp.translations.TranslationsView;
 import com.bacecek.translate.ui.base.BaseFragment;
+import com.bacecek.translate.util.Consts;
 import com.bacecek.translate.util.adapter.TranslateAdapter;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,17 +40,24 @@ import io.realm.OrderedRealmCollection;
 import io.realm.RealmResults;
 
 /**
- * Created by Denis Buzmakov on 18.06.2017.
+ * Created by Denis Buzmakov on 05.07.2017.
  * <buzmakov.da@gmail.com>
  */
 
-public class HistoryFragment extends BaseFragment implements HistoryView {
+public class TranslationsFragment extends BaseFragment implements TranslationsView {
+
+    @IntDef
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Type {
+        int HISTORY = 0;
+        int FAVOURITES = 1;
+    }
 
     @InjectPresenter
-    HistoryPresenter mPresenter;
+    TranslationsPresenter mPresenter;
 
-    @BindView(R.id.list_history)
-    RecyclerView mRecyclerHistory;
+    @BindView(R.id.list_favourites)
+    RecyclerView mRecyclerFavourites;
     @BindView(R.id.view_empty)
     View mViewEmpty;
     @BindView(R.id.edit_search)
@@ -80,7 +92,7 @@ public class HistoryFragment extends BaseFragment implements HistoryView {
         }
     };
 
-    private final RecyclerView.AdapterDataObserver mHistoryDataObserver = new RecyclerView.AdapterDataObserver() {
+    private final RecyclerView.AdapterDataObserver mDataObserver = new RecyclerView.AdapterDataObserver() {
         @Override
         public void onChanged() {
             super.onChanged();
@@ -88,20 +100,36 @@ public class HistoryFragment extends BaseFragment implements HistoryView {
         }
     };
 
-    private final TranslateAdapter.OnItemClickListener mOnHistoryItemClickListener = translation -> EventBus
-            .getDefault().post(new ClickFavouriteEvent(translation));
+    private final TranslateAdapter.OnItemClickListener mOnFavouritesItemClickListener = new TranslateAdapter.OnItemClickListener() {
+        @Override
+        public void onItemClick(Translation translation) {
+            EventBus.getDefault().post(new ClickFavouriteEvent(translation));
+        }
+
+        @Override
+        public void onClickFavourite(Translation translation) {
+            mPresenter.onClickItemFavourite(translation);
+        }
+    };
 
     private TranslateAdapter mTranslateAdapter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View parent = inflater.inflate(R.layout.fragment_history, container, false);
+        View parent = inflater.inflate(R.layout.fragment_translations, container, false);
         ButterKnife.bind(this, parent);
 
-        setTitle(parent, getString(R.string.action_history));
+        int type = getArguments().getInt(Consts.Extra.EXTRA_TYPE_TRANSLATIONS);
+        if(type == Type.HISTORY) {
+            setTitle(parent, getString(R.string.action_history));
+        } else if (type == Type.FAVOURITES) {
+            setTitle(parent, getString(R.string.action_favourites));
+        }
         initUI();
         initClickListeners();
+
+        mPresenter.setType(getArguments().getInt(Consts.Extra.EXTRA_TYPE_TRANSLATIONS));
 
         return parent;
     }
@@ -109,14 +137,13 @@ public class HistoryFragment extends BaseFragment implements HistoryView {
     private void initUI() {
         Drawable leftDrawable = AppCompatResources.getDrawable(getActivity().getApplicationContext(), R.drawable.ic_search);
         mEditSearch.setCompoundDrawablesWithIntrinsicBounds(leftDrawable, null, null, null);
-        mRecyclerHistory.setHasFixedSize(true);
-        mRecyclerHistory.setNestedScrollingEnabled(false);
-        mRecyclerHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerFavourites.setHasFixedSize(true);
+        mRecyclerFavourites.setLayoutManager(new LinearLayoutManager(getActivity()));
         DividerItemDecoration divider = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
         divider.setDrawable(getResources().getDrawable(R.drawable.list_divider));
-        mRecyclerHistory.addItemDecoration(divider);
+        mRecyclerFavourites.addItemDecoration(divider);
         ItemTouchHelper helper = new ItemTouchHelper(mDismissCallback);
-        helper.attachToRecyclerView(mRecyclerHistory);
+        helper.attachToRecyclerView(mRecyclerFavourites);
     }
 
     private void initClickListeners() {
@@ -135,7 +162,7 @@ public class HistoryFragment extends BaseFragment implements HistoryView {
 
     @Override
     public void setListVisibility(boolean visible) {
-        mRecyclerHistory.setVisibility(visible ? View.VISIBLE : View.GONE);
+        mRecyclerFavourites.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -150,10 +177,10 @@ public class HistoryFragment extends BaseFragment implements HistoryView {
 
     @Override
     public void setData(RealmResults<Translation> favourites) {
-        mTranslateAdapter = new TranslateAdapter(getActivity(), favourites, mOnHistoryItemClickListener);
-        mTranslateAdapter.registerAdapterDataObserver(mHistoryDataObserver);
-        mHistoryDataObserver.onChanged();
-        mRecyclerHistory.setAdapter(mTranslateAdapter);
+        mTranslateAdapter = new TranslateAdapter(getActivity(), favourites, mOnFavouritesItemClickListener);
+        mTranslateAdapter.registerAdapterDataObserver(mDataObserver);
+        mDataObserver.onChanged();
+        mRecyclerFavourites.setAdapter(mTranslateAdapter);
     }
 
     @Override
@@ -165,7 +192,11 @@ public class HistoryFragment extends BaseFragment implements HistoryView {
         }
     }
 
-    public static HistoryFragment newInstance() {
-        return new HistoryFragment();
+    public static TranslationsFragment newInstance(@Type int type) {
+        Bundle args = new Bundle();
+        args.putInt(Consts.Extra.EXTRA_TYPE_TRANSLATIONS, type);
+        TranslationsFragment fragment = new TranslationsFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 }

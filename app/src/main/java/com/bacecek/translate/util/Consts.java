@@ -51,12 +51,13 @@ public class Consts {
 		public static final String SIMULTANEOUS_TRANSLATION = "settings_simultaneous_translation";
 	}
 
-	//Ключи передачи информации между Activity
+	//Ключи передачи информации между Activity/Fragments
 	public static class Extra {
 		public static final String EXTRA_CHOOSE_LANG_CURRENT = "extra_choose_lang_current";
 		public static final String EXTRA_CHOOSE_LANG_TYPE = "extra_choose_lang_type";
 		public static final String EXTRA_CHOOSE_LANG_RETURN = "extra_chosen_lang";
 		public static final String EXTRA_FULLSCREEN = "extra_fullscreen";
 		public static final String EXTRA_INCOMING_TRANSLATION = "incoming translation";
+		public static final String EXTRA_TYPE_TRANSLATIONS = "extra_type_translations";
 	}
 }

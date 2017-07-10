@@ -11,11 +11,10 @@ import com.bacecek.translate.di.module.NetworkModule;
 import com.bacecek.translate.di.module.RealmModule;
 import com.bacecek.translate.di.module.TranslatorModule;
 import com.bacecek.translate.mvp.choose_language.ChooseLanguagePresenter;
-import com.bacecek.translate.mvp.favourites.FavouritePresenter;
-import com.bacecek.translate.mvp.history.HistoryPresenter;
 import com.bacecek.translate.mvp.settings.SettingsPresenter;
 import com.bacecek.translate.mvp.splash.SplashScreenPresenter;
 import com.bacecek.translate.mvp.translate.TranslatePresenter;
+import com.bacecek.translate.mvp.translations.TranslationsPresenter;
 
 import javax.inject.Singleton;
 
@@ -37,8 +36,7 @@ public interface AppComponent {
 
 	void inject(ChooseLanguagePresenter presenter);
 	void inject(SplashScreenPresenter presenter);
-	void inject(HistoryPresenter presenter);
-	void inject(FavouritePresenter presenter);
 	void inject(SettingsPresenter presenter);
 	void inject(TranslatePresenter presenter);
+	void inject(TranslationsPresenter presenter);
 }

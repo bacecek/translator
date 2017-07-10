@@ -4,10 +4,9 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v13.app.FragmentPagerAdapter;
 
-import com.bacecek.translate.ui.favourites.FavouriteFragment;
-import com.bacecek.translate.ui.history.HistoryFragment;
 import com.bacecek.translate.ui.settings.SettingsFragment;
 import com.bacecek.translate.ui.translate.TranslateFragment;
+import com.bacecek.translate.ui.translations.TranslationsFragment;
 import com.bacecek.translate.util.Consts;
 
 /**
@@ -27,9 +26,9 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case Consts.Pager.PAGE_TRANSLATE:
                 return TranslateFragment.newInstance();
             case Consts.Pager.PAGE_HISTORY:
-                return HistoryFragment.newInstance();
+                return TranslationsFragment.newInstance(TranslationsFragment.Type.HISTORY);
             case Consts.Pager.PAGE_FAVOURITES:
-                return FavouriteFragment.newInstance();
+                return TranslationsFragment.newInstance(TranslationsFragment.Type.FAVOURITES);
             case Consts.Pager.PAGE_SETTINGS:
                 return SettingsFragment.newInstance();
             default:

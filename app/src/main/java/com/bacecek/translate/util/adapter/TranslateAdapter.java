@@ -6,11 +6,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.bacecek.translate.R;
 import com.bacecek.translate.data.entity.Translation;
-import com.bacecek.translate.util.adapter.TranslateAdapter.ViewHolder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -18,11 +18,11 @@ import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
 
 /**
- * Created by Denis Buzmakov on 17/03/2017.
+ * Created by Denis Buzmakov on 20/03/2017.
  * <buzmakov.da@gmail.com>
  */
 
-public class TranslateAdapter extends RealmRecyclerViewAdapter<Translation, ViewHolder> {
+public class TranslateAdapter extends RealmRecyclerViewAdapter<Translation, TranslateAdapter.ViewHolder> {
 	private OnItemClickListener mListener;
 
 	public TranslateAdapter(Context context,
@@ -34,7 +34,7 @@ public class TranslateAdapter extends RealmRecyclerViewAdapter<Translation, View
 
 	@Override
 	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-		View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_favourite, parent, false);
+		View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_translate, parent, false);
 		return new ViewHolder(itemView);
 	}
 
@@ -46,30 +46,36 @@ public class TranslateAdapter extends RealmRecyclerViewAdapter<Translation, View
 		}
 	}
 
-	static class ViewHolder extends RecyclerView.ViewHolder{
+	static class ViewHolder extends RecyclerView.ViewHolder {
 		@BindView(R.id.txt_original)
 		TextView mTxtOriginal;
 		@BindView(R.id.txt_translated)
 		TextView mTxtTranslated;
+		@BindView(R.id.btn_favourite)
+		ImageButton mBtnFavourite;
 		@BindView(R.id.txt_direction)
-		TextView mTxtLangs;
+		TextView mTxtDirection;
 
 		ViewHolder(View itemView) {
 			super(itemView);
 			ButterKnife.bind(this, itemView);
 		}
 
-		public void bind(final Translation translation, final OnItemClickListener listener) {
+		void bind(final Translation translation, final OnItemClickListener listener) {
 			mTxtOriginal.setText(translation.getOriginalText());
 			mTxtTranslated.setText(translation.getTranslatedText());
-			mTxtLangs.setText(translation.getOriginalLang().toUpperCase() + "-" + translation.getTargetLang().toUpperCase());
+			mBtnFavourite.setActivated(translation.isFavourite());
+			String direction = (translation.getOriginalLang() + "-" + translation.getTargetLang()).toUpperCase();
+			mTxtDirection.setText(direction);
 			if(listener != null) {
 				itemView.setOnClickListener(view -> listener.onItemClick(translation));
+				mBtnFavourite.setOnClickListener(view -> listener.onClickFavourite(translation));
 			}
 		}
 	}
 
 	public interface OnItemClickListener {
 		void onItemClick(Translation translation);
+		void onClickFavourite(Translation translation);
 	}
 }
