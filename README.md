@@ -5,16 +5,16 @@ Simple and fast translator. Test task for the Mobile Development School on Andro
 - Voice input and text scoring (only English, Russian, Ukrainian, Turkish).
 - Saving translations to favourites.
 
-# Screenshots
+## Screenshots
 <img src="https://github.com/bacecek/translator/blob/master/img/main_clear.png" width="240" height="480"> <img src="https://github.com/bacecek/translator/blob/master/img/main.png" width="240" height="480"> <img src="https://github.com/bacecek/translator/blob/master/img/favourites.png" width="240" height="480">
 
-# Getting started
-## Clone the repository
+## Getting started
+### Clone the repository
 As usual, you get started by cloning the project to your local machine:
 ```
 https://github.com/bacecek/translator.git
 ```
-## Build the app
+### Build the app
 Run this command in the root directory
 ```
 ./gradlew assembleDebug
@@ -23,12 +23,12 @@ Apk file will be in the following path:
 ```
 ../app/build/outputs/apk/debug
 ```
-## Install the app
+### Install the app
 Connect device and run this command in the root directory
 ```
 ./gradlew installDebug
 ```
-# Built With
+## Built With
 - [Yandex Translator API](https://tech.yandex.ru/translate/) & [Yandex Dictionary API](https://tech.yandex.ru/dictionary/) - Used to translate everything;
 - [Yandex SpeechKit](https://tech.yandex.ru/speechkit/) - Used for pronouncing text and recognizing speech;
 - [Moxy](https://github.com/Arello-Mobile/Moxy) - MVP Framework;
@@ -37,7 +37,7 @@ Connect device and run this command in the root directory
 - [Retrofit](http://square.github.io/retrofit/) - Used for working with network;
 - [RxJava 2](https://github.com/ReactiveX/RxJava) - Easy work with multithreading.
 
-# License
+## License
 
 MIT License
 
