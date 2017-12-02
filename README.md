@@ -6,7 +6,7 @@ Simple and fast translator. Test task for the Mobile Development School on Andro
 - Saving translations to favourites.
 
 # Screenshots
-<img src="https://github.com/bacecek/translator/blob/master/img/main_clear.png" width="240" height="480"> <img src="https://github.com/bacecek/translator/blob/master/img/main.png" width="240" height="480"> <img src="https://github.com/bacecek/translator/blob/master/img/favourites.png" width="240" height="480"> <img src="https://github.com/bacecek/translator/blob/master/img/settings.png" width="240" height="480">
+<img src="https://github.com/bacecek/translator/blob/master/img/main_clear.png" width="240" height="480"> <img src="https://github.com/bacecek/translator/blob/master/img/main.png" width="240" height="480"> <img src="https://github.com/bacecek/translator/blob/master/img/favourites.png" width="240" height="480">
 
 # Getting started
 ## Clone the repository
